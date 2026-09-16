@@ -71,6 +71,7 @@ config = {
     },
     "windows": {  # Windows游戏请填写此设置
         "exe": ["AzurPromilia.exe"],  # 蓝色星原：旅谣 (Azur Promilia)
+        "args": ["-start=azurpromilia_launcher"],  # 启动参数，支持多个
         'hwnd_class': 'UnityWndClass',  # 增加重名检查准确度
         # GUI 需要可迭代配置；设备管理器需要类对象，使用包装器同时满足两者。
         "interaction": [GameInteraction],
