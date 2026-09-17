@@ -13,6 +13,7 @@ class SkipDialogTask(BaseGameTask, TriggerTask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = "跳剧情"
+        self.description = "跳过剧情触发式任务：自动点击跳过对话框和确认按钮。"
         self.icon = Icons.Trigger
 
     def run(self):
