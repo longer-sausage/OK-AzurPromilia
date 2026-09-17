@@ -85,37 +85,67 @@
       ],
       "area": 704,
       "iscrowd": 0
+    },
+    {
+      "id": 7,
+      "image_id": 1,
+      "category_id": 7,
+      "bbox": [
+        1849,
+        36,
+        21,
+        20
+      ],
+      "area": 420,
+      "iscrowd": 0
+    },
+    {
+      "id": 8,
+      "image_id": 1,
+      "category_id": 8,
+      "bbox": [
+        1079,
+        768,
+        70,
+        61
+      ],
+      "area": 4270,
+      "iscrowd": 0
     }
   ],
   "categories": [
     {
       "id": 1,
-      "name": "confirm_button",
-      "supercategory": ""
+      "name": "confirm_button"
     },
     {
       "id": 2,
-      "name": "close_button",
-      "supercategory": ""
+      "name": "close_button"
     },
     {
       "id": 3,
-      "name": "login_out",
-      "supercategory": ""
+      "name": "login_out"
     },
     {
       "id": 4,
-      "name": "confirm_button_2",
-      "supercategory": ""
+      "name": "confirm_button_2"
     },
     {
       "id": 5,
-      "name": "login_in",
-      "supercategory": ""
+      "name": "login_in"
     },
     {
       "id": 6,
-      "name": "account_switch",
+      "name": "account_switch"
+    },
+    {
+      "id": 7,
+      "name": "skip_dialog",
+      "supercategory": ""
+    },
+    {
+      "id": 8,
+      "name": "skip_confirm",
       "supercategory": ""
     }
   ]

@@ -1,6 +1,7 @@
-from ok import TriggerTask, Logger
+from ok import Logger, TriggerTask
 
 from src.core.BaseGameTask import BaseGameTask
+from src.data.FeatureList import FeatureList
 from src.icons import Icons
 
 logger = Logger.get_logger(__name__)
@@ -11,21 +12,44 @@ class ExampleTriggerTask(BaseGameTask, TriggerTask):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.name = "示例触发任务"
+        self.name = "跳剧情"
         self.icon = Icons.Trigger
-        self.description = "模板示例触发任务：周期性进行 OCR 检测并记录结果"
-        self.trigger_interval = 5  # 避免过频繁轮询
-
-        self.default_config = {
-            '_enabled': False,
-            '检测文本': '设置',
-        }
 
     def run(self):
-        target = self.config.get('检测文本', '设置')
-        now = self.next_frame()
-        boxes = self.ocr(match=target, frame=now)
-        if boxes:
-            self.log_info(f"识别到文本「{target}」，共 {len(boxes)} 处")
-            return True
-        return False
+        if not self.find_one(feature=FeatureList.skip_dialog):
+            return
+
+        logger.info("检测到跳过对话框，开始处理")
+
+        deadline = self.active_time() + 3
+
+        while self.active_time() < deadline:
+            frame = self.next_frame()
+
+            # 优先处理 Skip
+            if skip_dialog := self.find_feature(
+                feature_name=FeatureList.skip_dialog,
+                frame=frame,
+            ):
+                self.click(skip_dialog)
+
+                # 成功触发一次操作，重新给连续对话留时间
+                deadline = self.active_time() + 3
+                continue
+
+            # 处理 Confirm
+            if confirm := self.find_confirm():
+                self.click(confirm)
+
+                self.wait_until(
+                    lambda: not self.find_confirm(),
+                    time_out=0.8,
+                    raise_if_not_found=False,
+                )
+
+                # 成功点击后，继续等待下一段
+                deadline = self.active_time() + 3
+                continue
+
+            # 当前帧没有找到，继续尝试
+            self.sleep(0.05)

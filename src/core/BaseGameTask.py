@@ -440,3 +440,64 @@ class BaseGameTask(RuntimeMixin, FrameworkOverrideMixin, BaseTask):
         self.config_description.update({
             dropdown_key: "配置默认隐藏，选择后展开对应配置项。"
         })
+    def click_confirm(self, after_sleep=0, time_out=5, recheck_time=0, disappear_time_out=0.8):
+        """
+        点击对话框中的确认按钮。
+
+        Args:
+            after_sleep: 点击后的延迟时间。
+            time_out: 总超时时间。
+            recheck_time: 点击后重新检测的等待时间。
+            disappear_time_out: 等待确认按钮消失的最大时间。
+
+        Returns:
+            bool: 找到并点击确认按钮返回 True，超时返回 False。
+        """
+        start_time = self.active_time()
+        while True:
+            self.next_frame()
+            confirm = self.find_confirm()
+            if confirm:
+                self.click(confirm)
+
+                if disappear_time_out > 0:
+                    self.wait_until(
+                        lambda: not self.find_confirm(),
+                        time_out=disappear_time_out,
+                        raise_if_not_found=False,
+                    )
+                if after_sleep > 0:
+                    self.sleep(after_sleep)
+
+                if recheck_time > 0:
+                    self.sleep(recheck_time)
+
+                    if confirm := self.find_confirm():
+                        self.click(confirm)
+                        if disappear_time_out > 0:
+                            self.wait_until(
+                                lambda: not self.find_confirm(),
+                                time_out=disappear_time_out,
+                                raise_if_not_found=False,
+                            )
+                        if after_sleep > 0:
+                            self.sleep(after_sleep)
+
+                return True
+            # 超时检测
+            if self.active_time() - start_time > time_out:
+                self.log_info("点击确认超时")
+                return False
+
+            self.sleep(0.01)
+    def find_confirm(self):
+        """查找对话框中的确认按钮，返回匹配的特征或 None。"""
+        return self.find_one(
+            feature=[FeatureList.skip_confirm, FeatureList.confirm_button, FeatureList.confirm_button_2],
+            vertical_variance=0.01,
+            horizontal_variance=0.02
+        ) or self.find_one(
+            feature=[FeatureList.confirm_button_2],
+            box=self.box_of_screen(0.5753,0.6116,0.5957,0.6420)
+        )
+    
