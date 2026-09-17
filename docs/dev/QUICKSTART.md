@@ -27,7 +27,7 @@ uv run python main_debug.py
 
 ## 4. 新增一个触发式任务
 
-1. 在 `src/tasks/trigger/` 下新建文件，继承 `BaseGameTask, TriggerTask`（见 `src/tasks/trigger/ExampleTriggerTask.py`）。
+1. 在 `src/tasks/trigger/` 下新建文件，继承 `BaseGameTask, TriggerTask`（见 `src/tasks/trigger/SkipDialogTask.py`）。
 2. 设置 `trigger_interval` 与 `default_config`。
 3. 在 `src/config.py` 的 `trigger_tasks` 中注册。
 

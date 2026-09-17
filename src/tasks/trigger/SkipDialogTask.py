@@ -7,8 +7,8 @@ from src.icons import Icons
 logger = Logger.get_logger(__name__)
 
 
-class ExampleTriggerTask(BaseGameTask, TriggerTask):
-    """触发式任务示例：每 5 秒检测一次全屏 OCR 并记录。"""
+class SkipDialogTask(BaseGameTask, TriggerTask):
+    """跳过剧情触发式任务：自动点击跳过对话框和确认按钮。"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
