@@ -133,3 +133,9 @@ msgstr "지도 키"
 msgid "SingleActionWithDelay"
 msgstr "SingleActionWithDelay"
 
+msgid "跳剧情"
+msgstr "대화 건너뛰기"
+
+msgid "跳过剧情触发式任务：自动点击跳过对话框和确认按钮。"
+msgstr "대화 건너뛰기 트리거 작업: 건너뛰기 대화 상자와 확인 버튼을 자동으로 클릭합니다."
+
