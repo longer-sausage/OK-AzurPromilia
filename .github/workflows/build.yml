@@ -319,9 +319,27 @@ jobs:
           tag_name: ${{ steps.tag.outputs.tag }}
           draft: false
           body: |
-            ### 更新日志 ${{ needs.sync.outputs.start_tag }} -> ${{ needs.sync.outputs.end_tag }}:
-              ${{ needs.sync.outputs.changes_with_asterisk }}
-            ### Download
-            * [ok-ap-win32-China-setup-${{ steps.tag.outputs.safe_tag }}.exe](https://github.com/${{ github.repository }}/releases/download/${{ steps.tag.outputs.tag }}/ok-ap-win32-China-setup-${{ steps.tag.outputs.safe_tag }}.exe) China setup
-            * [ok-ap-win32-Global-setup-${{ steps.tag.outputs.safe_tag }}.exe](https://github.com/${{ github.repository }}/releases/download/${{ steps.tag.outputs.tag }}/ok-ap-win32-Global-setup-${{ steps.tag.outputs.safe_tag }}.exe) Global setup
+            ![Windows](https://img.shields.io/badge/platform-Windows-blue)
+
+            ### 下载 / Downloads
+
+            不确定选哪个？**中国大陆用户选 China，其他地区选 Global。**
+            Not sure? Pick **China** if you are in mainland China, otherwise **Global**.
+
+            | 文件 / File | 适用情况 / When to use | 下载 / Download |
+            | --- | --- | --- |
+            | `ok-ap-win32-China-setup-${{ steps.tag.outputs.safe_tag }}.exe` | **中国大陆推荐。** 自带运行环境，更新源为 CNB。<br>*Recommended in mainland China. Bundled runtime, CNB update source.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ steps.tag.outputs.tag }}/ok-ap-win32-China-setup-${{ steps.tag.outputs.safe_tag }}.exe) |
+            | `ok-ap-win32-Global-setup-${{ steps.tag.outputs.safe_tag }}.exe` | **海外推荐。** 自带运行环境，更新源为 GitHub。<br>*Recommended outside China. Bundled runtime, GitHub update source.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ steps.tag.outputs.tag }}/ok-ap-win32-Global-setup-${{ steps.tag.outputs.safe_tag }}.exe) |
+            | `ok-ap-win32-online-setup-${{ steps.tag.outputs.safe_tag }}.exe` | 仅当网络稳定且已装 **Python 3.12** 时使用。<br>*Only if your network is stable and **Python 3.12** is installed.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ steps.tag.outputs.tag }}/ok-ap-win32-online-setup-${{ steps.tag.outputs.safe_tag }}.exe) |
+            | `ok-ap-win32-${{ steps.tag.outputs.safe_tag }}.zip` | 不建议下载，仅供手动部署。<br>*Not recommended — for manual deployment only.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ steps.tag.outputs.tag }}/ok-ap-win32-${{ steps.tag.outputs.safe_tag }}.zip) |
+
+            > **注意 / Note**
+            > 安装包首次运行可能被 Windows Defender 拦截，选择「仍要运行」即可。
+            > *Defender may block the installer on first run — choose "Run anyway".*
+
+            ### 更新日志 / Changelog
+
+            `${{ needs.sync.outputs.start_tag }}` → `${{ needs.sync.outputs.end_tag }}`
+
+            ${{ needs.sync.outputs.changes_with_asterisk }}
           files: pyappify_dist/**
