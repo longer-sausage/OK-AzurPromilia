@@ -328,14 +328,12 @@ jobs:
 
             | 文件 / File | 适用情况 / When to use | 下载 / Download |
             | --- | --- | --- |
-            | `ok-ap-win32-China-setup-${{ steps.tag.outputs.safe_tag }}.exe` | **中国大陆推荐。** 自带运行环境，更新源为 CNB。<br>*Recommended in mainland China. Bundled runtime, CNB update source.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ steps.tag.outputs.tag }}/ok-ap-win32-China-setup-${{ steps.tag.outputs.safe_tag }}.exe) |
-            | `ok-ap-win32-Global-setup-${{ steps.tag.outputs.safe_tag }}.exe` | **海外推荐。** 自带运行环境，更新源为 GitHub。<br>*Recommended outside China. Bundled runtime, GitHub update source.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ steps.tag.outputs.tag }}/ok-ap-win32-Global-setup-${{ steps.tag.outputs.safe_tag }}.exe) |
-            | `ok-ap-win32-online-setup-${{ steps.tag.outputs.safe_tag }}.exe` | 仅当网络稳定且已装 **Python 3.12** 时使用。<br>*Only if your network is stable and **Python 3.12** is installed.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ steps.tag.outputs.tag }}/ok-ap-win32-online-setup-${{ steps.tag.outputs.safe_tag }}.exe) |
-            | `ok-ap-win32-${{ steps.tag.outputs.safe_tag }}.zip` | 不建议下载，仅供手动部署。<br>*Not recommended — for manual deployment only.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ steps.tag.outputs.tag }}/ok-ap-win32-${{ steps.tag.outputs.safe_tag }}.zip) |
+            | `ok-ap-win32-China-setup-${{ steps.tag.outputs.safe_tag }}.exe` | **中国大陆推荐。** 安装包自带运行环境，更新源为 CNB，国内下载与更新速度更快。<br>*Recommended in mainland China. The installer bundles its own runtime and updates from CNB, which is faster within China.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ steps.tag.outputs.tag }}/ok-ap-win32-China-setup-${{ steps.tag.outputs.safe_tag }}.exe) |
+            | `ok-ap-win32-Global-setup-${{ steps.tag.outputs.safe_tag }}.exe` | **海外推荐。** 安装包自带运行环境，更新源为 GitHub，无需访问国内服务。<br>*Recommended outside mainland China. The installer bundles its own runtime and updates from GitHub, with no dependency on China-only services.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ steps.tag.outputs.tag }}/ok-ap-win32-Global-setup-${{ steps.tag.outputs.safe_tag }}.exe) |
 
             > **注意 / Note**
             > 安装包首次运行可能被 Windows Defender 拦截，选择「仍要运行」即可。
-            > *Defender may block the installer on first run — choose "Run anyway".*
+            > *Windows Defender may block the installer on first run — choose "Run anyway".*
 
             ### 更新日志 / Changelog
 
