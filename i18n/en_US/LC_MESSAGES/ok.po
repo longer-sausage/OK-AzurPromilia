@@ -31,9 +31,6 @@ msgstr "Screenshot Test"
 msgid "就绪"
 msgstr "Ready"
 
-msgid "框架自检"
-msgstr "Framework Self-check"
-
 msgid "每行一个账号名，无需密码"
 msgstr "One account name per line, no password needed"
 
@@ -64,19 +61,13 @@ msgstr "Task"
 msgid "任务属性配置"
 msgstr "Task Attribute Settings"
 
-msgid "示例触发任务"
-msgstr "Example Trigger Task"
-
-msgid "示例任务"
-msgstr "Example Task"
-
 msgid "选择任务后自动渲染属性控件"
 msgstr "Renders the attribute widgets after selecting a task"
 
 msgid "已保存当前账号配置"
 msgstr "Current account settings saved"
 
-msgid "已保存账号列表（新建 {created}，复用 {reused}）"
+msgid "账号列表已保存（新建 {created}，复用 {reused}）"
 msgstr "Account list saved (created {created}, reused {reused})"
 
 msgid "已清空：{account} / {task} 覆盖"

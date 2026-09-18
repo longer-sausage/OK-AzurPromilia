@@ -31,9 +31,6 @@ msgstr "Prueba de captura"
 msgid "就绪"
 msgstr "Listo"
 
-msgid "框架自检"
-msgstr "Autocomprobación del marco"
-
 msgid "每行一个账号名，无需密码"
 msgstr "Un nombre de cuenta por línea, sin contraseña"
 
@@ -64,19 +61,13 @@ msgstr "Tarea"
 msgid "任务属性配置"
 msgstr "Configuración de atributos de tarea"
 
-msgid "示例触发任务"
-msgstr "Tarea de activación de ejemplo"
-
-msgid "示例任务"
-msgstr "Tarea de ejemplo"
-
 msgid "选择任务后自动渲染属性控件"
 msgstr "Representa los widgets de atributos tras seleccionar una tarea"
 
 msgid "已保存当前账号配置"
 msgstr "Configuración de cuenta actual guardada"
 
-msgid "已保存账号列表（新建 {created}，复用 {reused}）"
+msgid "账号列表已保存（新建 {created}，复用 {reused}）"
 msgstr "Lista de cuentas guardada (creadas {created}, reutilizadas {reused})"
 
 msgid "已清空：{account} / {task} 覆盖"

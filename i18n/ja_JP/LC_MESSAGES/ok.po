@@ -31,9 +31,6 @@ msgstr "スクリーンショットテスト"
 msgid "就绪"
 msgstr "準備完了"
 
-msgid "框架自检"
-msgstr "フレームワーク自己診断"
-
 msgid "每行一个账号名，无需密码"
 msgstr "1行にアカウント名を1つ、パスワード不要"
 
@@ -64,19 +61,13 @@ msgstr "タスク"
 msgid "任务属性配置"
 msgstr "タスク属性設定"
 
-msgid "示例触发任务"
-msgstr "サンプルトリガータスク"
-
-msgid "示例任务"
-msgstr "サンプルタスク"
-
 msgid "选择任务后自动渲染属性控件"
 msgstr "タスク選択後に属性ウィジェットを描画します"
 
 msgid "已保存当前账号配置"
 msgstr "現在のアカウント設定を保存しました"
 
-msgid "已保存账号列表（新建 {created}，复用 {reused}）"
+msgid "账号列表已保存（新建 {created}，复用 {reused}）"
 msgstr "アカウントリストを保存しました（新規 {created}、再利用 {reused}）"
 
 msgid "已清空：{account} / {task} 覆盖"

@@ -31,9 +31,6 @@ msgstr "스크린샷 테스트"
 msgid "就绪"
 msgstr "준비됨"
 
-msgid "框架自检"
-msgstr "프레임워크 자가 점검"
-
 msgid "每行一个账号名，无需密码"
 msgstr "한 줄에 계정 이름 하나, 비밀번호 불필요"
 
@@ -64,19 +61,13 @@ msgstr "작업"
 msgid "任务属性配置"
 msgstr "작업 속성 설정"
 
-msgid "示例触发任务"
-msgstr "예제 트리거 작업"
-
-msgid "示例任务"
-msgstr "예제 작업"
-
 msgid "选择任务后自动渲染属性控件"
 msgstr "작업 선택 후 속성 위젯을 렌더링합니다"
 
 msgid "已保存当前账号配置"
 msgstr "현재 계정 설정이 저장되었습니다"
 
-msgid "已保存账号列表（新建 {created}，复用 {reused}）"
+msgid "账号列表已保存（新建 {created}，复用 {reused}）"
 msgstr "계정 목록이 저장되었습니다 (새로 만듦 {created}, 재사용 {reused})"
 
 msgid "已清空：{account} / {task} 覆盖"

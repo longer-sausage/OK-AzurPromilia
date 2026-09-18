@@ -31,9 +31,6 @@ msgstr "截圖測試"
 msgid "就绪"
 msgstr "就緒"
 
-msgid "框架自检"
-msgstr "框架自檢"
-
 msgid "每行一个账号名，无需密码"
 msgstr "每行一個帳號名，無需密碼"
 
@@ -64,20 +61,14 @@ msgstr "任務"
 msgid "任务属性配置"
 msgstr "任務屬性配置"
 
-msgid "示例触发任务"
-msgstr "示例觸發任務"
-
-msgid "示例任务"
-msgstr "示例任務"
-
 msgid "选择任务后自动渲染属性控件"
 msgstr "選擇任務後自動渲染屬性控制項"
 
 msgid "已保存当前账号配置"
 msgstr "已儲存目前帳號配置"
 
-msgid "已保存账号列表（新建 {created}，复用 {reused}）"
-msgstr "已儲存帳號列表（新建 {created}，復用 {reused}）"
+msgid "账号列表已保存（新建 {created}，复用 {reused}）"
+msgstr "帳號列表已儲存（新建 {created}，復用 {reused}）"
 
 msgid "已清空：{account} / {task} 覆盖"
 msgstr "已清空：{account} / {task} 覆蓋"
