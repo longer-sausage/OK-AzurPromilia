@@ -103,9 +103,7 @@ config = {
     "my_app": ["src.globals", "Globals"],  # 可选. 全局单例对象, 可以存放加载的模型, 使用og.my_app调用
     "onetime_tasks": [  # 用户点击触发的任务（一次性业务任务在前，调试/测试任务在后）
         ["src.tasks.onetime.DailyTask", "DailyTask"],
-        ["src.tasks.onetime.ExampleTask", "ExampleTask"],
         ["src.tasks.onetime.TestScreenshotTask", "TestScreenshotTask"],
-        ["src.tasks.test.TestTask", "TestTask"],
         ["src.tasks.test.TestInteractionTask", "TestInteractionTask"],
         ["src.tasks.test.TestTreasureBandTask", "TestTreasureBandTask"],
     ],
