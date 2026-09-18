@@ -30,11 +30,11 @@ DEFAULT_CONFIG = {
     "检测黄色": True,
     "检测红色": True,
     "要求环形": True,
-    "最小面积": 60,
-    "连续命中帧数": 1,
-    "点击冷却(秒)": 0.35,
-    "按下时长(秒)": 0.01,
-    "点击后等待(秒)": 0.0,
+    "_最小面积": 60,
+    "_连续命中帧数": 1,
+    "_点击冷却(秒)": 0.35,
+    "_按下时长(秒)": 0.01,
+    "_点击后等待(秒)": 0.0,
     "记录点击日志": True,
     "画调试框": False,
 }
@@ -169,12 +169,12 @@ class TestStarLinkAssistTask(unittest.TestCase):
     # ── 3. 冷却 ─────────────────────────────────────────────
 
     def test_cooldown_prevents_click_storm(self):
-        harness = TaskHarness(GREEN_BGR, **{"点击冷却(秒)": 0.35})
+        harness = TaskHarness(GREEN_BGR, **{"_点击冷却(秒)": 0.35})
         harness.run(times=5, gap=0.1)  # 第 0s / 0.4s 各一次，中间 3 次被冷却挡掉
         self.assertEqual(len(harness.clicks), 2)
 
     def test_clicks_again_after_cooldown(self):
-        harness = TaskHarness(GREEN_BGR, **{"点击冷却(秒)": 0.2})
+        harness = TaskHarness(GREEN_BGR, **{"_点击冷却(秒)": 0.2})
         harness.run()
         harness.advance(0.5)
         harness.run()
@@ -183,14 +183,14 @@ class TestStarLinkAssistTask(unittest.TestCase):
     # ── 4. 连续命中帧数 ─────────────────────────────────────
 
     def test_streak_gate_delays_first_click(self):
-        harness = TaskHarness(GREEN_BGR, **{"连续命中帧数": 3, "点击冷却(秒)": 0.0})
+        harness = TaskHarness(GREEN_BGR, **{"_连续命中帧数": 3, "_点击冷却(秒)": 0.0})
         harness.run(times=2)
         self.assertEqual(harness.clicks, [], "两帧未达阈值，不该点击")
         harness.run()
         self.assertEqual(len(harness.clicks), 1)
 
     def test_streak_resets_when_glow_disappears(self):
-        harness = TaskHarness(GREEN_BGR, **{"连续命中帧数": 3, "点击冷却(秒)": 0.0})
+        harness = TaskHarness(GREEN_BGR, **{"_连续命中帧数": 3, "_点击冷却(秒)": 0.0})
         harness.run()
         harness.glow_color = None  # 光效消失
         harness.run()

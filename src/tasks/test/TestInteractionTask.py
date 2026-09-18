@@ -11,6 +11,8 @@ class TestInteractionTask(BaseGameTask):
         self.name = "输入方式测试"
         self.icon = Icons.Test
         self.description = "测试不同输入方式点击 account_switch"
+        # 纯调试任务：只在 debug 模式（main_debug.py）下出现在任务列表
+        self.visible = self.debug
         self.default_config = {
             "点击方式": "post",
         }

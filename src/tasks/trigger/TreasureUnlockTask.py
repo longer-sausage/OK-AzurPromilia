@@ -64,17 +64,17 @@ class TreasureUnlockTask(BaseGameTask, TriggerTask):
         self.icon = Icons.Trigger
 
         self.default_config = {
-            "校准稳定帧数": 5,
-            "校准位置容差": 3,
-            "校准超时(秒)": 8.0,
-            "消失确认时长(秒)": 0.35,
-            "消失确认超时(秒)": 3.0,
-            "条带存在阈值": 0.15,
-            "完成确认时长(秒)": 2.5,
-            "点击重试上限": 3,
-            "钥匙丢失超时(秒)": 3.0,
-            "单次运行时长上限(秒)": 25.0,
-            "检测间隔(秒)": 0.08,
+            "_校准稳定帧数": 5,
+            "_校准位置容差": 3,
+            "_校准超时(秒)": 8.0,
+            "_消失确认时长(秒)": 0.35,
+            "_消失确认超时(秒)": 3.0,
+            "_条带存在阈值": 0.15,
+            "_完成确认时长(秒)": 2.5,
+            "_点击重试上限": 3,
+            "_钥匙丢失超时(秒)": 3.0,
+            "_单次运行时长上限(秒)": 25.0,
+            "_检测间隔(秒)": 0.08,
             "画调试框": True,
         }
 
@@ -94,8 +94,8 @@ class TreasureUnlockTask(BaseGameTask, TriggerTask):
     # ── 主循环 ──────────────────────────────────────────────
 
     def run(self):
-        budget = float(self.config.get("单次运行时长上限(秒)", 25.0))
-        interval = max(0.02, float(self.config.get("检测间隔(秒)", 0.08)))
+        budget = float(self.config.get("_单次运行时长上限(秒)", 25.0))
+        interval = max(0.02, float(self.config.get("_检测间隔(秒)", 0.08)))
         deadline = self.active_time() + budget
 
         while self.active_time() < deadline:
@@ -143,7 +143,7 @@ class TreasureUnlockTask(BaseGameTask, TriggerTask):
     # ── CALIBRATING_BANDS ───────────────────────────────────
 
     def _step_calibrate(self, frame):
-        if self.active_time() - self._calib_started_at > float(self.config.get("校准超时(秒)", 8.0)):
+        if self.active_time() - self._calib_started_at > float(self.config.get("_校准超时(秒)", 8.0)):
             self.log_info("条带校准超时，回到等待宝箱")
             self._reset()
             return
@@ -162,7 +162,7 @@ class TreasureUnlockTask(BaseGameTask, TriggerTask):
             self._calib_streak = 1
             self._calib_prev = bands
 
-        if self._calib_streak >= int(self.config.get("校准稳定帧数", 5)):
+        if self._calib_streak >= int(self.config.get("_校准稳定帧数", 5)):
             self._calibrated_bands = list(bands)
             self._active_bands = list(bands)
             self._click_failures = {}
@@ -196,7 +196,7 @@ class TreasureUnlockTask(BaseGameTask, TriggerTask):
             self._draw()
             if self._key_missing_since is None:
                 self._key_missing_since = self.active_time()
-            elif self.active_time() - self._key_missing_since > float(self.config.get("钥匙丢失超时(秒)", 3.0)):
+            elif self.active_time() - self._key_missing_since > float(self.config.get("_钥匙丢失超时(秒)", 3.0)):
                 # 钥匙长时间不见：可能是已完成，也可能是界面关了
                 if not self.find_one(feature=FeatureList.treasure_icon, frame=frame,
                                      horizontal_variance=0.02, vertical_variance=0.02):
@@ -220,8 +220,8 @@ class TreasureUnlockTask(BaseGameTask, TriggerTask):
         self.click(band)
         gone = self.wait_until(
             lambda: not self._band_present(self.next_frame(), band),
-            time_out=float(self.config.get("消失确认超时(秒)", 3.0)),
-            settle_time=float(self.config.get("消失确认时长(秒)", 0.35)),
+            time_out=float(self.config.get("_消失确认超时(秒)", 3.0)),
+            settle_time=float(self.config.get("_消失确认时长(秒)", 0.35)),
             raise_if_not_found=False,
         )
         if not gone:
@@ -235,7 +235,7 @@ class TreasureUnlockTask(BaseGameTask, TriggerTask):
         index = self._band_index(band)
         count = self._click_failures.get(index, 0) + 1
         self._click_failures[index] = count
-        limit = int(self.config.get("点击重试上限", 3))
+        limit = int(self.config.get("_点击重试上限", 3))
         if count < limit:
             self.log_info(f"条带 y={band.y} 点击后仍存在（{count}/{limit}）")
             return
@@ -270,7 +270,7 @@ class TreasureUnlockTask(BaseGameTask, TriggerTask):
             return
 
         clean = now - self._completion_clean_since
-        needed = float(self.config.get("完成确认时长(秒)", 2.5))
+        needed = float(self.config.get("_完成确认时长(秒)", 2.5))
         if clean < needed:
             return
 
@@ -290,7 +290,7 @@ class TreasureUnlockTask(BaseGameTask, TriggerTask):
 
     def _band_present(self, frame, band: Box) -> bool:
         """缓存 bbox 区域里是否还有条带（抗钥匙遮挡，只看颜色像素占比）。"""
-        threshold = float(self.config.get("条带存在阈值", 0.15))
+        threshold = float(self.config.get("_条带存在阈值", 0.15))
         return self._detector().presence(frame, band) >= threshold
 
     # ── 工具 ────────────────────────────────────────────────
@@ -315,7 +315,7 @@ class TreasureUnlockTask(BaseGameTask, TriggerTask):
 
     def _tolerance(self) -> int:
         """位置容差（像素），按当前分辨率缩放。"""
-        return self.scale_distance(int(self.config.get("校准位置容差", 3)), minimum=1)
+        return self.scale_distance(int(self.config.get("_校准位置容差", 3)), minimum=1)
 
     def _roi(self) -> Box:
         if self._roi_cache is None:

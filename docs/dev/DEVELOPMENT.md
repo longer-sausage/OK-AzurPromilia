@@ -230,6 +230,45 @@ star_link_icon 存在? ──否──> 返回（不在星结界面，不干预�
 - **连续命中帧数**过滤光圈淡入淡出的过渡帧；**点击冷却**防止一次提示被点成连击。
 - 尺寸类阈值（面积按平方、半径与跨度按线性）随 `resolution_scale()` 换算。
 
+## 任务配置项的显示与隐藏
+
+任务卡片上该出现哪些配置项，由两条 ok-script 机制决定。本项目按下面的分工使用：
+
+| 配置项性质 | 处理方式 | 例子 |
+|------|------|------|
+| 用户该调的开关 | 普通键名，正常显示 | `检测绿色`、`记录点击日志` |
+| 数值调优项 | **键名前加 `_`**，留在 `default_config` 但不渲染 | `_连续命中帧数`、`_条带存在阈值` |
+| 调试任务自己的阈值 | 正常显示（调阈值就是它的用途） | `V 下限`、`最大宽度` |
+
+### 用 `_` 前缀隐藏调优项
+
+框架的渲染逻辑是 `if not key.startswith('_')`（`ok/ui/qt/tasks/ConfigCard.py`），
+所以**键名以 `_` 开头就不会出现在 UI 上**，但：
+
+- 键仍在 `default_config` 里 → 默认值保留，`configs/*.json` 里仍会写入，仍可从日志恢复
+- 代码里照常读：`self.config.get("_连续命中帧数", 1)`
+- `ok/core/config_schema.py` 也会跳过它们，不会漏进自动生成的 schema
+
+改键名时记得**同步 `config_description` 的键**，否则说明会挂在一个不存在的键上。
+
+> 调优项属于「不该让用户操心」的参数，隐藏它们**不写迁移表** —— 旧键会作为孤儿留在
+> 用户的 JSON 里（无害），值回落到新默认值。只有当某个参数需要保住用户已调过的值时，
+> 才按下一节加迁移表。
+
+### 调试任务只在 debug 模式露面
+
+框架的三个任务列表（`OneTimeTaskTab` / `TriggerTaskTab` / `ScheduleTaskTab`）都会用
+`getattr(task, 'visible', True)` 过滤，所以纯调试任务在 `__init__` 里写：
+
+```python
+self.visible = self.debug      # self.debug -> executor.debug，main_debug.py 下为 True
+```
+
+正式业务任务**不要**设 `visible`，任何模式下都应可见。当前按此约定归类的调试任务是
+`TestScreenshotTask`、`TestInteractionTask`、`TestTreasureBandTask`。
+
+两条契约都由 `tests/TestTaskConfigVisibility.py` 固化，改配置项时会被它挡住。
+
 ## 配置键迁移
 
 修改 `default_config` 键名时必须先添加迁移表（同一提交完成）：

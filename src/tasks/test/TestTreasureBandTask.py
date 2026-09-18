@@ -48,10 +48,12 @@ class TestTreasureBandTask(BaseGameTask):
         self.name = "颜色带检测"
         self.icon = Icons.Test
         self.description = "HSV+连通域检测开锁颜色带，实时在覆盖层画红框（绿=检测区，蓝=被过滤）"
+        # 纯调试任务：只在 debug 模式（main_debug.py）下出现在任务列表
+        self.visible = self.debug
 
         self.default_config = {
-            "运行时长(秒)": 20,
-            "检测间隔(秒)": 0.2,
+            "_运行时长(秒)": 20,
+            "_检测间隔(秒)": 0.2,
             "V 下限": DEFAULT_BAND_THRESHOLDS.lower[2],
             "S 上限": DEFAULT_BAND_THRESHOLDS.upper[1],
             "最小高度": DEFAULT_BAND_THRESHOLDS.min_height,
@@ -65,8 +67,8 @@ class TestTreasureBandTask(BaseGameTask):
     # ── 主流程 ──────────────────────────────────────────────
 
     def run(self):
-        duration = max(0.0, float(self.config.get("运行时长(秒)", 20)))
-        interval = max(0.05, float(self.config.get("检测间隔(秒)", 0.2)))
+        duration = max(0.0, float(self.config.get("_运行时长(秒)", 20)))
+        interval = max(0.05, float(self.config.get("_检测间隔(秒)", 0.2)))
         show_rejected = bool(self.config.get("显示被过滤候选", True))
 
         if not self._ensure_overlay():

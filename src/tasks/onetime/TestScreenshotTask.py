@@ -10,6 +10,8 @@ class TestScreenshotTask(BaseGameTask):
         self.name = "截图测试"
         self.icon = Icons.Test
         self.description = "截取当前画面并记录截图路径，用于调试"
+        # 纯调试任务：只在 debug 模式（main_debug.py）下出现在任务列表
+        self.visible = self.debug
 
         self.default_config = {
             "截图延迟(秒)": 0.5,

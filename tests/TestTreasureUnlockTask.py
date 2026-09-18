@@ -70,17 +70,17 @@ class TaskHarness:
 
         task = TreasureUnlockTask.__new__(TreasureUnlockTask)
         task.config = {
-            "校准稳定帧数": 5,
-            "校准位置容差": 3,
-            "校准超时(秒)": 8.0,
-            "消失确认时长(秒)": 0.35,
-            "消失确认超时(秒)": 3.0,
-            "条带存在阈值": 0.15,
-            "完成确认时长(秒)": 2.5,
-            "点击重试上限": 3,
-            "钥匙丢失超时(秒)": 3.0,
-            "单次运行时长上限(秒)": 25.0,
-            "检测间隔(秒)": 0.08,
+            "_校准稳定帧数": 5,
+            "_校准位置容差": 3,
+            "_校准超时(秒)": 8.0,
+            "_消失确认时长(秒)": 0.35,
+            "_消失确认超时(秒)": 3.0,
+            "_条带存在阈值": 0.15,
+            "_完成确认时长(秒)": 2.5,
+            "_点击重试上限": 3,
+            "_钥匙丢失超时(秒)": 3.0,
+            "_单次运行时长上限(秒)": 25.0,
+            "_检测间隔(秒)": 0.08,
             "画调试框": False,
         }
         task.config.update(config_overrides)
@@ -145,7 +145,7 @@ class TaskHarness:
     def calibrate(self):
         """把状态推进到 UNLOCKING（喂够稳定帧）。"""
         self.step()
-        self.step(int(self.task.config["校准稳定帧数"]))
+        self.step(int(self.task.config["_校准稳定帧数"]))
         return self.task._state
 
 
@@ -166,7 +166,7 @@ class TestCalibration(unittest.TestCase):
         self.assertEqual(self.h.task._state, TreasureUnlockTask.WAIT_TREASURE)
 
     def test_calibration_needs_enough_stable_frames(self):
-        need = int(self.h.task.config["校准稳定帧数"])
+        need = int(self.h.task.config["_校准稳定帧数"])
         self.h.step()  # 进入校准
         for i in range(need - 1):
             self.h.step()
@@ -272,7 +272,7 @@ class TestDisappearConfirmation(unittest.TestCase):
         """连续点击失败到上限后移到队尾，避免死磕一条带。"""
         self.game.remove_on_click = False
         self.game.key_center_y = 580
-        limit = int(self.h.task.config["点击重试上限"])
+        limit = int(self.h.task.config["_点击重试上限"])
         self.h.step(limit)
         order = [b.y for b in self.h.task._active_bands]
         self.assertEqual(order[-1], 552, "失败到上限的条带应排到队尾")
@@ -309,7 +309,7 @@ class TestCompletionCheck(unittest.TestCase):
     def test_finishes_only_after_stable_empty(self):
         self._drain()
         self.game.has_treasure = False
-        need = float(self.h.task.config["完成确认时长(秒)"])
+        need = float(self.h.task.config["_完成确认时长(秒)"])
         for _ in range(200):
             self.h.step()
             if self.h.task._state == TreasureUnlockTask.FINISHED:

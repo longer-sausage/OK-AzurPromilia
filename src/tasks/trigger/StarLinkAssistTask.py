@@ -82,19 +82,19 @@ class StarLinkAssistTask(BaseGameTask, TriggerTask):
             "检测黄色": True,
             "检测红色": True,
             "要求环形": True,
-            "最小面积": 60,
-            "连续命中帧数": 1,
-            "点击冷却(秒)": 0.35,
-            "按下时长(秒)": 0.01,
-            "点击后等待(秒)": 0.0,
+            "_最小面积": 60,
+            "_连续命中帧数": 1,
+            "_点击冷却(秒)": 0.35,
+            "_按下时长(秒)": 0.01,
+            "_点击后等待(秒)": 0.0,
             "记录点击日志": True,
             "画调试框": True,
         }
         self.config_description.update({
             "要求环形": "只认圆环形 / 弧形的彩色光效（可射击标识）；关掉后退回「最大彩色团块」模式，可匹配实心提示。",
-            "最小面积": "光效像素数下限，按 1920x1080 为基准，随分辨率自动缩放。",
-            "连续命中帧数": "连续多少帧命中才点击，用于过滤淡入淡出的过渡帧。",
-            "点击冷却(秒)": "两次点击之间的最短间隔，防止一次提示被点成连击。",
+            "_最小面积": "光效像素数下限，按 1920x1080 为基准，随分辨率自动缩放。",
+            "_连续命中帧数": "连续多少帧命中才点击，用于过滤淡入淡出的过渡帧。",
+            "_点击冷却(秒)": "两次点击之间的最短间隔，防止一次提示被点成连击。",
         })
 
         self._streak = 0
@@ -123,19 +123,19 @@ class StarLinkAssistTask(BaseGameTask, TriggerTask):
             return
 
         self._streak += 1
-        if self._streak < max(1, int(self.config.get("连续命中帧数", 1))):
+        if self._streak < max(1, int(self.config.get("_连续命中帧数", 1))):
             return
 
         now = self.active_time()
-        cooldown = max(0.0, float(self.config.get("点击冷却(秒)", 0.35)))
+        cooldown = max(0.0, float(self.config.get("_点击冷却(秒)", 0.35)))
         if self._last_click_at is not None and now - self._last_click_at < cooldown:
             return
 
         self._last_click_at = now
         self.click(
             detection.box,
-            down_time=max(0.0, float(self.config.get("按下时长(秒)", 0.01))),
-            after_sleep=max(0.0, float(self.config.get("点击后等待(秒)", 0.0))),
+            down_time=max(0.0, float(self.config.get("_按下时长(秒)", 0.01))),
+            after_sleep=max(0.0, float(self.config.get("_点击后等待(秒)", 0.0))),
         )
         if self.config.get("记录点击日志", True):
             label = GLOW_COLOR_LABELS.get(detection.color, detection.color)
@@ -161,7 +161,7 @@ class StarLinkAssistTask(BaseGameTask, TriggerTask):
         if not colors:
             colors = ALL_GLOW_COLORS
         scale = self.resolution_scale()
-        min_area = max(20, round(float(self.config.get("最小面积", 60)) * self._area_scale()))
+        min_area = max(20, round(float(self.config.get("_最小面积", 60)) * self._area_scale()))
         require_arc = bool(self.config.get("要求环形", True))
         # 半径 / 跨度同样随分辨率线性缩放：4K 下的光圈本身就比 1080p 大一圈。
         overrides = {
