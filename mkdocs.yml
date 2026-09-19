@@ -1,9 +1,9 @@
 site_name: ok-ap
 site_description: "Game automation tool for Blue Star Origin: Lv Yao, built with ok-script"
-site_url: https://AliceJump.github.io/ok-ap/
-repo_name: AliceJump/ok-ap
-repo_url: https://github.com/AliceJump/ok-ap
-edit_uri: edit/master/docs/
+site_url: https://longer-sausage.github.io/OK-AzurPromilia/
+repo_name: longer-sausage/OK-AzurPromilia
+repo_url: https://github.com/longer-sausage/OK-AzurPromilia
+edit_uri: edit/main/docs/
 exclude_docs: README.md
 
 validation:
