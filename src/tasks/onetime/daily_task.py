@@ -64,15 +64,15 @@ class DailyTask(AccountMixin, BaseGameTask):
         """注册日常任务的配置项。"""
         self.default_config.update({
             "家园每日": True,
-            "每日收菜": False,
             "委托每日": False,
+            "每日收菜": False,
             "生成汇总文件": True,
             "自动打开汇总文件": False,
         })
         self.config_description.update({
             "家园每日": "执行家园每日：收菜、做饭、喂饭",
-            "每日收菜": "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡",
             "委托每日": "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）",
+            "每日收菜": "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡",
             "生成汇总文件": (
                 "任务结束后把执行情况写成 txt 汇总\n"
                 "目录：系统临时目录/ok-ap/一键日常/"
@@ -90,8 +90,10 @@ class DailyTask(AccountMixin, BaseGameTask):
         """
         return [
             self.home_daily.plan_item(),
-            self.claim_daily.plan_item(),
+            # 委托每日在前：战斗会推进日常/周常活跃与大月卡任务进度
             self.commission_daily.plan_item(),
+            # 每日收菜殿后：把委托战斗产生的活跃度、任务进度一并领走
+            self.claim_daily.plan_item(),
         ]
 
     # ── 主执行入口 ────────────────────────────────────────
