@@ -159,3 +159,17 @@ msgstr "Complete home daily tasks"
 
 msgid "执行家园每日：收菜、做饭、喂饭"
 msgstr "Run home daily: harvest crops, cook, and feed"
+
+msgid "每日收菜"
+msgstr "Daily Claim"
+
+msgid "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡"
+msgstr "Run daily claim: mail, surprise box, daily/weekly activity, monthly card"
+
+msgid "委托每日"
+msgstr "Commission Daily"
+
+msgid "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
+msgstr ""
+"Run commission daily: spend power to farm the selected daily commission "
+"(auto-combat must be unlocked first)"

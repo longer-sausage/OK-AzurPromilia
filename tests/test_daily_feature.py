@@ -1,7 +1,7 @@
 """DailyFeature 包装器与子任务参数取值（_sub_task_cfg）的测试。
 
 架构约定：
-- HomeDailyTask 是自包含单任务（直接继承 BaseGameTask）；
+- HomeDailyTask / ClaimDailyTask / CommissionDailyTask 是自包含单任务（直接继承 BaseGameTask）；
 - DailyTask 经 DailyFeature 组合接入，不继承业务逻辑；
 - DailyFeature 执行时从 executor 找子任务实例，注入宿主账号上下文与
   账号覆盖查询能力，结束后恢复原状；
@@ -12,6 +12,8 @@
 import unittest
 
 from src.tasks.daily.daily_feature import DailyFeature
+from src.tasks.onetime.claim_daily_task import ClaimDailyTask
+from src.tasks.onetime.commission_daily_task import CommissionDailyTask
 from src.tasks.onetime.home_daily_task import HomeDailyTask
 
 
@@ -147,6 +149,46 @@ class TestDailyFeature(unittest.TestCase):
         feature = DailyFeature(host, HomeDailyTask, switch_key="家园每日")
         self.assertEqual(feature.run(), "ok")
         self.assertIsNone(impl._account_override_provider)
+
+
+class TestNewSubTaskParams(unittest.TestCase):
+    """ClaimDailyTask / CommissionDailyTask 接入日常后的子任务参数取值。"""
+
+    def test_sub_task_config_name_matches_class_name(self):
+        # 「账号配置」页的覆盖按任务类名存储，_sub_task_cfg 的查询名必须与之一致
+        for cls in (HomeDailyTask, ClaimDailyTask, CommissionDailyTask):
+            self.assertEqual(cls.sub_task_config_name, cls.__name__)
+
+    def test_commission_reads_own_config(self):
+        impl = object.__new__(CommissionDailyTask)
+        impl.config = {"选择委托": "深巢梦魇"}
+        impl._account_override_provider = None
+        self.assertEqual(impl._sub_task_cfg("选择委托"), "深巢梦魇")
+
+    def test_commission_override_wins(self):
+        impl = object.__new__(CommissionDailyTask)
+        impl.config = {"选择委托": "深巢梦魇"}
+        impl._account_override_provider = lambda name: {"选择委托": "苍雷之卫"}
+        self.assertEqual(impl._sub_task_cfg("选择委托"), "苍雷之卫")
+
+    def test_commission_missing_key_falls_back_to_declared_default(self):
+        impl = object.__new__(CommissionDailyTask)
+        impl.config = {}
+        impl._account_override_provider = None
+        self.assertEqual(impl._sub_task_cfg("选择委托"), "银光闪闪")
+
+    def test_claim_reads_own_config(self):
+        impl = object.__new__(ClaimDailyTask)
+        impl.config = {"删除已读邮件": False}
+        impl._account_override_provider = None
+        self.assertIs(impl._sub_task_cfg("删除已读邮件"), False)
+
+    def test_claim_override_coerces_type(self):
+        # 磁盘覆盖存字符串 'false'，以自身配置 True 为基准校正为 bool
+        impl = object.__new__(ClaimDailyTask)
+        impl.config = {"删除已读邮件": True}
+        impl._account_override_provider = lambda name: {"删除已读邮件": "false"}
+        self.assertIs(impl._sub_task_cfg("删除已读邮件"), False)
 
 
 if __name__ == "__main__":

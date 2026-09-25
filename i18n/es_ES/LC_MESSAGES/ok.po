@@ -159,3 +159,19 @@ msgstr "Completa las tareas diarias del hogar"
 
 msgid "执行家园每日：收菜、做饭、喂饭"
 msgstr "Ejecutar el diario del hogar: cosechar, cocinar y alimentar"
+
+msgid "每日收菜"
+msgstr "Recompensa diaria"
+
+msgid "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡"
+msgstr ""
+"Ejecutar la recompensa diaria: correo, caja sorpresa, actividad "
+"diaria/semanal, tarjeta mensual"
+
+msgid "委托每日"
+msgstr "Encargo diario"
+
+msgid "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
+msgstr ""
+"Ejecutar el encargo diario: gasta vigor para repetir el encargo diario "
+"seleccionado (requiere desbloquear antes el combate automático)"
