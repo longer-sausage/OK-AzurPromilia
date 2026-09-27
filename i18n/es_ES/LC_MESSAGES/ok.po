@@ -159,3 +159,19 @@ msgstr "Completa las tareas diarias del hogar"
 
 msgid "执行家园每日：收菜、做饭、喂饭"
 msgstr "Ejecutar el diario del hogar: cosechar, cocinar y alimentar"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "自动祖赞卡之梯"
+msgstr "Escalera de Zuzanka automática"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "检测到祖赞卡之梯界面自动完成。"
+msgstr "Juega automáticamente al detectar la pantalla de la escalera de Zuzanka."
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "正在对准图腾"
+msgstr "Alineando el tótem"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "祖赞卡之梯辅助已停止"
+msgstr "Asistencia de la escalera de Zuzanka detenida"

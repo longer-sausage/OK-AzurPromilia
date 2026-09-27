@@ -116,6 +116,7 @@ config = {
         ["src.gui.account_config_tab", "AccountConfigTab"],
     ],
     "trigger_tasks": [  # 不断执行的触发式任务
+        ["src.tasks.trigger.auto_jenga_task", "AutoJengaTask"],
         ["src.tasks.trigger.auto_rhythm_task", "AutoRhythmTask"],
         ["src.tasks.trigger.skip_dialog_task", "SkipDialogTask"],
         ["src.tasks.trigger.star_link_assist_task", "StarLinkAssistTask"],

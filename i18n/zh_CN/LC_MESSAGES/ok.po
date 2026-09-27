@@ -152,3 +152,19 @@ msgstr "完成家园每日任务"
 
 msgid "执行家园每日：收菜、做饭、喂饭"
 msgstr "执行家园每日：收菜、做饭、喂饭"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "自动祖赞卡之梯"
+msgstr "自动祖赞卡之梯"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "检测到祖赞卡之梯界面自动完成。"
+msgstr "检测到祖赞卡之梯界面自动完成。"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "正在对准图腾"
+msgstr "正在对准图腾"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "祖赞卡之梯辅助已停止"
+msgstr "祖赞卡之梯辅助已停止"

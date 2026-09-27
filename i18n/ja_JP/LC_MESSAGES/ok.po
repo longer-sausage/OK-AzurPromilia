@@ -153,3 +153,19 @@ msgstr "ホームデイリータスクを完了"
 
 msgid "执行家园每日：收菜、做饭、喂饭"
 msgstr "ホームデイリーを実行：収穫・料理・餌やり"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "自动祖赞卡之梯"
+msgstr "ズザンカの梯子自動操作"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "检测到祖赞卡之梯界面自动完成。"
+msgstr "ズザンカの梯子の画面を検出すると自動で進行します。"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "正在对准图腾"
+msgstr "トーテムの位置を合わせています"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "祖赞卡之梯辅助已停止"
+msgstr "ズザンカの梯子の補助を停止しました"

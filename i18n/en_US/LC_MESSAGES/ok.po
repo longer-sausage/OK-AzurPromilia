@@ -159,3 +159,19 @@ msgstr "Complete home daily tasks"
 
 msgid "执行家园每日：收菜、做饭、喂饭"
 msgstr "Run home daily: harvest crops, cook, and feed"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "自动祖赞卡之梯"
+msgstr "Auto Zuzanka’s Ladder"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "检测到祖赞卡之梯界面自动完成。"
+msgstr "Automatically play when the Zuzanka’s Ladder interface appears."
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "正在对准图腾"
+msgstr "Aligning the totem"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "祖赞卡之梯辅助已停止"
+msgstr "Zuzanka’s Ladder assistance stopped"
