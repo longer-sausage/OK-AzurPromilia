@@ -1679,19 +1679,31 @@ class TestJengaPrediction(unittest.TestCase):
 
 
 class TestJengaTask(unittest.TestCase):
-    def test_round_timeout_does_not_start_another_120_seconds(self):
+    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
+    @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter")
+    def test_round_runs_past_120_seconds_until_manual_disable(self, clock, player_type):
+        clock.side_effect = (i * 0.001 for i in range(100))
         task = task_harness()
         task._can_input = MagicMock(return_value=True)
         task.get_game_hwnd = MagicMock(return_value=42)
-        task.next_frame = MagicMock(return_value=np.zeros((1080, 1920, 3), np.uint8))
+        task.active_time = MagicMock(side_effect=[0, 0, 121, 242])
+        task.executor.method.frame_timestamp = None
+        task.next_frame = MagicMock(side_effect=[np.full((20, 20, 3), i, np.uint8) for i in range(3)])
         task._jenga_detector = MagicMock()
         task._jenga_detector.is_active.return_value = True
-        task.loop = MagicMock(return_value=[])
+        player = player_type.return_value
+        player.horizontal_geometry = None
+
+        def observe(*args):
+            if player.update.call_count == 2:
+                task.disable()
+            return False
+
+        player.update.side_effect = observe
         task.run()
-        task.loop.assert_called_once_with(time_out=120, yield_frame=False, raise_if_time_out=False)
-        self.assertTrue(task._await_scene_exit)
-        task.run()
-        self.assertEqual(task.loop.call_count, 1)
+        self.assertEqual(player.update.call_count, 2)
+        self.assertEqual(task.next_frame.call_count, 3)
+        self.assertFalse(task.enabled)
         task.executor.interaction.send_key_down.assert_not_called()
 
     def test_placement_requires_two_changing_frames_and_preserves_miss(self):
@@ -1706,18 +1718,34 @@ class TestJengaTask(unittest.TestCase):
         task._jenga_detector.placement_result = MagicMock(return_value="perfect")
         self.assertIsNone(task._wait_placement(42))
 
-    def test_failed_scene_does_not_resume_on_next_trigger_poll(self):
-        task = task_harness()
-        task._await_scene_exit = True
-        task.next_frame = MagicMock(return_value=np.zeros((20, 20, 3), np.uint8))
-        task._jenga_detector = MagicMock()
-        task._jenga_detector.is_active.return_value = True
-        task.run()
-        task.executor.interaction.send_key_down.assert_not_called()
-        self.assertTrue(task._await_scene_exit)
-        task._jenga_detector.is_active.return_value = False
-        task.run()
-        self.assertFalse(task._await_scene_exit)
+    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
+    @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter")
+    def test_miss_or_unknown_judgment_continues_with_original_placement_wait(self, clock, player_type):
+        for result in ("perfect", "good", "miss", None):
+            with self.subTest(result=result):
+                clock.side_effect = (i * 0.001 for i in range(100))
+                player_type.reset_mock()
+                player = player_type.return_value
+                player.release_delay = 0
+                player.horizontal_geometry = None
+                player.update.return_value = True
+                task = task_harness()
+                task._can_input = MagicMock(return_value=True)
+                task.get_game_hwnd = MagicMock(return_value=42)
+                task.executor.method.frame_timestamp = None
+                task.loop = MagicMock(return_value=range(2))
+                task.next_frame = MagicMock(side_effect=[np.full((20, 20, 3), i, np.uint8) for i in range(3)])
+                task._jenga_detector = MagicMock()
+                task._jenga_detector.is_active.return_value = True
+                task._jenga_detector.detect.return_value = observation()
+                task._drop = MagicMock(return_value=True)
+                task._wait_placement = MagicMock(return_value=result)
+                task.run()
+                self.assertEqual(task._drop.call_count, 2)
+                self.assertEqual(task._wait_placement.call_count, 2)
+                self.assertEqual(player.confirm_placement.call_count, 2 * int(result in ("perfect", "good")))
+                task._jenga_detector.reset_tracking.assert_not_called()
+                player.reset_motion.assert_not_called()
 
     @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
     @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter")

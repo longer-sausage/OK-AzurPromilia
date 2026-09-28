@@ -789,7 +789,6 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
         self._key_lock = threading.RLock()
         self._held_key = None
         self._destroyed = False
-        self._await_scene_exit = False
 
     def _can_input(self, hwnd):
         return (
@@ -849,10 +848,7 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
     def run(self):
         frame = self.next_frame()
         if not self._jenga_detector.is_active(frame):
-            self._await_scene_exit = False
             self._jenga_detector.reset_tracking()
-            return
-        if self._await_scene_exit:
             return
         hwnd = self.get_game_hwnd()
         if not self._can_input(hwnd):
@@ -868,14 +864,18 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
         changed_at = time.perf_counter()
         last_observed = -math.inf
         try:
-            for _ in self.loop(time_out=120, yield_frame=False, raise_if_time_out=False):
-                if not self._can_input(hwnd):
+            for _ in self.loop(time_out=math.inf, yield_frame=False, raise_if_time_out=False):
+                if not self.enabled or self._destroyed or self.executor.exit_event.is_set():
                     break
+                if not self._can_input(hwnd):
+                    time.sleep(0.1)
+                    continue
                 started = time.perf_counter()
                 frame = self.next_frame()
                 captured = time.perf_counter()
                 if not self._can_input(hwnd) or not self._jenga_detector.is_active(frame):
-                    break
+                    time.sleep(0.1)
+                    continue
                 observed_at = getattr(getattr(self.executor, "method", None), "frame_timestamp", None)
                 if not isinstance(observed_at, (int, float)):
                     observed_at = (started + captured) / 2
@@ -916,15 +916,8 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
                     )
                     result = self._wait_placement(hwnd)
                     logger.info("Jenga placement result=%s", result or "unknown")
-                    if result not in ("perfect", "good"):
-                        # TriggerTask is polled again while the HUD remains visible.
-                        # A failure must not silently restart automatic dropping.
-                        self._await_scene_exit = True
-                        break
-                    player.confirm_placement()
-            else:
-                self._await_scene_exit = True
-                logger.info("Jenga round reached the 120 second limit")
+                    if result in ("perfect", "good"):
+                        player.confirm_placement()
         finally:
             self._release_key()
             self.info_set("current task", self.tr("祖赞卡之梯辅助已停止"))
@@ -932,7 +925,6 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
     def disable(self):
         # Disable before taking the lock, so a concurrently prepared pulse cannot start.
         super().disable()
-        self._await_scene_exit = False
         self._release_key()
 
     def on_destroy(self):
