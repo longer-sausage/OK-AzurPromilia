@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from functools import cached_property
 
+from src.core.account_override_mixin import AccountOverrideMixin
 from src.core.base_game_task import BaseGameTask
 from src.data.page import page_main, page_commission_daily_material, page_commission_daily_boss, page_commission_daily_equipment
 from src.data.feature_list import FeatureList
@@ -53,34 +54,85 @@ COMMISSION_COSTS = {
 }
 
 class CommissionDailyTask(BaseGameTask):
+    """委托每日任务：消耗体力反复刷选定的每日委托。
+
+    独立运行；也可由 ``DailyFeature`` 包装后接入一键日常（日常不继承本类）。
+    """
+
+    # ── 子任务参数（供 DailyFeature 接入日常时复用） ──
+    # 账号覆盖存储挂的任务名；参数配置文件即 configs/<sub_task_config_name>.json，
+    # 由框架加载进本实例的 self.config。
+    sub_task_config_name = "CommissionDailyTask"
+    # 参数声明：{配置键: 默认值}。声明后：
+    #   1. 本任务面板可编辑（_init_commission_daily_config 注册）
+    #   2. 被日常执行时经 _sub_task_cfg 读取（多账号覆盖 → 自身配置 → 默认值）
+    #   3. 「账号配置」页可按账号覆盖（account_config_tab 收集声明了参数的子任务）
+    sub_task_default_config: dict = {
+        "选择委托": "银光闪闪",
+    }
+    # 与 sub_task_default_config 同键的说明文案
+    sub_task_config_description: dict = {}
+    # 与 sub_task_default_config 同键的控件类型
+    sub_task_config_type: dict = {
+        "选择委托": {
+            "type": "cascade_drop_down",
+            "options": ALL_COMISSIONS,
+            "labels": {
+                'daily_material': '每日委托-基础材料',
+                'daily_boss': '每日委托-首领挑战',
+                'daily_equipment': '每日委托-武备获取',
+            }
+        },
+    }
+    # 运行时由 DailyFeature 注入：宿主的账号覆盖查询 fn(config_name) -> dict。
+    # 独立运行时为 None，参数直接读自身配置。
+    _account_override_provider = None
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = "委托每日"
         self.icon = Icons.Task
         self.description = "完成委托家园每日任务，需要在游戏设置中打开“自动托管领取原初之流宝箱”并且至少通关过副本一遍解锁自动战斗。"
-        self.default_config = {
-            "选择委托": "银光闪闪",
-        }
-        self.config_type = {
-            "选择委托": {
-                "type": "cascade_drop_down",
-                "options": ALL_COMISSIONS,
-                "labels": {
-                    'daily_material': '每日委托-基础材料',
-                    'daily_boss': '每日委托-首领挑战',
-                    'daily_equipment': '每日委托-武备获取',
-                }
-            },
-        }
+        # 注册子任务参数声明（含控件类型）
+        self._init_commission_daily_config()
 
         self.commission_types = {}
         for type in ALL_COMISSIONS:
             for name in ALL_COMISSIONS[type]:
                 self.commission_types[name] = type
 
+    def _init_commission_daily_config(self):
+        """把参数声明注册进本任务的 default_config / config_description / config_type。"""
+        self.default_config.update(self.sub_task_default_config)
+        self.config_description.update(self.sub_task_config_description)
+        if not hasattr(self, "config_type") or self.config_type is None:
+            self.config_type = {}
+        self.config_type.update(self.sub_task_config_type)
+
+    def _sub_task_cfg(self, key, default=None):
+        """子任务参数取值。业务代码读参数一律走本方法，不要直接 self.config。
+
+        解析顺序：
+        1. 多账号覆盖：由 DailyFeature 注入的宿主查询（内部已判断
+           任务运行中、多账户独立配置开启、已设置当前账号），命中时
+           以自身配置值为基准做类型校正；
+        2. 自身配置（框架已加载 configs/<任务名>.json），缺键回落默认值。
+        """
+        declared_default = self.sub_task_default_config.get(key, default)
+        provider = self._account_override_provider
+        if provider is not None:
+            try:
+                overrides = provider(self.sub_task_config_name) or {}
+            except Exception:
+                overrides = {}
+            if key in overrides:
+                base = self.config.get(key, declared_default)
+                return AccountOverrideMixin._coerce_override_value(base, overrides.get(key))
+        return self.config.get(key, declared_default)
+
     @property
     def commission_name(self):
-        return self.config["选择委托"]
+        return self._sub_task_cfg("选择委托")
 
     @property
     def commission_type(self):

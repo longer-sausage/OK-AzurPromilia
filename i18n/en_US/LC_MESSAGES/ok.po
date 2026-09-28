@@ -175,3 +175,18 @@ msgstr "Aligning the totem"
 #: src/tasks/trigger/auto_jenga_task.py
 msgid "祖赞卡之梯辅助已停止"
 msgstr "Zuzanka’s Ladder assistance stopped"
+
+msgid "每日收菜"
+msgstr "Daily Claim"
+
+msgid "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡"
+msgstr "Run daily claim: mail, surprise box, daily/weekly activity, monthly card"
+
+msgid "委托每日"
+msgstr "Commission Daily"
+
+msgid "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
+msgstr ""
+"Run commission daily: spend power to farm the selected daily commission "
+"(auto-combat must be unlocked first)"
+
