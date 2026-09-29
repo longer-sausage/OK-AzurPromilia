@@ -1,5 +1,5 @@
-site_name: ok-ap
-site_description: "Game automation tool for Blue Star Origin: Lv Yao, built with ok-script"
+site_name: OK-AzurPromilia
+site_description: "Game automation tool for Azur Promilia, built with ok-script"
 site_url: https://longer-sausage.github.io/OK-AzurPromilia/
 repo_name: longer-sausage/OK-AzurPromilia
 repo_url: https://github.com/longer-sausage/OK-AzurPromilia
@@ -77,6 +77,7 @@ markdown_extensions:
 nav:
   - 项目首页: index.md
   - 开发:
-    - 从源码运行: dev/quickstart.md
+    - 快速上手: dev/quickstart.md
     - 开发指南: dev/development.md
     - Action 生命周期: dev/action_lifecycle.md
+    - 祖赞卡之梯判定分析: dev/jenga_judgment.md

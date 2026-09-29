@@ -38,11 +38,6 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
 | `scripts/` `tools/` | 语言同步、PO 修复、lang 类型桩生成等工具 |
 | `tests/` | unittest 测试 |
 
-### 待补的部分
-
-工程骨架已就位，但**游戏内容尚未开始**。当前空缺：`config['scene']` 帧级缓存、
-会话级流程引擎、3D 移动闭环、导航、战斗层，以及**任何视觉回归测试**。
-
 ## 花瓣音游：自动演奏
 
 在触发任务中启用「自动音游」，按 F 进入花瓣音游后自动接管，结束后自动释放按键。
@@ -513,7 +508,7 @@ self.visible = self.debug      # self.debug -> executor.debug，main_debug.py �
 ```
 
 正式业务任务**不要**设 `visible`，任何模式下都应可见。当前按此约定归类的调试任务是
-`TestScreenshotTask`、`TestInteractionTask`、`TestTreasureBandTask`。
+`TestScreenshotTask`、`TestInteractionTask`、`TestTreasureBandTask`、`TestUINavigateTask`。
 
 两条契约都由 `tests/test_task_config_visibility.py` 固化，改配置项时会被它挡住。
 

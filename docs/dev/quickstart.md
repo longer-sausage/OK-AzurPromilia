@@ -1,6 +1,8 @@
-# 从源码运行（QUICKSTART）
+# 快速上手（QUICKSTART）
 
-本模板仅支持 **Python 3.12**，请以管理员权限启动终端。依赖管理使用 [uv](https://docs.astral.sh/uv/)。
+本项目仅支持 **Python 3.12**，请以管理员权限启动终端。依赖管理使用 [uv](https://docs.astral.sh/uv/)。
+
+> 💡 **提示**：如果只需使用程序挂机或辅助，建议直接前往 [GitHub Releases](https://github.com/longer-sausage/OK-AzurPromilia/releases) 下载打包好的安装包运行，无需配置 Python 开发环境。
 
 ## 1. 安装依赖
 
@@ -8,7 +10,7 @@
 uv sync
 ```
 
-## 2. 运行
+## 2. 从源码运行
 
 ```bash
 # Release 版
@@ -20,7 +22,7 @@ uv run python main_debug.py
 
 ## 3. 新增一个一次性任务
 
-1. 在 `src/tasks/onetime/` 下新建文件，继承 `BaseGameTask`（最简范例见 `src/tasks/test/test_screenshot_task.py`）。
+1. 在 `src/tasks/onetime/` 下新建文件，继承 `BaseGameTask`（最简范例见 `src/tasks/test/test_screenshot_task.py`，完整业务任务见 `src/tasks/onetime/claim_daily_task.py` 等）。
 2. 在 `__init__` 中设置 `name`、`description`、`icon` 与 `default_config`。
 3. 实现 `run(self)`，使用 `self.wait_ocr` / `self.wait_click_feature` / `self.click_relative` 等 API。
    若是「看到某东西 → 点它 → 验证结果」这类流程，用 `self.wait_action_result`（识别源适配器见
