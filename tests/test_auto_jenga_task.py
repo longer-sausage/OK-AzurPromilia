@@ -5,11 +5,13 @@ import math
 import threading
 import unittest
 from dataclasses import replace
+from itertools import pairwise
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import cv2
 import numpy as np
+from ok import CaptureException
 
 from src.config import config
 from src.image.jenga_detector import ASSETS, JengaDetector, JengaObservation, JengaPiece, _detail
@@ -50,6 +52,34 @@ def task_harness():
 
 
 class TestJengaVision(unittest.TestCase):
+    def test_unconfirmed_release_reacquires_the_actual_receiver(self):
+        frame = cv2.imread(str(FIXTURES / "start.png"))
+        detector = JengaDetector()
+        first = detector.detect(frame)
+        self.assertEqual(first.carried.kind, "owl")
+        self.assertEqual(first.tower.kind, "monkey")
+        # A Miss keeps the monkey receiver; an unread judgment may also have
+        # kept it. Neither outcome proves that the owl became the new tower.
+        detector.learn(frame, first.carried, placement_confirmed=False)
+        recovered = detector.detect(frame)
+        self.assertIsNotNone(recovered)
+        self.assertEqual(recovered.tower.kind, "monkey")
+        self.assertAlmostEqual(recovered.tower.x, first.tower.x, delta=6)
+        self.assertEqual(len(detector.learned), 1)
+
+    def test_new_session_discards_learned_templates_and_height_bound(self):
+        detector = JengaDetector()
+        high = cv2.imread(str(FIXTURES / "layer15_0.png"))
+        first = detector.detect(high)
+        detector.learn(high, first.carried)
+        learned_ids = {id(template) for group in detector.learned for template in group}
+        detector.reset_tracking(clear_learned=True)
+        self.assertEqual(detector.learned, [])
+        self.assertTrue(learned_ids.isdisjoint(detector._template_kinds))
+        restarted = detector.detect(cv2.imread(str(FIXTURES / "start.png")))
+        self.assertIsNotNone(restarted)
+        self.assertGreater(restarted.tower.top, 780)
+
     def test_released_identity_rejects_confident_railing_after_sparks(self):
         for size in ((960, 540), (1280, 720), (1920, 1080)):
             detector = JengaDetector()
@@ -1680,6 +1710,316 @@ class TestJengaPrediction(unittest.TestCase):
 
 class TestJengaTask(unittest.TestCase):
     @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
+    def test_reentry_uses_current_scene_even_with_a_previous_high_tower(self, player_type):
+        task = task_harness()
+        task._can_input = MagicMock(return_value=True)
+        task.get_game_hwnd = MagicMock(return_value=42)
+        task.executor.method.frame_timestamp = None
+        task.loop = MagicMock(side_effect=lambda **kwargs: iter([None]))
+        player = player_type.return_value
+        player.horizontal_geometry = None
+        player.update.return_value = False
+        high = cv2.imread(str(FIXTURES / "layer15_0.png"))
+        first = task._jenga_detector.detect(high)
+        task._jenga_detector.learn(high, first.carried)
+        for name in ("start", "low", "high", "live_five", "start"):
+            with self.subTest(scene=name):
+                frame = cv2.imread(str(FIXTURES / f"{name}.png"))
+                task.next_frame = MagicMock(return_value=frame)
+                task.run()
+                self.assertIsNotNone(player.update.call_args.args[0])
+                self.assertEqual(task._jenga_detector.learned, [])
+                self.assertTrue(task.enabled)
+        task.executor.interaction.send_key_down.assert_not_called()
+
+    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
+    def test_miss_and_unknown_result_can_drop_again_on_the_unchanged_receiver(self, player_type):
+        for result in ("miss", None):
+            with self.subTest(result=result):
+                player_type.reset_mock()
+                player = player_type.return_value
+                player.horizontal_geometry = None
+                player.release_delay = 0
+                player.update.side_effect = lambda found, *args: found is not None
+                task = task_harness()
+                task._can_input = MagicMock(return_value=True)
+                task.get_game_hwnd = MagicMock(return_value=42)
+                task.executor.method.frame_timestamp = None
+                task.loop = MagicMock(return_value=range(2))
+                original = cv2.imread(str(FIXTURES / "start.png"))
+                frames = [original.copy() for _ in range(3)]
+                for index, frame in enumerate(frames):
+                    frame[0, 0] = index
+                task.next_frame = MagicMock(side_effect=frames)
+                task._drop = MagicMock(return_value=True)
+                task._wait_placement = MagicMock(return_value=result)
+                task.run()
+                self.assertEqual(task._drop.call_count, 2)
+                self.assertEqual(task._wait_placement.call_count, 2)
+                for call in player.update.call_args_list:
+                    self.assertEqual(call.args[0].tower.kind, "monkey")
+                self.assertTrue(task.enabled)
+
+    def test_missing_capture_during_judgment_is_recoverable(self):
+        task = task_harness()
+        task._can_input = MagicMock(return_value=True)
+        task.loop = MagicMock(return_value=[None])
+        self.assertIsNone(task._wait_placement(42))
+        self.assertTrue(task.enabled)
+
+    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
+    def test_capture_exception_keeps_task_enabled_for_the_next_trigger(self, player_type):
+        task = task_harness()
+        task.next_frame = MagicMock(side_effect=CaptureException("capture disconnected"))
+        task.run()
+        self.assertTrue(task.enabled)
+        task._can_input = MagicMock(return_value=True)
+        task.get_game_hwnd = MagicMock(return_value=84)
+        task.executor.method.frame_timestamp = None
+        frame = cv2.imread(str(FIXTURES / "high.png"))
+        task.next_frame = MagicMock(return_value=frame)
+        task.loop = MagicMock(return_value=[None])
+        player_type.return_value.horizontal_geometry = None
+        player_type.return_value.update.return_value = False
+        task.run()
+        self.assertIsNotNone(player_type.return_value.update.call_args.args[0])
+        task.executor.interaction.send_key_down.assert_not_called()
+
+    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
+    def test_interruptions_during_capture_yield_and_reenter_with_a_new_window(self, player_type):
+        for reason in ("complete", "pause", "capture_method", "resize", "missing", "focus", "disable_enable"):
+            with self.subTest(reason=reason):
+                player_type.reset_mock()
+                task = task_harness()
+                frame = cv2.imread(str(FIXTURES / "start.png"))
+                task.get_game_hwnd = MagicMock(return_value=42)
+                task._can_input = MagicMock(return_value=True)
+                task.executor.method.frame_timestamp = None
+                task.executor.pause_start = 0
+                task.loop = MagicMock(side_effect=lambda **kwargs: iter(range(2)))
+                player = player_type.return_value
+                player.horizontal_geometry = None
+                player.update.return_value = True
+                player.release_delay = 0
+                task._drop = MagicMock(return_value=True)
+                task._wait_placement = MagicMock(return_value="good")
+
+                def interrupted_frame(reason=reason, task=task, frame=frame):
+                    if reason == "complete":
+                        return cv2.imread(str(FIXTURES / "complete.png"))
+                    if reason == "pause":
+                        task.executor.pause_start = 1
+                    elif reason == "capture_method":
+                        task.executor.method = MagicMock(frame_timestamp=None)
+                    elif reason == "resize":
+                        return cv2.resize(frame, (1280, 720))
+                    elif reason == "missing":
+                        return None
+                    elif reason == "focus":
+                        task._can_input.return_value = False
+                    elif reason == "disable_enable":
+                        task.disable()
+                        task.enable()
+                    return frame
+
+                task.next_frame = MagicMock()
+                task.next_frame.side_effect = lambda task=task, frame=frame, interrupted_frame=interrupted_frame: (
+                    frame if task.next_frame.call_count == 1 else interrupted_frame()
+                )
+                task.run()
+                task._drop.assert_not_called()
+                self.assertTrue(task.enabled)
+                self.assertIsNone(task._jenga_detector._tower_last)
+                task._can_input.return_value = True
+                task.get_game_hwnd.return_value = 84
+                changed = frame.copy()
+                changed[0, 0] = 1
+                task.next_frame = MagicMock(side_effect=[frame, changed])
+                task.loop = MagicMock(return_value=[None])
+                player.update.side_effect = lambda found, *args: found is not None
+                task.run()
+                task._drop.assert_called_once()
+                self.assertEqual(task._drop.call_args.args[0], 84)
+
+    @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter")
+    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
+    def test_unobserved_new_round_reacquires_after_old_height_blocks_detection(self, player_type, clock):
+        task = task_harness()
+        task._can_input = MagicMock(return_value=True)
+        task.get_game_hwnd = MagicMock(return_value=42)
+        task.loop = MagicMock(return_value=range(19))
+        player_type.return_value.update.return_value = False
+        player_type.return_value.horizontal_geometry = None
+        high = cv2.imread(str(FIXTURES / "layer15_0.png"))
+        start = cv2.imread(str(FIXTURES / "start.png"))
+        elapsed = 0.0
+        index = 0
+        clock.side_effect = lambda: elapsed
+
+        def capture():
+            nonlocal elapsed, index
+            elapsed += 0.3
+            image = (high if index < 2 else start).copy()
+            image[0, 0] = index
+            index += 1
+            task.executor.method.frame_timestamp = elapsed
+            return image
+
+        task.next_frame = MagicMock(side_effect=capture)
+        task.run()
+        observations = [call.args[0] for call in player_type.return_value.update.call_args_list]
+        self.assertTrue(any(found is None for found in observations))
+        self.assertIsNotNone(observations[-1])
+        self.assertGreater(observations[-1].tower.top, 780)
+        task.executor.interaction.send_key_down.assert_not_called()
+
+    @patch("src.tasks.trigger.auto_jenga_task.time.sleep")
+    @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter")
+    def test_real_predictor_resumes_multiple_drops_after_miss_and_unknown(self, clock, sleep):
+        for fps, phase in ((10, 2.6), (30, 0.7)):
+            with self.subTest(fps=fps, phase=phase):
+                task = task_harness()
+                task._can_input = MagicMock(return_value=True)
+                task.get_game_hwnd = MagicMock(return_value=42)
+                task._jenga_detector = MagicMock()
+                task._jenga_detector.is_active.return_value = True
+                task.loop = MagicMock(return_value=range(fps * 16))
+                state = {"time": 0.0, "birth": -phase / 1.6, "frame": 0}
+                releases = []
+                clock.side_effect = lambda state=state: state["time"]
+
+                def advance(duration, state=state):
+                    state["time"] += duration
+
+                sleep.side_effect = advance
+
+                def capture(fps=fps, state=state, task=task, advance=advance):
+                    advance(1 / fps)
+                    state["frame"] += 1
+                    task.executor.method.frame_timestamp = state["time"]
+                    return np.full((20, 20, 3), state["frame"] % 256, np.uint8)
+
+                def detect(frame, state=state):
+                    t = state["time"] - state["birth"]
+                    x = 960 + 285 * math.sin(1.6 * t)
+                    bottom = 390 - 91.2 * math.sin(3.2 * t)
+                    top = bottom - 0.754531 * 228
+                    receiver = 960 + 35 * math.sin(math.pi / 2 * state["time"] + 0.7)
+                    return JengaObservation(
+                        JengaPiece(x, top, bottom, 112, kind="monkey"),
+                        JengaPiece(receiver, 770, 770 + 0.755 * 228, 112, kind="monkey"),
+                        JengaPiece(x, top - 70, top - 5, 35),
+                    )
+
+                def drop(*args, state=state, releases=releases, **kwargs):
+                    releases.append(state["time"])
+                    return True
+
+                def judgment(hwnd, state=state, releases=releases, advance=advance):
+                    result = "miss" if len(releases) % 2 else None
+                    advance(0.9 if result else 2.5)
+                    state["birth"] = state["time"] - 0.1
+                    return result
+
+                task.next_frame = MagicMock(side_effect=capture)
+                task._jenga_detector.detect.side_effect = detect
+                task._drop = MagicMock(side_effect=drop)
+                task._wait_placement = MagicMock(side_effect=judgment)
+                task.run()
+                self.assertGreaterEqual(len(releases), 3)
+                # Each failed/unread placement requires a fresh first-piece
+                # fit, including the two-second observation gate.
+                for earlier, later in pairwise(releases):
+                    self.assertGreater(later - earlier, 2.8)
+                self.assertTrue(task.enabled)
+
+    @patch("src.tasks.trigger.auto_jenga_task.win32gui.GetForegroundWindow", return_value=42)
+    def test_prepared_drop_is_cancelled_by_pause_or_rapid_disable_enable(self, foreground):
+        for reason in ("pause", "disable_enable", "capture_method", "interaction"):
+            with self.subTest(reason=reason):
+                task = task_harness()
+                task.executor.pause_start = 0
+                context = task._capture_context()
+                if reason == "pause":
+                    task.executor.pause_start = 1
+                elif reason == "disable_enable":
+                    task.disable()
+                    task.enable()
+                elif reason == "capture_method":
+                    task.executor.method = MagicMock()
+                else:
+                    task.executor.interaction = MagicMock()
+                self.assertFalse(task._drop(42, capture_context=context))
+                task.executor.interaction.send_key_down.assert_not_called()
+
+    @patch("src.tasks.trigger.auto_jenga_task.win32gui.GetForegroundWindow", return_value=42)
+    @patch("src.tasks.trigger.auto_jenga_task.time.sleep")
+    def test_window_reconnection_releases_key_through_the_original_interaction(self, sleep, foreground):
+        task = task_harness()
+        original = task.executor.interaction
+        replacement = MagicMock()
+        sleep.side_effect = lambda duration: setattr(task.executor, "interaction", replacement)
+        self.assertTrue(task._drop(42))
+        original.send_key_down.assert_called_once_with("f", activate=False)
+        original.send_key_up.assert_called_once_with("f")
+        replacement.send_key_up.assert_not_called()
+        self.assertIsNone(task._held_key)
+
+    @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter", return_value=10)
+    def test_judgment_rejects_repeated_stale_or_invalid_capture_timestamps(self, clock):
+        for timestamp in (10, 9, math.nan, math.inf):
+            with self.subTest(timestamp=timestamp):
+                task = task_harness()
+                task._can_input = MagicMock(return_value=True)
+                task._jenga_detector = MagicMock()
+                task._jenga_detector.placement_result.return_value = "perfect"
+                task.executor.method.frame_timestamp = timestamp
+                task.loop = MagicMock(return_value=[np.full((20, 20, 3), i, np.uint8) for i in range(4)])
+                self.assertIsNone(task._wait_placement(42))
+
+    @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter")
+    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
+    def test_bad_timestamp_stream_yields_and_fresh_capture_reenters(self, player_type, clock):
+        for timestamp in (0.05, -1, math.nan, math.inf):
+            with self.subTest(timestamp=timestamp):
+                task = task_harness()
+                task._can_input = MagicMock(return_value=True)
+                task.get_game_hwnd = MagicMock(return_value=42)
+                task._jenga_detector = MagicMock()
+                task._jenga_detector.is_active.return_value = True
+                task._jenga_detector.detect.return_value = observation()
+                task.loop = MagicMock(return_value=range(20))
+                player_type.reset_mock()
+                player = player_type.return_value
+                player.horizontal_geometry = None
+                player.update.return_value = False
+                elapsed = [0.0]
+                clock.side_effect = lambda elapsed=elapsed: elapsed[0]
+
+                def capture(timestamp=timestamp, elapsed=elapsed, task=task):
+                    elapsed[0] += 0.05
+                    task.executor.method.frame_timestamp = timestamp
+                    return np.full((20, 20, 3), round(elapsed[0] * 20), np.uint8)
+
+                task.next_frame = MagicMock(side_effect=capture)
+                task.run()
+                self.assertLess(task.next_frame.call_count, 10)
+                self.assertTrue(task.enabled)
+                before = player.update.call_count
+
+                def fresh_capture(elapsed=elapsed, task=task):
+                    frame = capture()
+                    task.executor.method.frame_timestamp = elapsed[0]
+                    return frame
+
+                task.next_frame = MagicMock(side_effect=fresh_capture)
+                task.loop = MagicMock(return_value=[None])
+                task.run()
+                self.assertEqual(player.update.call_count, before + 1)
+                task.executor.interaction.send_key_down.assert_not_called()
+
+
+    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
     @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter")
     def test_round_runs_past_120_seconds_until_manual_disable(self, clock, player_type):
         clock.side_effect = (i * 0.001 for i in range(100))
@@ -1720,7 +2060,7 @@ class TestJengaTask(unittest.TestCase):
 
     @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
     @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter")
-    def test_miss_or_unknown_judgment_continues_with_original_placement_wait(self, clock, player_type):
+    def test_all_judgments_keep_placement_wait_and_only_success_confirms_new_top(self, clock, player_type):
         for result in ("perfect", "good", "miss", None):
             with self.subTest(result=result):
                 clock.side_effect = (i * 0.001 for i in range(100))
@@ -1744,12 +2084,15 @@ class TestJengaTask(unittest.TestCase):
                 self.assertEqual(task._drop.call_count, 2)
                 self.assertEqual(task._wait_placement.call_count, 2)
                 self.assertEqual(player.confirm_placement.call_count, 2 * int(result in ("perfect", "good")))
-                task._jenga_detector.reset_tracking.assert_not_called()
-                player.reset_motion.assert_not_called()
+                self.assertEqual(
+                    [call.kwargs["placement_confirmed"] for call in task._jenga_detector.learn.call_args_list],
+                    [result in ("perfect", "good")] * 2,
+                )
+                self.assertTrue(task.enabled)
 
     @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
     @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter")
-    def test_renderer_stall_waits_then_resumes_with_new_history(self, clock, player_type):
+    def test_renderer_stall_yields_then_next_trigger_reacquires(self, clock, player_type):
         clock.side_effect = (i * 0.1 for i in range(200))
         task = task_harness()
         task._can_input = MagicMock(return_value=True)
@@ -1764,9 +2107,13 @@ class TestJengaTask(unittest.TestCase):
         player = player_type.return_value
         player.update.return_value = False
         task.run()
-        player.reset_motion.assert_called()
+        self.assertEqual(player.update.call_count, 1)
+        self.assertTrue(task.enabled)
+        task.next_frame = MagicMock(return_value=changed)
+        task.loop = MagicMock(return_value=range(1))
+        task.run()
         self.assertEqual(player.update.call_count, 2)
-        self.assertEqual(task.next_frame.call_count, 6)
+        self.assertEqual(player_type.call_count, 2)
         task.executor.interaction.send_key_down.assert_not_called()
 
     def test_registered(self):

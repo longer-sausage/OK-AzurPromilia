@@ -7,7 +7,7 @@ import time
 
 import numpy as np
 import win32gui
-from ok import TriggerTask
+from ok import CaptureException, TriggerTask
 
 from src.core.base_game_task import BaseGameTask
 from src.icons import Icons
@@ -788,7 +788,9 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
         self._jenga_detector = JengaDetector()
         self._key_lock = threading.RLock()
         self._held_key = None
+        self._held_interaction = None
         self._destroyed = False
+        self._session_generation = 0
 
     def _can_input(self, hwnd):
         return (
@@ -797,6 +799,7 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
             and not self.paused
             and not self.executor.paused
             and not self.executor.exit_event.is_set()
+            and self.executor.interaction is not None
             and hwnd
             and win32gui.GetForegroundWindow() == hwnd
         )
@@ -804,22 +807,43 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
     def _release_key(self):
         with self._key_lock:
             if self._held_key is not None:
-                self.executor.interaction.send_key_up(self._held_key)
-                self._held_key = None
+                interaction = self._held_interaction or self.executor.interaction
+                try:
+                    interaction.send_key_up(self._held_key)
+                finally:
+                    self._held_key = None
+                    self._held_interaction = None
 
-    def _drop(self, hwnd, deadline=None):
+    def _capture_context(self):
+        # pause_start changes even when next_frame blocks through a complete
+        # pause/resume. A replacement capture method starts another session too.
+        return (
+            id(getattr(self.executor, "method", None)),
+            id(self.executor.interaction),
+            getattr(self.executor, "pause_start", None),
+            self._session_generation,
+        )
+
+    @staticmethod
+    def _new_player():
+        return JengaPlayer(max_delay=0.4, greedy_high_sway=True, greedy_release=True)
+
+    def _drop(self, hwnd, deadline=None, *, capture_context=None):
         # Trigger tasks do not include the daily account-override mixin.
         key = self.key_manager.resolve_key("f", "common")
         try:
             with self._key_lock:
                 if not self._can_input(hwnd):
                     return False
+                if capture_context is not None and self._capture_context() != capture_context:
+                    return False
                 # sleep() and lock acquisition can overshoot on a busy machine.
                 # Check at dispatch, after both waits, before holding any key.
                 if deadline is not None and time.perf_counter() > deadline:
                     return False
                 self._held_key = key
-                if self.executor.interaction.send_key_down(key, activate=False) is False:
+                self._held_interaction = self.executor.interaction
+                if self._held_interaction.send_key_down(key, activate=False) is False:
                     return False
             # This short physical pulse must end even if the task is paused meanwhile.
             time.sleep(0.04)
@@ -831,9 +855,26 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
         """Confirm the rendered result before accepting another piece."""
         votes = {}
         last_pixels = None
+        last_observed = -math.inf
+        capture_context = self._capture_context()
         for frame in self.loop(time_out=2.5, raise_if_time_out=False):
-            if not self._can_input(hwnd):
+            if (
+                not self._can_input(hwnd)
+                or self._capture_context() != capture_context
+                or frame is None
+                or not self._jenga_detector.is_active(frame)
+            ):
                 return None
+            captured = time.perf_counter()
+            observed_at = getattr(getattr(self.executor, "method", None), "frame_timestamp", None)
+            if isinstance(observed_at, (int, float)):
+                if (
+                    not math.isfinite(observed_at)
+                    or not -0.01 <= captured - observed_at <= 0.18
+                    or observed_at <= last_observed
+                ):
+                    continue
+                last_observed = observed_at
             pixels = frame[::8, ::8, :3]
             if last_pixels is not None and np.array_equal(pixels, last_pixels):
                 continue
@@ -846,53 +887,83 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
         return None
 
     def run(self):
-        frame = self.next_frame()
-        if not self._jenga_detector.is_active(frame):
-            self._jenga_detector.reset_tracking()
-            return
-        hwnd = self.get_game_hwnd()
-        if not self._can_input(hwnd):
-            return
-        # Keep legacy config keys intact; native gravity now determines flight time.
-        # Plan far enough ahead to service a narrow contact window even when
-        # the next capture/reacquisition takes longer than a normal frame.
-        # Every future candidate still passes the full timing/clock envelope.
-        player = JengaPlayer(max_delay=0.4, greedy_high_sway=True, greedy_release=True)
-        input_lead = max(0, min(0.15, float(self.config.get("_input_lead_ms", 45)) / 1000))
-        self.info_set("current task", self.tr("正在对准图腾"))
-        last_pixels = None
-        changed_at = time.perf_counter()
-        last_observed = -math.inf
+        self._jenga_detector.reset_tracking(clear_learned=True)
+        session_started = False
         try:
+            frame = self.next_frame()
+            if not self._jenga_detector.is_active(frame):
+                return
+            hwnd = self.get_game_hwnd()
+            if not self._can_input(hwnd):
+                return
+            # Keep legacy config keys intact; native gravity determines flight
+            # time. Every future candidate retains the full contact budget.
+            player = self._new_player()
+            input_lead = max(0, min(0.15, float(self.config.get("_input_lead_ms", 45)) / 1000))
+            capture_context = self._capture_context()
+            frame_shape = frame.shape
+            self.info_set("current task", self.tr("正在对准图腾"))
+            session_started = True
+            last_pixels = None
+            changed_at = time.perf_counter()
+            last_observed = -math.inf
+            missing_since = None
             for _ in self.loop(time_out=math.inf, yield_frame=False, raise_if_time_out=False):
-                if not self.enabled or self._destroyed or self.executor.exit_event.is_set():
+                if (
+                    not self.enabled
+                    or self._destroyed
+                    or self.executor.exit_event.is_set()
+                    or not self._can_input(hwnd)
+                    or self._capture_context() != capture_context
+                ):
                     break
-                if not self._can_input(hwnd):
-                    time.sleep(0.1)
-                    continue
                 started = time.perf_counter()
                 frame = self.next_frame()
                 captured = time.perf_counter()
-                if not self._can_input(hwnd) or not self._jenga_detector.is_active(frame):
-                    time.sleep(0.1)
-                    continue
+                if (
+                    not self._can_input(hwnd)
+                    or self._capture_context() != capture_context
+                    or frame is None
+                    or frame.shape != frame_shape
+                    or captured - started > 1.0
+                    or not self._jenga_detector.is_active(frame)
+                ):
+                    break  # Stay enabled; the next trigger reacquires the current scene/window.
                 observed_at = getattr(getattr(self.executor, "method", None), "frame_timestamp", None)
                 if not isinstance(observed_at, (int, float)):
                     observed_at = (started + captured) / 2
-                if observed_at > captured + 0.01 or captured - observed_at > 0.18:
-                    continue  # Never relabel a stale WGC image as a fresh observation.
-                if observed_at <= last_observed:
+                if (
+                    not math.isfinite(observed_at)
+                    or not -0.01 <= captured - observed_at <= 0.18
+                    or observed_at <= last_observed
+                ):
+                    if captured - changed_at > 0.3:
+                        break
+                    # Never relabel a stale WGC image as a fresh observation.
                     continue
                 last_observed = observed_at
                 pixels = frame[::8, ::8, :3]
                 if last_pixels is not None and np.array_equal(pixels, last_pixels):
                     if captured - changed_at > 0.3:
-                        player.reset_motion()
+                        break
                     continue
                 changed_at = captured
                 last_pixels = pixels.copy()
                 observation = self._jenga_detector.detect(frame)
                 now = time.perf_counter()
+                if observation is None:
+                    if missing_since is None:
+                        missing_since = now
+                    elif now - missing_since >= 2 * math.pi / 1.6:
+                        # An old kind/height constraint must not hide the real
+                        # receiver forever after an interrupted or missed drop.
+                        self._jenga_detector.reset_tracking()
+                        player = self._new_player()
+                        missing_since = now
+                        logger.info("Jenga tracking lost; reacquiring current pieces")
+                        continue
+                else:
+                    missing_since = None
                 ready = player.update(observation, observed_at, now, input_lead)
                 if player.horizontal_geometry is not None:
                     self._jenga_detector.pixels_per_unit = player.horizontal_geometry[1] / 1.25
@@ -905,9 +976,8 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
                 delay = max(0, release_at - time.perf_counter())
                 if delay:
                     time.sleep(delay)
-                if self._drop(hwnd, deadline=deadline):
+                if self._drop(hwnd, deadline=deadline, capture_context=capture_context):
                     player.mark_released(time.perf_counter(), observation.carried)
-                    self._jenga_detector.learn(frame, observation.carried)
                     logger.debug(
                         "Jenga release carried_x=%.1f tower_x=%.1f frame_age=%.3f",
                         observation.carried.x,
@@ -916,14 +986,28 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
                     )
                     result = self._wait_placement(hwnd)
                     logger.info("Jenga placement result=%s", result or "unknown")
-                    if result in ("perfect", "good"):
+                    confirmed = result in ("perfect", "good")
+                    self._jenga_detector.learn(frame, observation.carried, placement_confirmed=confirmed)
+                    if confirmed:
                         player.confirm_placement()
+                    else:
+                        # Judgment polling consumed the disappearance frames.
+                        # Rebuild both motion and receiver identity instead of
+                        # keeping an unresolved release latch or a false top.
+                        player = self._new_player()
+                    missing_since = None
+                    last_pixels = None
+        except CaptureException as error:
+            logger.warning("Jenga capture interrupted; waiting for the next trigger: %s", error)
         finally:
             self._release_key()
-            self.info_set("current task", self.tr("祖赞卡之梯辅助已停止"))
+            self._jenga_detector.reset_tracking(clear_learned=True)
+            if session_started:
+                self.info_set("current task", self.tr("祖赞卡之梯辅助已停止"))
 
     def disable(self):
         # Disable before taking the lock, so a concurrently prepared pulse cannot start.
+        self._session_generation += 1
         super().disable()
         self._release_key()
 

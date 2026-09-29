@@ -170,12 +170,15 @@ class TestReleaseSyncWorkflow(unittest.TestCase):
         self.source.mkdir(parents=True)
         git_config = self.directory / "empty.gitconfig"
         git_config.write_text("", encoding="utf-8")
+        github_env = self.directory / "github_env.txt"
+        github_env.write_text("", encoding="utf-8")
         self.env = os.environ.copy()
         self.env.update(
             GIT_CONFIG_NOSYSTEM="1",
             GIT_CONFIG_GLOBAL=git_config.as_posix(),
             GIT_ALLOW_PROTOCOL="file",
             GITHUB_WORKSPACE=str(self.source),
+            GITHUB_ENV=str(github_env),
         )
         script = self.directory / "prepare_sync.ps1"
         script.write_text(workflow_step_script("case_sensitive_sync"), encoding="utf-8")
@@ -189,6 +192,10 @@ class TestReleaseSyncWorkflow(unittest.TestCase):
             timeout=30,
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        # Apply the emitted environment exactly as the runner does for subsequent steps.
+        self.env.update(
+            dict(line.split("=", 1) for line in github_env.read_text(encoding="utf-8-sig").splitlines() if line)
+        )
         source_file = self.source / "src" / "interaction" / "key.py"
         source_file.parent.mkdir(parents=True)
         source_file.write_text("unchanged content\n", encoding="utf-8")
@@ -223,6 +230,9 @@ class TestReleaseSyncWorkflow(unittest.TestCase):
         target = self.source.parent / "target_update"
         self.git("clone", "--bare", self.seed, origin)
         self.git("clone", origin, target)
+        # Some Windows runners persist this during clone, overriding the global setting.
+        self.git("config", "--local", "core.ignorecase", "true", cwd=target)
+        self.assertEqual(self.git("config", "--local", "--get", "core.ignorecase", cwd=target), "true")
         self.assertEqual(self.git("config", "--get", "core.ignorecase", cwd=target), "false")
         # partial-sync-repo replaces each whitelisted directory, then runs git add .
         self.assertTrue((target / "src").resolve().is_relative_to(self.directory))

@@ -586,7 +586,12 @@ class JengaDetector:
             for angle in (-8, 0, 8)
         ]
 
-    def reset_tracking(self):
+    def reset_tracking(self, *, clear_learned=False):
+        if clear_learned:
+            for group in self.learned:
+                for template in group:
+                    self._template_kinds.pop(id(template), None)
+            self.learned.clear()
         self.pixels_per_unit = None
         self._tower_last = None
         self._tower_template = None
@@ -604,8 +609,8 @@ class JengaDetector:
         self._identity_extent = None
         self._identity_pixels = None
 
-    def learn(self, frame, piece):
-        """Only learn a repeatedly observed carried piece at the confirmed release."""
+    def learn(self, frame, piece, *, placement_confirmed=True):
+        """Cache a verified carried shape; only a success establishes a new top."""
         frame = self.normalize(frame)
         x1, x2 = round(piece.x - piece.width / 2), round(piece.x + piece.width / 2)
         gray = cv2.cvtColor(frame[round(piece.top) : round(piece.bottom), x1:x2], cv2.COLOR_BGR2GRAY)
@@ -616,6 +621,11 @@ class JengaDetector:
             for template in group:
                 self._template_kinds.pop(id(template), None)
         self.learned = self.learned[-3:]
+        if not placement_confirmed:
+            # The shape is real even on a Miss, but neither a Miss nor an
+            # unread result proves a receiver identity or camera height.
+            self.reset_tracking()
+            return
         # Reacquire the new upper appearance. Keep the previous height bound:
         # the camera follows the new top, while its predecessor moves down by a
         # full sculpture and must not become the receiving face again.
