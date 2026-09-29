@@ -223,7 +223,7 @@ jobs:
 
   sync:
     needs: [prepare, test]
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     permissions:
       contents: read
 
@@ -234,6 +234,7 @@ jobs:
 
     env:
       PYTHONIOENCODING: 'UTF-8'
+      PYTHONLEGACYWINDOWSSTDIO: 'UTF-8'
 
     strategy:
       matrix:
@@ -242,10 +243,30 @@ jobs:
     steps:
       - name: Configure git
         run: |
+          [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
           git config --global core.autocrlf false
           git config --global core.eol lf
           git config --global user.email "OK-AzurPromilia@users.noreply.github.com"
           git config --global user.name "OK-AzurPromilia"
+          echo "action_state=yellow" >> $env:GITHUB_ENV
+          echo "${{ env.action_state }}"
+
+      - name: Enable case-sensitive repository sync
+        id: case_sensitive_sync
+        shell: pwsh
+        run: |
+          # partial-sync-repo clones target_* beside the checkout; both trees must inherit case sensitivity.
+          $syncRoot = Split-Path -Parent $env:GITHUB_WORKSPACE
+          foreach ($directory in @($syncRoot, $env:GITHUB_WORKSPACE)) {
+            fsutil file setCaseSensitiveInfo "$directory" enable
+            if ($LASTEXITCODE -ne 0) {
+              throw "Failed to enable case sensitivity for $directory"
+            }
+          }
+          git config --global core.ignorecase false
+          if ($LASTEXITCODE -ne 0) {
+            throw "Failed to configure case-sensitive Git paths"
+          }
 
       - uses: actions/checkout@v6
         with:
@@ -269,7 +290,7 @@ jobs:
         env:
           RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
         run: |
-          uv run --locked --no-sync python -m ok.update.inline_ok_requirements --tag "$RELEASE_TAG"
+          uv run --locked --no-sync python -m ok.update.inline_ok_requirements --tag "$env:RELEASE_TAG"
 
       - name: Sync Repositories
         id: sync
