@@ -338,6 +338,17 @@ jobs:
           pip install -r requirements.txt
           pip install polib
 
+      - name: Generate Windows launcher icon
+        shell: pwsh
+        run: |
+          @'
+          from PIL import Image
+
+          sizes = [(size, size) for size in (16, 24, 32, 48, 64, 128, 256)]
+          with Image.open("icons/icon.png") as icon:
+              icon.convert("RGBA").save("icons/icon.ico", format="ICO", sizes=sizes)
+          '@ | uv run --no-project --python (Get-Command python).Source python -
+
       - name: Build with PyAppify Action
         id: build-app
         uses: ok-oldking/pyappify-action@master

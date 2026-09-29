@@ -1,4 +1,6 @@
 name: "ok-ap"
+# 启动器界面图标；Windows EXE / 安装包图标由 release.yml 从此 PNG 生成 ICO。
+icon: "icons/icon.png"
 uac: true
 profiles:
   - name: "China"
