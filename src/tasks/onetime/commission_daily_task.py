@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from functools import cached_property
 
+from ok import CannotFindException
+
 from src.core.account_override_mixin import AccountOverrideMixin
 from src.core.base_game_task import BaseGameTask
 from src.data.page import page_main, page_commission_daily_material, page_commission_daily_boss, page_commission_daily_equipment
@@ -143,7 +145,7 @@ class CommissionDailyTask(BaseGameTask):
         return self.box_of_screen(0.0906, 0.5611, 0.6156, 0.6917)
 
     def _get_power(self):
-        for _ in self.loop(2):
+        for _ in self.loop(3, raise_if_time_out=CannotFindException('Failed to get power.')):
             boxes = self.ocr(box=self.box_of_screen(0.8635, 0.0417, 0.9187, 0.0593))
             if not boxes or not (result := boxes[0].name):
                 continue
@@ -153,33 +155,31 @@ class CommissionDailyTask(BaseGameTask):
 
     def run_once(self):
         self.ui_ensure(COMMISSION_PAGES[self.commission_type])
-        result = self.detect_with_scroll(
-            detector=OcrDetector(
-                match=self.commission_name,
-                box=self.scroll_box,
-            ),
-            box=self.scroll_box,
-            scroll_count=10,
-        )
-        self.wait_action_result(
-            action=lambda: self.click(result),
-            expect=OcrDetector(
+        for _ in self.loop(30):
+            if self.find_one(FeatureList.loading_check):
+                break
+            if box := self.find_one(FeatureList.commission_button_start_commission):
+                self.click(box)
+                self.sleep(0.1)
+                continue
+            if self.ocr(
                 match=self.commission_name,
                 box=self.box_of_screen(0.7562, 0.2741, 0.9240, 0.3167),
-            ),
-            max_attempts=5,
-        )
-        self.wait_action_result(
-            action=lambda: self.click(self.box_of_screen(0.8870, 0.7204, 0.9307, 0.7417)),
-            expect=TemplateDetector(FeatureList.commission_button_start_commission),
-            max_attempts=5,
-        )
-        self.wait_action_result(
-            condition=TemplateDetector(FeatureList.commission_button_start_commission),
-            action=lambda hit: self.click(hit),
-            expect=TemplateDetector(FeatureList.loading_check),
-            max_attempts=5,
-        )
+            ):
+                self.click(self.box_of_screen(0.8870, 0.7204, 0.9307, 0.7417))
+                self.sleep(0.1)
+                continue
+            if result := self.detect_with_scroll(
+                detector=OcrDetector(
+                    match=self.commission_name,
+                    box=self.scroll_box,
+                ),
+                box=self.scroll_box,
+                scroll_count=10,
+            ):
+                self.click(result)
+                self.sleep(0.1)
+                continue
         for _ in self.loop(120):
             if self.find_one(FeatureList.auto_combat_setting):
                 break
