@@ -3,13 +3,15 @@ name: Deploy documentation
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - docs/**
       - mkdocs.yml
       - requirements-docs.txt
       - .github/workflows/docs.yml
   pull_request:
+    branches:
+      - main
     paths:
       - docs/**
       - mkdocs.yml
@@ -38,6 +40,7 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-docs.txt
       - name: Configure GitHub Pages
+        if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
         with:
           enablement: true
