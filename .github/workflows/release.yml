@@ -255,7 +255,7 @@ jobs:
         id: case_sensitive_sync
         shell: pwsh
         run: |
-          # partial-sync-repo clones target_* beside the checkout; both trees must inherit case sensitivity.
+          # partial-sync-repo clones target_* beside the checkout; the hook handles child directories that remain case-insensitive.
           $syncRoot = Split-Path -Parent $env:GITHUB_WORKSPACE
           foreach ($directory in @($syncRoot, $env:GITHUB_WORKSPACE)) {
             fsutil file setCaseSensitiveInfo "$directory" enable
@@ -267,12 +267,6 @@ jobs:
           if ($LASTEXITCODE -ne 0) {
             throw "Failed to configure case-sensitive Git paths"
           }
-          # clone can persist core.ignorecase=true locally; runtime config overrides repository config.
-          @(
-            'GIT_CONFIG_COUNT=1'
-            'GIT_CONFIG_KEY_0=core.ignorecase'
-            'GIT_CONFIG_VALUE_0=false'
-          ) | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - uses: actions/checkout@v6
         with:
@@ -280,6 +274,20 @@ jobs:
           lfs: true
           fetch-depth: 0
           fetch-tags: true
+
+      - name: Configure sync Git hooks
+        id: sync_git_config
+        shell: pwsh
+        run: |
+          # The clone hook removes stale case variants from the target index before files are copied.
+          $hooksPath = Join-Path $env:GITHUB_WORKSPACE 'scripts/release/hooks'
+          @(
+            'GIT_CONFIG_COUNT=2'
+            'GIT_CONFIG_KEY_0=core.ignorecase'
+            'GIT_CONFIG_VALUE_0=false'
+            'GIT_CONFIG_KEY_1=core.hooksPath'
+            "GIT_CONFIG_VALUE_1=$hooksPath"
+          ) | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v6
