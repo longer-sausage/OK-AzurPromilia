@@ -267,6 +267,12 @@ jobs:
           if ($LASTEXITCODE -ne 0) {
             throw "Failed to configure case-sensitive Git paths"
           }
+          # clone can persist core.ignorecase=true locally; runtime config overrides repository config.
+          @(
+            'GIT_CONFIG_COUNT=1'
+            'GIT_CONFIG_KEY_0=core.ignorecase'
+            'GIT_CONFIG_VALUE_0=false'
+          ) | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - uses: actions/checkout@v6
         with:

@@ -581,7 +581,7 @@ uv run python main_debug.py    # Debug（更多日志、overlay、热重载）
 
 - 发版流程：`.github/workflows/release.yml`，支持手动触发 `workflow_dispatch`（提供主版本/次版本/补丁版本递增选项，自动给主分支 HEAD 打 tag），也支持直接推送 tag（`v*`）。
   单个工作流全自动完成版本计算、打 tag、测试、同步更新仓库、用 pyappify 打包并发布 Release。
-- 更新仓库同步仍在 Windows 上运行：checkout 前为工作区及其父目录启用 NTFS 大小写敏感，并设置 Git `core.ignorecase=false`，确保旁边克隆的更新仓库也继承大小写敏感。同步白名单目录时会整体重建，`Key.py → key.py` 即使内容不变也能正确提交；旧更新仓库中同时存在的错误大小写条目也会删除。`tests/test_release_workflow.py` 用临时 Git 仓库验证这两种情况及推送结果。
+- 更新仓库同步仍在 Windows 上运行：checkout 前为工作区及其父目录启用 NTFS 大小写敏感，确保旁边克隆的更新仓库也继承大小写敏感。通过 `GITHUB_ENV` 注入 `GIT_CONFIG_COUNT` / `GIT_CONFIG_KEY_0` / `GIT_CONFIG_VALUE_0`，在后续所有 Git 子进程中强制 `core.ignorecase=false`，避免 clone 写入的本地 `core.ignorecase=true` 覆盖全局设置。同步白名单目录时会整体重建，`Key.py → key.py` 即使内容不变也能正确提交；旧更新仓库中同时存在的错误大小写条目也会删除。`tests/test_release_workflow.py` 用临时 Git 仓库模拟本地配置为 `true`，验证这两种情况及推送结果。
 - 启动器图标统一使用 `icons/icon.png`：`pyappify.yml` 的 `icon` 用于启动器界面；发布工作流在调用 PyAppify Action 前，自动生成包含 16 / 24 / 32 / 48 / 64 / 128 / 256 像素尺寸的 `icons/icon.ico`，供 Windows 启动器 EXE 和安装包使用。更换图标时只需更新 PNG。
 - 发版串行执行，使用 `queue: max` 保留最多 100 个等待任务，后来的 tag 不会替换已有的排队任务。
 - 手动发版会在 tag 注释中记录 `Release-Run`（当前工作流 run 的 URL）。完整重跑时复用该 tag 和原提交，不再次递增版本或切换到最新主分支；重建时覆盖同名构建产物。
