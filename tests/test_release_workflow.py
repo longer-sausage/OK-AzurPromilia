@@ -168,6 +168,8 @@ class TestReleaseSyncWorkflow(unittest.TestCase):
         self.addCleanup(temporary.cleanup)
         self.source = self.directory / "job" / "source"
         self.source.mkdir(parents=True)
+        shutil.copytree(ROOT / "scripts" / "release" / "hooks", self.source / "scripts" / "release" / "hooks")
+        (self.source / "deploy.txt").write_text("src\n", encoding="utf-8")
         git_config = self.directory / "empty.gitconfig"
         git_config.write_text("", encoding="utf-8")
         github_env = self.directory / "github_env.txt"
@@ -180,26 +182,29 @@ class TestReleaseSyncWorkflow(unittest.TestCase):
             GITHUB_WORKSPACE=str(self.source),
             GITHUB_ENV=str(github_env),
         )
-        script = self.directory / "prepare_sync.ps1"
-        script.write_text(workflow_step_script("case_sensitive_sync"), encoding="utf-8")
-        result = subprocess.run(
-            [POWERSHELL, "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", str(script)],
-            cwd=self.source,
-            env=self.env,
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            timeout=30,
-        )
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        for step_id in ("case_sensitive_sync", "sync_git_config"):
+            script = self.directory / f"{step_id}.ps1"
+            script.write_text(workflow_step_script(step_id), encoding="utf-8")
+            result = subprocess.run(
+                [POWERSHELL, "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", str(script)],
+                cwd=self.source,
+                env=self.env,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                timeout=30,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         # Apply the emitted environment exactly as the runner does for subsequent steps.
         self.env.update(
             dict(line.split("=", 1) for line in github_env.read_text(encoding="utf-8-sig").splitlines() if line)
         )
         source_file = self.source / "src" / "interaction" / "key.py"
         source_file.parent.mkdir(parents=True)
+        self.set_case_insensitive(source_file.parent)
         source_file.write_text("unchanged content\n", encoding="utf-8")
-        self.assertFalse(source_file.with_name("Key.py").exists())
+        self.assertEqual([path.name for path in source_file.parent.iterdir()], ["key.py"])
+        self.assertTrue(source_file.with_name("Key.py").exists())
 
         self.seed = self.directory / "seed"
         self.git("init", "--initial-branch=main", self.seed)
@@ -225,11 +230,22 @@ class TestReleaseSyncWorkflow(unittest.TestCase):
         )
         return result.stdout.strip()
 
+    def set_case_insensitive(self, directory):
+        result = subprocess.run(
+            ["fsutil", "file", "setCaseSensitiveInfo", str(directory), "disable"],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=30,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def sync(self):
         origin = self.directory / "origin.git"
         target = self.source.parent / "target_update"
         self.git("clone", "--bare", self.seed, origin)
         self.git("clone", origin, target)
+        self.assertNotIn("src/interaction/Key.py", self.git("ls-files", "src", cwd=target).splitlines())
         # Some Windows runners persist this during clone, overriding the global setting.
         self.git("config", "--local", "core.ignorecase", "true", cwd=target)
         self.assertEqual(self.git("config", "--local", "--get", "core.ignorecase", cwd=target), "true")
@@ -237,10 +253,15 @@ class TestReleaseSyncWorkflow(unittest.TestCase):
         # partial-sync-repo replaces each whitelisted directory, then runs git add .
         self.assertTrue((target / "src").resolve().is_relative_to(self.directory))
         shutil.rmtree(target / "src")
-        shutil.copytree(self.source / "src", target / "src")
+        # The source file must still replace the old index entry if this directory is case-insensitive.
+        interaction = target / "src" / "interaction"
+        interaction.mkdir(parents=True)
+        self.set_case_insensitive(interaction)
+        shutil.copy2(self.source / "src" / "interaction" / "key.py", interaction / "key.py")
+        self.assertEqual([path.name for path in interaction.iterdir()], ["key.py"])
+        self.assertTrue((interaction / "Key.py").exists())
         self.git("add", ".", cwd=target)
         self.assertEqual(self.git("ls-files", "src", cwd=target), "src/interaction/key.py")
-        self.assertFalse((target / "src" / "interaction" / "Key.py").exists())
         self.assertEqual((target / "retained.txt").read_text(encoding="utf-8"), "outside sync list\n")
         changes = self.git("diff", "--cached", "--name-status", "-M", cwd=target)
         self.git("config", "user.name", "Release Sync Test", cwd=target)
