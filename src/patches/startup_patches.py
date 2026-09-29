@@ -9,6 +9,7 @@ def install_startup_patches():
         return
 
     from src.patches.cascade_dropdown_patch import install_cascade_dropdown_patch
+    from src.patches.capture_timestamp_patch import install_capture_timestamp_patch
     from src.patches.i18n_collection_patch import install_i18n_collection_patch
     from src.patches.launch_args_patch import install_launch_args_patch
     from src.patches.no_frame_task_patch import install_no_frame_task_patch
@@ -22,6 +23,7 @@ def install_startup_patches():
     from src.patches.win32_gdi_point_patch import install_win32_gdi_point_patch
 
     install_cascade_dropdown_patch()
+    install_capture_timestamp_patch()
     install_i18n_collection_patch()
     install_launch_args_patch()
     install_mute_promo_patch()

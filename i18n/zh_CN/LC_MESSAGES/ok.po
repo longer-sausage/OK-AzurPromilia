@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
@@ -7,6 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
 msgid "保存当前账号配置"
 msgstr "保存当前账号配置"
 
@@ -130,7 +132,6 @@ msgstr "跳剧情"
 msgid "跳过剧情触发式任务：自动点击跳过对话框和确认按钮。"
 msgstr "跳过剧情触发式任务：自动点击跳过对话框和确认按钮。"
 
-
 msgid "辅助星结"
 msgstr "辅助星结"
 
@@ -142,3 +143,41 @@ msgstr "宝箱开锁"
 
 msgid "宝箱开锁触发式任务：校准颜色条带后按钥匙位置逐个点击开锁。"
 msgstr "宝箱开锁触发式任务：校准颜色条带后按钥匙位置逐个点击开锁。"
+
+msgid "家园每日"
+msgstr "家园每日"
+
+msgid "完成家园每日任务"
+msgstr "完成家园每日任务"
+
+msgid "执行家园每日：收菜、做饭、喂饭"
+msgstr "执行家园每日：收菜、做饭、喂饭"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "自动祖赞卡之梯"
+msgstr "自动祖赞卡之梯"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "检测到祖赞卡之梯界面自动完成。"
+msgstr "检测到祖赞卡之梯界面自动完成。"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "正在对准图腾"
+msgstr "正在对准图腾"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "祖赞卡之梯辅助已停止"
+msgstr "祖赞卡之梯辅助已停止"
+
+msgid "每日收菜"
+msgstr "每日收菜"
+
+msgid "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡"
+msgstr "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡"
+
+msgid "委托每日"
+msgstr "委托每日"
+
+msgid "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
+msgstr "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
+

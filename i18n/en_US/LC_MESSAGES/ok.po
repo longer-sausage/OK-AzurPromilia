@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
@@ -7,6 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
 msgid "保存当前账号配置"
 msgstr "Save Current Account Settings"
 
@@ -128,17 +130,63 @@ msgid "跳剧情"
 msgstr "Skip Dialog"
 
 msgid "跳过剧情触发式任务：自动点击跳过对话框和确认按钮。"
-msgstr "Skip dialog trigger task: automatically click skip dialog and confirm buttons."
-
+msgstr ""
+"Skip dialog trigger task: automatically click skip dialog and confirm "
+"buttons."
 
 msgid "辅助星结"
 msgstr "Star Link Assist"
 
 msgid "星结辅助触发式任务：缔结星结时，光标指向目标出现可射击光圈，自动点击屏幕准心完成射击。"
-msgstr "Star Link assist trigger task: while bonding a Star Link, automatically clicks the screen crosshair to fire when the shootable ring appears over the target."
+msgstr ""
+"Star Link assist trigger task: while bonding a Star Link, automatically "
+"clicks the screen crosshair to fire when the shootable ring appears over the"
+" target."
 
 msgid "宝箱开锁"
 msgstr "Treasure Unlock"
 
 msgid "宝箱开锁触发式任务：校准颜色条带后按钥匙位置逐个点击开锁。"
-msgstr "Treasure unlock trigger task: after calibrating the color bands, clicks each key position in turn to unlock."
+msgstr ""
+"Treasure unlock trigger task: after calibrating the color bands, clicks each"
+" key position in turn to unlock."
+
+msgid "家园每日"
+msgstr "Home Daily"
+
+msgid "完成家园每日任务"
+msgstr "Complete home daily tasks"
+
+msgid "执行家园每日：收菜、做饭、喂饭"
+msgstr "Run home daily: harvest crops, cook, and feed"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "自动祖赞卡之梯"
+msgstr "Auto Zuzanka’s Ladder"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "检测到祖赞卡之梯界面自动完成。"
+msgstr "Automatically play when the Zuzanka’s Ladder interface appears."
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "正在对准图腾"
+msgstr "Aligning the totem"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "祖赞卡之梯辅助已停止"
+msgstr "Zuzanka’s Ladder assistance stopped"
+
+msgid "每日收菜"
+msgstr "Daily Claim"
+
+msgid "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡"
+msgstr "Run daily claim: mail, surprise box, daily/weekly activity, monthly card"
+
+msgid "委托每日"
+msgstr "Commission Daily"
+
+msgid "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
+msgstr ""
+"Run commission daily: spend power to farm the selected daily commission "
+"(auto-combat must be unlocked first)"
+

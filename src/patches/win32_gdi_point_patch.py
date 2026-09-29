@@ -10,7 +10,7 @@ def install_win32_gdi_point_patch():
     （字段与 wintypes.POINT 一致但类型对象不同），并把全局
     user32.GetCursorPos.argtypes 设为 POINTER(自定义POINT)。ctypes 按类型对象
     做指针校验，任何用标准 wintypes.POINT 调用 GetCursorPos 的代码
-    （pyautogui._pyautogui_win._position / pynput.mouse / 项目 Mouse.py）都会报
+    （pyautogui._pyautogui_win._position / pynput.mouse / 项目 mouse.py）都会报
     "expected LP_POINT instance instead of pointer to POINT" 崩溃。
 
     本补丁从源头修复：把 win32_gdi 模块里的 POINT 类替换为标准 wintypes.POINT

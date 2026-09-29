@@ -17,8 +17,9 @@
 
 ## 代码风格
 
+- Python 模块文件用 `snake_case.py`，`tests/` 下用 `test_*.py`；类名仍用 `PascalCase`。
 - 任务类基于 ok-script：`BaseTask` / `TriggerTask`，
-  **本项目通用基类为 `src/core/BaseGameTask.py`**（不要直接继承 `BaseTask`）。
+  **本项目通用基类为 `src/core/base_game_task.py`**（不要直接继承 `BaseTask`）。
 - 任务字符串国际化：UI 文案走 `self.tr()` + `i18n/*/LC_MESSAGES/ok.po`；
   OCR 匹配文本走 `assets/lang/*.json` + `self.lang.<模块>.<key>`。两者**不要混用**。
 - 新增任务后必须在 `src/config.py` 的 `onetime_tasks` / `trigger_tasks` 中注册。
@@ -54,3 +55,36 @@
 - **lang JSON 只放 OCR 匹配文本**。UI 说明（如 `instructions` 富文本）**不用 lang JSON**，改用 `self.tr("中文msgid")` 走 ok 的 gettext i18n：msgid 写入 `i18n/*/LC_MESSAGES/ok.po`（msgid 必须与代码字符串逐字一致，含全角标点/`{占位符}`），再用 `python tools/task_i18n_helper.py compile --i18n i18n` 编译 `ok.mo` 生效。
   加新文案时先用 `python tools/task_i18n_helper.py scan --task <任务文件>` 把该进 `.po` 的字符串列出来，避免漏翻。
 - **最小原则**：emoji、`└─`/`├─`、HTML 标签/颜色等无需翻译的内容一律留在代码里拼，只把需翻译的纯文本放进 i18n 数据。
+
+## 循环与重试规范（`self.loop`）
+
+在任务或 Mixin 中进行**带超时的轮询、重试或多帧检测**时，**严禁裸写** `while self.active_time() - start < time_out:`、`while time.monotonic() < deadline:` 并手动 `self.next_frame()`，**必须统一使用 `self.loop`**（定义于 `BaseGameTask`）：
+
+- **特性保障**：
+  1. **暂停感知（Pause-aware）**：基于 `self.active_time()` 计算活跃耗时，任务被用户暂停期间计时自动冻结，避免无谓超时。
+  2. **自动取帧驱动**：`yield_frame=True`（默认）时每次迭代自动调用并产出下一帧（`self.next_frame()`），循环体内无需手动取帧。若不需要帧（或动作内部自行取帧），传 `yield_frame=False`（产出 `None`）。
+  3. **超时行为可控**：
+     - `raise_if_time_out=True`（默认）：循环超时未提前 `break`/`return` 时抛出 `TimeoutError('Loop time out.')`。
+     - `raise_if_time_out=False`：超时后正常退出循环，可在循环后执行兜底逻辑或抛出业务异常（如 `WaitFailedException`）。
+     - `raise_if_time_out=ExceptionInstance` 或 `ExceptionClass`：超时直接抛出指定的自定义异常。
+
+- **标准用法模式**：
+  ```python
+  # 模式 A（最常用）：默认取帧，找到目标即 break，超时自动抛 TimeoutError
+  for frame in self.loop(time_out=10):
+      if target := self.find_one(FeatureList.some_btn, frame=frame):
+          self.click(target)
+          break
+
+  # 模式 B：超时后执行特定兜底或抛业务异常（WaitFailedException）
+  for frame in self.loop(time_out=10, raise_if_time_out=False):
+      if self._check_success(frame):
+          return
+  raise WaitFailedException("操作超时")
+
+  # 模式 C：不需要自动取帧的时间控制循环
+  for _ in self.loop(time_out=10, yield_frame=False, raise_if_time_out=False):
+      if self.try_step():
+          return
+  ```
+

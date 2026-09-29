@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
@@ -7,6 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
 msgid "保存当前账号配置"
 msgstr "現在のアカウント設定を保存"
 
@@ -130,15 +132,57 @@ msgstr "ダイアログをスキップ"
 msgid "跳过剧情触发式任务：自动点击跳过对话框和确认按钮。"
 msgstr "ダイアログスキップトリガータスク：スキップダイアログと確認ボタンを自動でクリックします。"
 
-
 msgid "辅助星结"
 msgstr "星結アシスト"
 
 msgid "星结辅助触发式任务：缔结星结时，光标指向目标出现可射击光圈，自动点击屏幕准心完成射击。"
-msgstr "星結アシストトリガータスク：星結を結ぶ際、カーソルがターゲットを捉えて射撃可能リングが表示されたら、画面中央のクロスヘアを自動クリックして射撃します。"
+msgstr ""
+"星結アシストトリガータスク：星結を結ぶ際、カーソルがターゲットを捉えて射撃可能リングが表示されたら、画面中央のクロスヘアを自動クリックして射撃します。"
 
 msgid "宝箱开锁"
 msgstr "宝箱開錠"
 
 msgid "宝箱开锁触发式任务：校准颜色条带后按钥匙位置逐个点击开锁。"
 msgstr "宝箱開錠のトリガータスク：カラーバンドを校正し、鍵の位置に合わせて順番にクリックして開錠します。"
+
+msgid "家园每日"
+msgstr "ホームデイリー"
+
+msgid "完成家园每日任务"
+msgstr "ホームデイリータスクを完了"
+
+msgid "执行家园每日：收菜、做饭、喂饭"
+msgstr "ホームデイリーを実行：収穫・料理・餌やり"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "自动祖赞卡之梯"
+msgstr "ズザンカの梯子自動操作"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "检测到祖赞卡之梯界面自动完成。"
+msgstr "ズザンカの梯子の画面を検出すると自動で進行します。"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "正在对准图腾"
+msgstr "トーテムの位置を合わせています"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "祖赞卡之梯辅助已停止"
+msgstr "ズザンカの梯子の補助を停止しました"
+
+msgid "每日收菜"
+msgstr "デイリー報酬受け取り"
+
+msgid "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡"
+msgstr ""
+"デイリー報酬受け取りを実行：メール、サプライズボックス、デイリー/ウィークリー"
+"活躍度、月間カード"
+
+msgid "委托每日"
+msgstr "依頼デイリー"
+
+msgid "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
+msgstr ""
+"依頼デイリーを実行：体力を消費して選択したデイリー依頼を周回（先にオートバトル"
+"の解放が必要）"
+

@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
@@ -7,6 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
 msgid "保存当前账号配置"
 msgstr "Guardar configuración de cuenta actual"
 
@@ -128,17 +130,65 @@ msgid "跳剧情"
 msgstr "Saltar diálogo"
 
 msgid "跳过剧情触发式任务：自动点击跳过对话框和确认按钮。"
-msgstr "Tarea de activación para saltar diálogos: hace clic automáticamente en los botones de saltar diálogo y confirmar."
-
+msgstr ""
+"Tarea de activación para saltar diálogos: hace clic automáticamente en los "
+"botones de saltar diálogo y confirmar."
 
 msgid "辅助星结"
 msgstr "Asistencia de Vínculo Estelar"
 
 msgid "星结辅助触发式任务：缔结星结时，光标指向目标出现可射击光圈，自动点击屏幕准心完成射击。"
-msgstr "Tarea de activación de asistencia de Vínculo Estelar: al forjar un Vínculo Estelar, hace clic automáticamente en la mira para disparar cuando aparece el anillo de disparo sobre el objetivo."
+msgstr ""
+"Tarea de activación de asistencia de Vínculo Estelar: al forjar un Vínculo "
+"Estelar, hace clic automáticamente en la mira para disparar cuando aparece "
+"el anillo de disparo sobre el objetivo."
 
 msgid "宝箱开锁"
 msgstr "Desbloqueo de cofres"
 
 msgid "宝箱开锁触发式任务：校准颜色条带后按钥匙位置逐个点击开锁。"
-msgstr "Tarea de activación de desbloqueo de cofres: tras calibrar las bandas de color, hace clic en cada posición de llave para desbloquear."
+msgstr ""
+"Tarea de activación de desbloqueo de cofres: tras calibrar las bandas de "
+"color, hace clic en cada posición de llave para desbloquear."
+
+msgid "家园每日"
+msgstr "Diario del hogar"
+
+msgid "完成家园每日任务"
+msgstr "Completa las tareas diarias del hogar"
+
+msgid "执行家园每日：收菜、做饭、喂饭"
+msgstr "Ejecutar el diario del hogar: cosechar, cocinar y alimentar"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "自动祖赞卡之梯"
+msgstr "Escalera de Zuzanka automática"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "检测到祖赞卡之梯界面自动完成。"
+msgstr "Juega automáticamente al detectar la pantalla de la escalera de Zuzanka."
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "正在对准图腾"
+msgstr "Alineando el tótem"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "祖赞卡之梯辅助已停止"
+msgstr "Asistencia de la escalera de Zuzanka detenida"
+
+msgid "每日收菜"
+msgstr "Recompensa diaria"
+
+msgid "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡"
+msgstr ""
+"Ejecutar la recompensa diaria: correo, caja sorpresa, actividad "
+"diaria/semanal, tarjeta mensual"
+
+msgid "委托每日"
+msgstr "Encargo diario"
+
+msgid "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
+msgstr ""
+"Ejecutar el encargo diario: gasta vigor para repetir el encargo diario "
+"seleccionado (requiere desbloquear antes el combate automático)"
+

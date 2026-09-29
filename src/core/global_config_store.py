@@ -8,7 +8,7 @@ from ok.util.file import get_relative_path, read_json_file, write_json_file
 from qfluentwidgets import FluentIcon
 
 from src.icons import Icons
-from src.interaction.KeyConfig import DEFAULT_COMMON_KEYS
+from src.interaction.key_config import DEFAULT_COMMON_KEYS
 
 KEY_CONFIG_NAME = "Game Hotkey Config"
 ENSURE_MAIN_ONCE_ACTION_SLEEP_NAME = "Ensure Main Once Action Sleep"

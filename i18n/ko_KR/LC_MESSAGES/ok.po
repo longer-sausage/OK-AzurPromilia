@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
@@ -7,6 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
 msgid "保存当前账号配置"
 msgstr "현재 계정 설정 저장"
 
@@ -130,15 +132,55 @@ msgstr "대화 건너뛰기"
 msgid "跳过剧情触发式任务：自动点击跳过对话框和确认按钮。"
 msgstr "대화 건너뛰기 트리거 작업: 건너뛰기 대화 상자와 확인 버튼을 자동으로 클릭합니다."
 
-
 msgid "辅助星结"
 msgstr "성결 보조"
 
 msgid "星结辅助触发式任务：缔结星结时，光标指向目标出现可射击光圈，自动点击屏幕准心完成射击。"
-msgstr "성결 보조 트리거 작업: 성결을 맺을 때 커서가 대상을 가리켜 사격 가능 링이 표시되면 화면 중앙 조준점을 자동으로 클릭해 사격합니다."
+msgstr ""
+"성결 보조 트리거 작업: 성결을 맺을 때 커서가 대상을 가리켜 사격 가능 링이 표시되면 화면 중앙 조준점을 자동으로 클릭해 사격합니다."
 
 msgid "宝箱开锁"
 msgstr "보물상자 잠금 해제"
 
 msgid "宝箱开锁触发式任务：校准颜色条带后按钥匙位置逐个点击开锁。"
 msgstr "보물상자 잠금 해제 트리거 작업: 색상 밴드를 보정한 뒤 열쇠 위치에 따라 차례로 클릭하여 잠금을 해제합니다."
+
+msgid "家园每日"
+msgstr "홈 데일리"
+
+msgid "完成家园每日任务"
+msgstr "홈 데일리 작업 완료"
+
+msgid "执行家园每日：收菜、做饭、喂饭"
+msgstr "홈 데일리 실행: 수확, 요리, 먹이 주기"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "自动祖赞卡之梯"
+msgstr "주잔카의 사다리 자동 진행"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "检测到祖赞卡之梯界面自动完成。"
+msgstr "주잔카의 사다리 화면을 감지하면 자동으로 진행합니다."
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "正在对准图腾"
+msgstr "토템 위치 맞추는 중"
+
+#: src/tasks/trigger/auto_jenga_task.py
+msgid "祖赞卡之梯辅助已停止"
+msgstr "주잔카의 사다리 보조 중지됨"
+
+msgid "每日收菜"
+msgstr "일일 보상 수령"
+
+msgid "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡"
+msgstr "일일 보상 수령 실행: 우편, 서프라이즈 상자, 일일/주간 활동도, 월간 카드"
+
+msgid "委托每日"
+msgstr "의뢰 데일리"
+
+msgid "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
+msgstr ""
+"의뢰 데일리 실행: 체력을 소모하여 선택한 일일 의뢰를 반복 (자동 전투를 먼저 "
+"해제해야 함)"
+

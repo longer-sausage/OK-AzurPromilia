@@ -3,7 +3,7 @@ name: PR Test
 on:
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   test:
@@ -90,4 +90,4 @@ jobs:
       - name: Run tests
         timeout-minutes: 5
         run: |
-          python -u -m unittest discover -s tests -p "Test*.py" -v
+          python -u -m unittest discover -s tests -p "test_*.py" -v
