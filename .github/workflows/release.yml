@@ -223,7 +223,7 @@ jobs:
 
   sync:
     needs: [prepare, test]
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     permissions:
       contents: read
 
@@ -234,7 +234,6 @@ jobs:
 
     env:
       PYTHONIOENCODING: 'UTF-8'
-      PYTHONLEGACYWINDOWSSTDIO: 'UTF-8'
 
     strategy:
       matrix:
@@ -243,13 +242,10 @@ jobs:
     steps:
       - name: Configure git
         run: |
-          [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
           git config --global core.autocrlf false
           git config --global core.eol lf
           git config --global user.email "OK-AzurPromilia@users.noreply.github.com"
           git config --global user.name "OK-AzurPromilia"
-          echo "action_state=yellow" >> $env:GITHUB_ENV
-          echo "${{ env.action_state }}"
 
       - uses: actions/checkout@v6
         with:
@@ -273,7 +269,7 @@ jobs:
         env:
           RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
         run: |
-          uv run --locked --no-sync python -m ok.update.inline_ok_requirements --tag "$env:RELEASE_TAG"
+          uv run --locked --no-sync python -m ok.update.inline_ok_requirements --tag "$RELEASE_TAG"
 
       - name: Sync Repositories
         id: sync
@@ -341,6 +337,17 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install polib
+
+      - name: Generate Windows launcher icon
+        shell: pwsh
+        run: |
+          @'
+          from PIL import Image
+
+          sizes = [(size, size) for size in (16, 24, 32, 48, 64, 128, 256)]
+          with Image.open("icons/icon.png") as icon:
+              icon.convert("RGBA").save("icons/icon.ico", format="ICO", sizes=sizes)
+          '@ | uv run --no-project --python (Get-Command python).Source python -
 
       - name: Build with PyAppify Action
         id: build-app
