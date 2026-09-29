@@ -584,9 +584,8 @@ uv run python main_debug.py    # Debug（更多日志、overlay、热重载）
 
 ## 发布
 
-- 本地打 tag：`.\auto_release.ps1 -DryRun`（预览）或直接执行。
-- 每日自动发版：`.github/workflows/auto-release.yml` 检查 `deploy.txt` 关注路径是否有变更，
-  有则自动递增版本号并打 tag。
+- 手动发版：`.github/workflows/release.yml`（手动触发 `workflow_dispatch`），提供主版本/次版本/补丁版本递增选项，
+  自动给主分支 HEAD 打 tag 并触发打包构建。
 - 打 tag 后 `.github/workflows/build.yml` 自动测试、用 pyappify 打包并发布 Release。
 - **`requirements.txt` 是 `pyproject.toml` + `uv.lock` 的派生产物，不要手改**。
   依赖变更后重新生成：

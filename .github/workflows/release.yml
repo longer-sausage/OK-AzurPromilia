@@ -1,0 +1,133 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump_version:
+        description: '版本递增类型 / Bump version'
+        required: true
+        default: 'minor'
+        type: choice
+        options:
+          - minor
+          - patch
+          - major
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: true
+          token: ${{ secrets.OK_GH || github.token }}
+
+      - name: Resolve main branch and target commit
+        id: target
+        run: |
+          set -euo pipefail
+
+          main_branch="${{ github.event.repository.default_branch }}"
+          if [ -z "$main_branch" ]; then
+            main_branch="main"
+          fi
+          echo "Main branch name: $main_branch"
+
+          git fetch origin "$main_branch" --tags
+          target=$(git rev-parse "origin/$main_branch")
+          echo "Target commit SHA (HEAD of $main_branch): $target"
+
+          echo "main_branch=$main_branch" >> "$GITHUB_OUTPUT"
+          echo "commit=$target" >> "$GITHUB_OUTPUT"
+
+      - name: Compute next version
+        id: version
+        run: |
+          set -euo pipefail
+
+          last_tag=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -n 1 || true)
+          echo "last_tag=${last_tag:-<none>}"
+
+          bump_type="${{ inputs.bump_version }}"
+          echo "bump_type=$bump_type"
+
+          if [ -z "$last_tag" ]; then
+            case "$bump_type" in
+              *major*|*主*)
+                next="v1.0.0"
+                ;;
+              *patch*|*补丁*)
+                next="v0.0.1"
+                ;;
+              *minor*|*次*|*)
+                next="v0.1.0"
+                ;;
+            esac
+          else
+            version="${last_tag#v}"
+            if [[ "$version" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+              major="${BASH_REMATCH[1]}"
+              minor="${BASH_REMATCH[2]}"
+              patch="${BASH_REMATCH[3]}"
+            else
+              echo "invalid last_tag format: $last_tag" >&2
+              exit 1
+            fi
+
+            case "$bump_type" in
+              *major*|*主*)
+                major=$((major + 1))
+                minor=0
+                patch=0
+                ;;
+              *patch*|*补丁*)
+                patch=$((patch + 1))
+                ;;
+              *minor*|*次*|*)
+                minor=$((minor + 1))
+                patch=0
+                ;;
+            esac
+            next="v${major}.${minor}.${patch}"
+          fi
+
+          echo "Computed next version: $next"
+          echo "next=$next" >> "$GITHUB_OUTPUT"
+
+      - name: Create and push version tag
+        env:
+          GH_TOKEN: ${{ secrets.OK_GH || github.token }}
+        run: |
+          set -euo pipefail
+
+          next="${{ steps.version.outputs.next }}"
+          target="${{ steps.target.outputs.commit }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$next" "$target" -m "Release $next"
+          git push origin "$next"
+          echo "Released $next -> $target"
+
+      - name: Trigger Build via repository_dispatch
+        env:
+          GH_TOKEN: ${{ secrets.OK_GH || github.token }}
+        run: |
+          set -euo pipefail
+          next="${{ steps.version.outputs.next }}"
+          curl -sS -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/dispatches" \
+            -d "{\"event_type\":\"release\",\"client_payload\":{\"tag\":\"$next\"}}"
+          echo "Dispatched build for $next"

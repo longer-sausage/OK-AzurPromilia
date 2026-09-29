@@ -71,7 +71,7 @@ provides the application configuration, tasks, and game-specific implementation 
 
 ## 📥 Download & Install
 
-> **No stable release has been published yet.** The automated release pipeline (`auto_release` + `build`)
+> **No stable release has been published yet.** The release pipeline (`release` + `build`)
 > is already in place; the installers will be published here once the first release is out. Until then,
 > please [run from source](#run-from-source).
 

@@ -1,4 +1,4 @@
-# 发版关注路径：这些路径有变更时，auto-release 工作流才会创建新 tag。
+# 发版同步白名单（Sync List）：
 # 每行一个目录或文件，空行与 # 注释被忽略。
 #
 # ⚠️ 本文件同时是 build.yml 里 partial-sync-repo 的 sync_list ——

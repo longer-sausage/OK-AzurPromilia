@@ -6,7 +6,7 @@ on:
       - 'v*'
   repository_dispatch:
     types:
-      - auto-release
+      - release
   workflow_dispatch:
 
 jobs:

@@ -44,7 +44,7 @@
 ├── tests/                      unittest 测试
 ├── scripts/ tools/             通用工具脚本
 ├── docs/                       本目录（面向人的文档）
-└── .github/workflows/          CI（build / docs / auto-release）
+└── .github/workflows/          CI（build / docs / release）
 ```
 
 ## 开发环境
