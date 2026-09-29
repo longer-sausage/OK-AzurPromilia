@@ -1,7 +1,7 @@
 # 发版同步白名单（Sync List）：
 # 每行一个目录或文件，空行与 # 注释被忽略。
 #
-# ⚠️ 本文件同时是 build.yml 里 partial-sync-repo 的 sync_list ——
+# ⚠️ 本文件同时是 release.yml 里 partial-sync-repo 的 sync_list ——
 #    只有列在这里的路径会被同步到更新仓库（AliceJump/ok-ap-update），
 #    而更新仓库是 pyappify 安装 / 更新应用时的拉取源。
 #    因此「运行时用得到的文件」必须列全，漏掉会直接导致安装失败
