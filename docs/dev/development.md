@@ -579,9 +579,10 @@ uv run python main_debug.py    # Debug（更多日志、overlay、热重载）
 
 ## 发布
 
-- 手动发版：`.github/workflows/release.yml`（手动触发 `workflow_dispatch`），提供主版本/次版本/补丁版本递增选项，
-  自动给主分支 HEAD 打 tag 并触发打包构建。
-- 打 tag 后 `.github/workflows/build.yml` 自动测试、用 pyappify 打包并发布 Release。
+- 发版流程：`.github/workflows/release.yml`，支持手动触发 `workflow_dispatch`（提供主版本/次版本/补丁版本递增选项，自动给主分支 HEAD 打 tag），也支持直接推送 tag（`v*`）。
+  单个工作流全自动完成版本计算、打 tag、测试、同步更新仓库、用 pyappify 打包并发布 Release。
+- 发版串行执行，使用 `queue: max` 保留最多 100 个等待任务，后来的 tag 不会替换已有的排队任务。
+- 手动发版会在 tag 注释中记录 `Release-Run`（当前工作流 run 的 URL）。完整重跑时复用该 tag 和原提交，不再次递增版本或切换到最新主分支；重建时覆盖同名构建产物。
 - **`requirements.txt` 是 `pyproject.toml` + `uv.lock` 的派生产物，不要手改**。
   依赖变更后重新生成：
 
