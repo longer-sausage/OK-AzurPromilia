@@ -155,37 +155,42 @@ class CommissionDailyTask(BaseGameTask):
 
     def run_once(self):
         self.ui_ensure(COMMISSION_PAGES[self.commission_type])
-        for _ in self.loop(30):
-            if self.find_one(FeatureList.loading_check):
+
+        for _ in self.loop(120):
+            if self.find_one(FeatureList.auto_combat_setting):
                 break
+
+            if self.find_one(FeatureList.auto_combat_check):
+                self.send_key('f1')
+                self.sleep(self.once_sleep_time)
+                continue
+
             if box := self.find_one(FeatureList.commission_button_start_commission):
                 self.click(box)
                 self.sleep(0.1)
                 continue
+
             if self.ocr(
                 match=self.commission_name,
                 box=self.box_of_screen(0.7562, 0.2741, 0.9240, 0.3167),
             ):
                 self.click(self.box_of_screen(0.8870, 0.7204, 0.9307, 0.7417))
-                self.sleep(0.1)
+                self.sleep(self.once_sleep_time)
                 continue
-            if result := self.detect_with_scroll(
+
+            if self.ui_page_appear(COMMISSION_PAGES[self.commission_type]) and (result := self.detect_with_scroll(
                 detector=OcrDetector(
                     match=self.commission_name,
                     box=self.scroll_box,
                 ),
                 box=self.scroll_box,
                 scroll_count=10,
-            ):
+                raise_if_not_found=False,
+            )):
                 self.click(result)
                 self.sleep(0.1)
                 continue
-        for _ in self.loop(120):
-            if self.find_one(FeatureList.auto_combat_setting):
-                break
-            if self.find_one(FeatureList.auto_combat_check):
-                self.send_key('f1')
-                self.sleep(self.once_sleep_time)
+
         for _ in self.loop(480):
             if self.find_one(FeatureList.auto_combat_setting):
                 self.sleep(self.once_sleep_time)
