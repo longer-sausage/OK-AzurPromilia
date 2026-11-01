@@ -43,7 +43,11 @@
 
 ## 📥 下载与安装
 
-前往 [GitHub Releases](https://github.com/longer-sausage/OK-AzurPromilia/releases) 下载最新版本安装包：
+- [Mirror酱](https://mirrorchyan.com/zh/projects?rid=OK-AzurPromilia)
+- [夸克网盘](https://pan.quark.cn/s/5f0cb1150fc4)
+- [百度网盘](https://pan.baidu.com/s/1gz4JZyMtvcXL6lL9xIPEQQ?pwd=okap)
+
+也可前往 [GitHub Releases](https://github.com/longer-sausage/OK-AzurPromilia/releases) 下载最新版本安装包：
 
 - **中国大陆**：推荐下载 `ok-ap-win32-China-setup-*.exe`（安装包自带运行环境，更新源为国内节点，国内下载与更新更稳定）。
 - **海外地区**：推荐下载 `ok-ap-win32-Global-setup-*.exe`（安装包自带运行环境，更新源为 GitHub）。
