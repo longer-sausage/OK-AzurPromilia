@@ -410,6 +410,7 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: write
+      actions: write
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v6
@@ -445,3 +446,12 @@ jobs:
 
             ${{ needs.sync.outputs.changes_with_asterisk }}
           files: pyappify_dist/**
+
+      - name: Trigger MirrorChyanUploading
+        shell: bash
+        run: |
+          gh workflow run --repo "$GITHUB_REPOSITORY" mirrorchyan_release.yml -f "tag=$RELEASE_TAG"
+          gh workflow run --repo "$GITHUB_REPOSITORY" mirrorchyan_release_note.yml -f "tag=$RELEASE_TAG"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
