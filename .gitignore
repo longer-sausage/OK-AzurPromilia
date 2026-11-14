@@ -251,6 +251,8 @@ labels
 ok-lang-hints
 .vscode
 .agents/*
+!.agents/skills/
+.agents/skills/*
 !.agents/skills/ok-script-i18n/
 !.agents/skills/ok-script-tasks/
 
