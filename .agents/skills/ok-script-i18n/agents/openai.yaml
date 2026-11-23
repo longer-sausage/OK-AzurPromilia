@@ -1,0 +1,4 @@
+interface:
+  display_name: "OK-AzurPromilia i18n"
+  short_description: "Sync OK-AzurPromilia task UI translations"
+  default_prompt: "Use $ok-script-i18n to update OK-AzurPromilia task UI translations with the repository tools."
