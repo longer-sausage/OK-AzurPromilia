@@ -1,0 +1,793 @@
+{
+  "horizontal_geometry": [
+    979.5,
+    285.52942748625003
+  ],
+  "handoff_direction": -1.0,
+  "samples": [
+    {
+      "observed_at": 1.3285978000203613,
+      "now": 1.4236856999923475,
+      "held": {
+        "x": 697.0,
+        "top": 234,
+        "bottom": 382,
+        "width": 120,
+        "confidence": 0.6,
+        "kind": ""
+      },
+      "tower": {
+        "x": 882.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.9125490784645081,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 687.5,
+        "top": 165.0,
+        "bottom": 230.0,
+        "width": 33.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 1.4354229999880772,
+      "now": 1.4877954999974463,
+      "held": {
+        "x": 698.0,
+        "top": 262,
+        "bottom": 410,
+        "width": 120,
+        "confidence": 0.7900757789611816,
+        "kind": ""
+      },
+      "tower": {
+        "x": 870.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.9435219764709473,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 689.5,
+        "top": 192.0,
+        "bottom": 257.0,
+        "width": 33.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 1.4973288000037428,
+      "now": 1.5446721999906003,
+      "held": {
+        "x": 700.0,
+        "top": 272,
+        "bottom": 420,
+        "width": 120,
+        "confidence": 0.8700554966926575,
+        "kind": ""
+      },
+      "tower": {
+        "x": 866.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.9823026061058044,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 692.5,
+        "top": 201.0,
+        "bottom": 266.0,
+        "width": 33.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 1.5553138999675866,
+      "now": 1.647297699993942,
+      "held": {
+        "x": 712.0,
+        "top": 296,
+        "bottom": 444,
+        "width": 120,
+        "confidence": 0.824913740158081,
+        "kind": ""
+      },
+      "tower": {
+        "x": 860.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.9774796366691589,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 704.0,
+        "top": 227.0,
+        "bottom": 294.0,
+        "width": 34.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 1.66068770000129,
+      "now": 1.7162867999868467,
+      "held": {
+        "x": 730.0,
+        "top": 316,
+        "bottom": 464,
+        "width": 120,
+        "confidence": 0.8536942601203918,
+        "kind": ""
+      },
+      "tower": {
+        "x": 854.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.9071664214134216,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 724.0,
+        "top": 248.0,
+        "bottom": 316.0,
+        "width": 34.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 1.7289590500004124,
+      "now": 1.783201199985342,
+      "held": {
+        "x": 746.0,
+        "top": 324,
+        "bottom": 472,
+        "width": 120,
+        "confidence": 0.8811898231506348,
+        "kind": ""
+      },
+      "tower": {
+        "x": 852.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.8701500296592712,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 740.0,
+        "top": 256.0,
+        "bottom": 323.0,
+        "width": 34.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 1.7965269499982242,
+      "now": 1.8512915000028443,
+      "held": {
+        "x": 764.0,
+        "top": 328,
+        "bottom": 476,
+        "width": 120,
+        "confidence": 0.8166375160217285,
+        "kind": ""
+      },
+      "tower": {
+        "x": 852.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.8757962584495544,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 758.5,
+        "top": 258.0,
+        "bottom": 323.0,
+        "width": 33.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 1.8627873499935959,
+      "now": 1.913108499982627,
+      "held": {
+        "x": 784.0,
+        "top": 328,
+        "bottom": 476,
+        "width": 120,
+        "confidence": 0.759636640548706,
+        "kind": ""
+      },
+      "tower": {
+        "x": 852.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.8732624053955078,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 778.5,
+        "top": 258.0,
+        "bottom": 324.0,
+        "width": 33.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 1.9216396499832626,
+      "now": 2.007018700009212,
+      "held": {
+        "x": 796.0,
+        "top": 326,
+        "bottom": 474,
+        "width": 120,
+        "confidence": 0.8011308312416077,
+        "kind": ""
+      },
+      "tower": {
+        "x": 852.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.8742945790290833,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 789.5,
+        "top": 257.0,
+        "bottom": 323.0,
+        "width": 33.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 2.019054350006627,
+      "now": 2.0700371999992058,
+      "held": {
+        "x": 846.0,
+        "top": 310,
+        "bottom": 458,
+        "width": 120,
+        "confidence": 0.7801893353462219,
+        "kind": ""
+      },
+      "tower": {
+        "x": 858.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.8508136868476868,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 841.0,
+        "top": 245.0,
+        "bottom": 312.0,
+        "width": 34.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 2.0970346000103746,
+      "now": 2.145795199990971,
+      "held": {
+        "x": 872.0,
+        "top": 298,
+        "bottom": 446,
+        "width": 120,
+        "confidence": 0.8407320380210876,
+        "kind": ""
+      },
+      "tower": {
+        "x": 864.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.9446598887443542,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 868.5,
+        "top": 231.0,
+        "bottom": 297.0,
+        "width": 33.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 2.1784816999861505,
+      "now": 2.2293081999814603,
+      "held": {
+        "x": 900.0,
+        "top": 282,
+        "bottom": 430,
+        "width": 120,
+        "confidence": 0.8601426482200623,
+        "kind": ""
+      },
+      "tower": {
+        "x": 874.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.923655092716217,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 897.5,
+        "top": 213.0,
+        "bottom": 278.0,
+        "width": 33.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 2.255186700000195,
+      "now": 2.306788499990944,
+      "held": {
+        "x": 942.5,
+        "top": 254,
+        "bottom": 414,
+        "width": 115,
+        "confidence": 0.6,
+        "kind": ""
+      },
+      "tower": {
+        "x": 884.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.9487983584403992,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 942.0,
+        "top": 185.0,
+        "bottom": 250.0,
+        "width": 32.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 2.3371544999827165,
+      "now": 2.425446599983843,
+      "held": {
+        "x": 972.0,
+        "top": 234,
+        "bottom": 394,
+        "width": 116,
+        "confidence": 0.8041264414787292,
+        "kind": ""
+      },
+      "tower": {
+        "x": 896.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.9254987835884094,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 972.5,
+        "top": 166.0,
+        "bottom": 233.0,
+        "width": 33.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 2.454997149994597,
+      "now": 2.5033235999871977,
+      "held": {
+        "x": 1016.0,
+        "top": 206,
+        "bottom": 366,
+        "width": 116,
+        "confidence": 0.8458040952682495,
+        "kind": ""
+      },
+      "tower": {
+        "x": 914.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.870917558670044,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1017.5,
+        "top": 139.0,
+        "bottom": 207.0,
+        "width": 33.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 2.5422679999901447,
+      "now": 2.6037873000022955,
+      "held": {
+        "x": 1060.0,
+        "top": 180,
+        "bottom": 340,
+        "width": 116,
+        "confidence": 0.8751460313796997,
+        "kind": ""
+      },
+      "tower": {
+        "x": 932.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.941464364528656,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1062.5,
+        "top": 112.0,
+        "bottom": 178.0,
+        "width": 33.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 2.6391841000004206,
+      "now": 2.6994034000090323,
+      "held": {
+        "x": 1102.0,
+        "top": 160,
+        "bottom": 320,
+        "width": 116,
+        "confidence": 0.7524546980857849,
+        "kind": ""
+      },
+      "tower": {
+        "x": 950.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.8753463625907898,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1104.5,
+        "top": 93.0,
+        "bottom": 154.0,
+        "width": 33.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 2.731454099994153,
+      "now": 2.783692600001814,
+      "held": {
+        "x": 1140.0,
+        "top": 148.0,
+        "bottom": 308.0,
+        "width": 116.0,
+        "confidence": 0.7503976821899414,
+        "kind": ""
+      },
+      "tower": {
+        "x": 968.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.9241854548454285,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1143.5,
+        "top": 92.0,
+        "bottom": 144.0,
+        "width": 31.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 2.8188485499995295,
+      "now": 2.9160379999957513,
+      "held": {
+        "x": 1164.0,
+        "top": 144.0,
+        "bottom": 304.0,
+        "width": 116.0,
+        "confidence": 0.8911619782447815,
+        "kind": ""
+      },
+      "tower": {
+        "x": 986.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.9308863282203674,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1168.0,
+        "top": 92.0,
+        "bottom": 143.0,
+        "width": 30.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 2.947264099988388,
+      "now": 2.994691200001398,
+      "held": {
+        "x": 1204.0,
+        "top": 148.0,
+        "bottom": 308.0,
+        "width": 116.0,
+        "confidence": 0.8154826164245605,
+        "kind": ""
+      },
+      "tower": {
+        "x": 1012.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.9307782649993896,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1209.0,
+        "top": 93.0,
+        "bottom": 147.0,
+        "width": 30.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 3.030174649989931,
+      "now": 3.080218099988997,
+      "held": {
+        "x": 1226.0,
+        "top": 162.0,
+        "bottom": 322.0,
+        "width": 116.0,
+        "confidence": 0.7685519456863403,
+        "kind": ""
+      },
+      "tower": {
+        "x": 1028.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.9299824833869934,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1230.5,
+        "top": 94.0,
+        "bottom": 158.0,
+        "width": 33.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 3.1202656500099692,
+      "now": 3.1772338000009768,
+      "held": {
+        "x": 1242.0,
+        "top": 184.0,
+        "bottom": 344.0,
+        "width": 116.0,
+        "confidence": 0.8355334401130676,
+        "kind": ""
+      },
+      "tower": {
+        "x": 1046.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.9403952956199646,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1246.5,
+        "top": 116.0,
+        "bottom": 181.0,
+        "width": 33.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 3.216683650010964,
+      "now": 3.2746288999915123,
+      "held": {
+        "x": 1250.0,
+        "top": 202.0,
+        "bottom": 362.0,
+        "width": 116.0,
+        "confidence": 0.9287694692611694,
+        "kind": ""
+      },
+      "tower": {
+        "x": 1062.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.863935649394989,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1253.5,
+        "top": 136.0,
+        "bottom": 202.0,
+        "width": 33.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 3.306499949976569,
+      "now": 3.3963911999890115,
+      "held": {
+        "x": 1256.0,
+        "top": 230.0,
+        "bottom": 390.0,
+        "width": 116.0,
+        "confidence": 0.885229766368866,
+        "kind": ""
+      },
+      "tower": {
+        "x": 1074.0,
+        "top": 802,
+        "bottom": 974,
+        "width": 100,
+        "confidence": 0.9288590550422668,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1258.5,
+        "top": 164.0,
+        "bottom": 230.0,
+        "width": 35.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 3.4292681499791797,
+      "now": 3.485204299999168,
+      "held": {
+        "x": 1252.0,
+        "top": 268.0,
+        "bottom": 428.0,
+        "width": 116.0,
+        "confidence": 0.7923814058303833,
+        "kind": ""
+      },
+      "tower": {
+        "x": 1090.0,
+        "top": 804,
+        "bottom": 976,
+        "width": 100,
+        "confidence": 0.9044186472892761,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1253.0,
+        "top": 199.0,
+        "bottom": 265.0,
+        "width": 36.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 3.521115749987075,
+      "now": 3.583904800005257,
+      "held": {
+        "x": 1244.0,
+        "top": 286.0,
+        "bottom": 446.0,
+        "width": 116.0,
+        "confidence": 0.8049370050430298,
+        "kind": ""
+      },
+      "tower": {
+        "x": 1098.0,
+        "top": 804,
+        "bottom": 976,
+        "width": 100,
+        "confidence": 0.9260307550430298,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1244.5,
+        "top": 217.0,
+        "bottom": 284.0,
+        "width": 35.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 3.6210925999912433,
+      "now": 3.718581399996765,
+      "held": {
+        "x": 1228.0,
+        "top": 306.0,
+        "bottom": 466.0,
+        "width": 116.0,
+        "confidence": 0.8694678544998169,
+        "kind": ""
+      },
+      "tower": {
+        "x": 1104.0,
+        "top": 804,
+        "bottom": 976,
+        "width": 100,
+        "confidence": 0.9343768358230591,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1228.0,
+        "top": 242.0,
+        "bottom": 308.0,
+        "width": 32.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    {
+      "observed_at": 3.754515000007814,
+      "now": 3.804965599993011,
+      "held": {
+        "x": 1186.0,
+        "top": 324.0,
+        "bottom": 484.0,
+        "width": 116.0,
+        "confidence": 0.8449797034263611,
+        "kind": ""
+      },
+      "tower": {
+        "x": 1108.0,
+        "top": 804,
+        "bottom": 976,
+        "width": 100,
+        "confidence": 0.9210716485977173,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1186.0,
+        "top": 258.0,
+        "bottom": 323.0,
+        "width": 34.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    }
+  ]
+}

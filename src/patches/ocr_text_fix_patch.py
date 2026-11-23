@@ -17,11 +17,19 @@ Safety guarantees:
 from __future__ import annotations
 
 import itertools
-import json
+import logging
 import re
 from pathlib import Path
 
+try:
+    import json5
+except ImportError:
+    import json as json5  # type: ignore[no-redef]
+
+logger = logging.getLogger(__name__)
+
 _PATCH_INSTALLED = False
+_GLOBAL_CHAR_CONFUSION: dict[str, tuple[str, ...]] = {}
 
 # 安全限制：字符串变体的最大数量（防止笛卡尔积爆炸）
 _MAX_VARIANTS = 32
@@ -35,26 +43,68 @@ _REGEX_METACHARS = set(r".^$*+?{}()[]\|")
 # ═══════════════════════════════════════════════════════════════════════
 
 
-def _load_fix_map() -> dict[str, str]:
-    """读取 ocr_text_fix.json，返回 {错误文本: 正确文本}。"""
-    fix_file = Path.cwd() / "assets" / "ocr_fix" / "ocr_text_fix.json"
-    if not fix_file.is_file():
-        return {}
+def _get_ocr_fix_dir() -> Path:
+    """获取 assets/ocr_fix 目录路径（参照 lang 模块，以代码所在仓库根目录定位，兼顾 cwd）。"""
+    repo_root = Path(__file__).resolve().parents[2]
+    fix_dir = repo_root / "assets" / "ocr_fix"
+    if fix_dir.is_dir():
+        return fix_dir
+    cwd_dir = Path.cwd() / "assets" / "ocr_fix"
+    if cwd_dir.is_dir():
+        return cwd_dir
+    return fix_dir
 
-    try:
-        data = json.loads(fix_file.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
 
+def _merge_fix_data(data: object, fix_map: dict[str, str]) -> None:
+    """递归合并字典中的 OCR 混淆映射。
+
+    支持格式:
+      1. 扁平字典: {"错字/错词": "正字/正词"}
+      2. 嵌套字典: {"module_name": {"错字": "正字"}}
+    """
     if not isinstance(data, dict):
+        return
+    for k, v in data.items():
+        if isinstance(v, str):
+            wrong = str(k).strip()
+            correct = v.strip()
+            if wrong and correct:
+                fix_map[wrong] = correct
+        elif isinstance(v, dict):
+            _merge_fix_data(v, fix_map)
+
+
+def _load_fix_map(fix_dir: Path | None = None) -> dict[str, str]:
+    """参照 lang 模块实现，扫描 assets/ocr_fix/ 目录下所有 JSON/JSON5 文件并合并映射。"""
+    if fix_dir is None:
+        fix_dir = _get_ocr_fix_dir()
+    if not fix_dir.is_dir():
+        return {}
+
+    fix_files = sorted(
+        p for p in fix_dir.iterdir()
+        if p.is_file() and p.suffix.lower() in (".json", ".json5")
+    )
+    if not fix_files:
         return {}
 
     fix_map: dict[str, str] = {}
-    for wrong_text, correct_text in data.items():
-        wrong = str(wrong_text).strip()
-        correct = str(correct_text).strip()
-        if wrong and correct:
-            fix_map[wrong] = correct
+    loaded_files = 0
+    for fix_file in fix_files:
+        try:
+            with fix_file.open(encoding="utf-8") as f:
+                data = json5.load(f)
+        except Exception as exc:
+            logger.warning("Failed to load OCR fix file %s: %s", fix_file.name, exc)
+            continue
+
+        if not isinstance(data, dict):
+            continue
+
+        _merge_fix_data(data, fix_map)
+        loaded_files += 1
+
+    logger.debug("Loaded %d OCR fix pairs from %d files in %s", len(fix_map), loaded_files, fix_dir)
     return fix_map
 
 
@@ -70,7 +120,7 @@ def _build_char_confusion(fix_map: dict[str, str]) -> dict[str, tuple[str, ...]]
     for wrong, correct in fix_map.items():
         if len(wrong) != len(correct):
             continue
-        for wc, cc in zip(wrong, correct):
+        for wc, cc in zip(wrong, correct, strict=True):
             if wc != cc:
                 char_map.setdefault(cc, set()).add(wc)
     return {correct_char: tuple(sorted(wrong_chars)) for correct_char, wrong_chars in char_map.items()}
@@ -284,24 +334,31 @@ def _apply_confusion_to_match(match, char_confusion: dict[str, tuple[str, ...]])
 # ═══════════════════════════════════════════════════════════════════════
 
 
+def reload_ocr_text_fix(fix_dir: Path | None = None) -> dict[str, tuple[str, ...]]:
+    """重新加载 assets/ocr_fix/ 下的所有配置并更新全局混淆表。"""
+    global _GLOBAL_CHAR_CONFUSION
+    fix_map = _load_fix_map(fix_dir)
+    _GLOBAL_CHAR_CONFUSION = _build_char_confusion(fix_map)
+    return _GLOBAL_CHAR_CONFUSION
+
+
 def install_ocr_text_fix_patch():
-    global _PATCH_INSTALLED
+    global _PATCH_INSTALLED, _GLOBAL_CHAR_CONFUSION
     if _PATCH_INSTALLED:
         return
 
-    from ok.task.TaskExecutor import TaskExecutor
     from ok.task.task import OCR
+    from ok.task.TaskExecutor import TaskExecutor
 
     # 1. 读取并构建字符级混淆表
-    fix_map = _load_fix_map()
-    char_confusion = _build_char_confusion(fix_map)
+    reload_ocr_text_fix()
 
     # 2. 保存混淆表到 executor（方便各 task 实例获取）
     original_executor_init = TaskExecutor.__init__
 
     def patched_executor_init(self, *args, **kwargs):
         original_executor_init(self, *args, **kwargs)
-        self.ocr_char_confusion = char_confusion
+        self.ocr_char_confusion = _GLOBAL_CHAR_CONFUSION
 
     TaskExecutor.__init__ = patched_executor_init
 
@@ -310,7 +367,7 @@ def install_ocr_text_fix_patch():
 
     def patched_fix_match_regex(self, match):
         match = original_fix_match_regex(self, match)
-        confusion = getattr(self.executor, "ocr_char_confusion", None)
+        confusion = getattr(self.executor, "ocr_char_confusion", None) or _GLOBAL_CHAR_CONFUSION
         if confusion:
             match = _apply_confusion_to_match(match, confusion)
         return match

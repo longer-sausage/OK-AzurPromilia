@@ -3,27 +3,36 @@
 from __future__ import annotations
 
 import gc
+import inspect
 import threading
 import time
 from enum import Enum
 
 import cv2
 import numpy as np
-from ok import Box
+from ok import Box, WaitFailedException
+
+from src.core.detector.hit import Hit
 
 from src.config import config as app_config
 from src.core.global_config_store import KEY_CONFIG_NAME, get_global_config
-from src.data.FeatureList import FeatureList as fL
+from src.data.feature_list import FeatureList as fL
+from src.image.button_detector import (
+    DEFAULT_BUTTON_THRESHOLDS,
+    ButtonDetection,
+    ButtonDetector,
+    ButtonThresholds,
+)
 from src.image.frame_processes import isolate_by_hsv_ranges
-from src.interaction.Key import move_keys as send_move_keys
-from src.interaction.KeyConfig import KeyConfigManager
-from src.interaction.Mouse import (
+from src.interaction.key import move_keys as send_move_keys
+from src.interaction.key_config import KeyConfigManager
+from src.interaction.mouse import (
     active_and_send_mouse_delta as send_mouse_delta,
 )
-from src.interaction.Mouse import (
+from src.interaction.mouse import (
     move_to_target_once as move_to_target_once_impl,
 )
-from src.interaction.Mouse import (
+from src.interaction.mouse import (
     smooth_drag,
 )
 from src.yolo.loader import YoloModelLoader
@@ -176,99 +185,6 @@ class RuntimeMixin:
     # ── 分辨率 ─────────────────────────────────────────
 
     _resolution_warned = False
-
-    def feature_stable(self, feature, box, duration):
-        if duration <= 0:
-            return True
-
-        end_time = time.time() + duration
-        while time.time() < end_time:
-            if not self.find_feature(feature_name=feature, box=box, frame=self.next_frame()):
-                return False
-            self.sleep(0.05)
-
-        return True
-
-    def click_feature(
-        self,
-        feature,
-        boxes=None,
-        time_out=5,
-        after_sleep=0,
-        click_after_delay=0,
-        settle_time=0,
-        blind_point=None,
-        blind_delay=1,
-        verify_disappear=True,
-        verify_timeout=0.5,
-        max_click_retry=3,
-    ):
-        boxes = [None] + (boxes or [])
-
-        start_time = time.time()
-        last_blind_time = 0
-
-        while time.time() - start_time < time_out:
-            frame = self.next_frame()
-
-            for box in boxes:
-                result = self.find_feature(
-                    feature_name=feature,
-                    box=box,
-                    frame=frame,
-                )
-
-                if result and self.feature_stable(feature, box, settle_time):
-                    retry_count = 0
-
-                    while retry_count < max_click_retry:
-                        self.sleep(click_after_delay)
-
-                        self.click(result, after_sleep=after_sleep)
-
-                        if not verify_disappear:
-                            return True
-
-                        if self.wait_feature_disappear(
-                            feature,
-                            box,
-                            verify_timeout,
-                        ):
-                            return True
-
-                        self.log_warning(f"{feature} 点击后未消失，重试 {retry_count + 1}/{max_click_retry}")
-
-                        retry_count += 1
-
-            if blind_point and (time.time() - last_blind_time >= blind_delay):
-                self.click(
-                    blind_point[0],
-                    blind_point[1],
-                    after_sleep=after_sleep,
-                )
-                last_blind_time = time.time()
-
-        return False
-
-    def wait_feature_disappear(
-        self,
-        feature,
-        box=None,
-        timeout=1,
-    ):
-        start = time.time()
-
-        while time.time() - start < timeout:
-            frame = self.next_frame()
-
-            if not self.find_feature(
-                feature_name=feature,
-                box=box,
-                frame=frame,
-            ):
-                return True
-
-        return False
 
     def _wait_for_stable_resolution(self):
         """等待捕获帧尺寸稳定，避免启动阶段的中间帧触发误报。"""
@@ -450,7 +366,7 @@ class RuntimeMixin:
         """
         import pyautogui
 
-        from src.interaction.Mouse import run_at_window_pos
+        from src.interaction.mouse import run_at_window_pos
 
         if activate:
             self.active_and_send_mouse_delta(0, 0, activate=True, only_activate=True)
@@ -546,16 +462,175 @@ class RuntimeMixin:
         self._yolo_model_key = key
         return self._detector
 
-    # ── HSV / 稳定性 ───────────────────────────────────
+    # ── 按钮检测：固定 Box + 中央文本带（无 OCR） ───────────────
 
-    def make_hsv_isolator(self, ranges, invert=True, kernel_size=2):
-        """返回一个可直接调用的 HSV 过滤函数"""
-        return lambda frame: isolate_by_hsv_ranges(
-            frame,
-            ranges,
-            invert=invert,
-            kernel_size=kernel_size,
+    def button_detector(self, thresholds: ButtonThresholds | None = None) -> ButtonDetector:
+        """返回可复用的按钮检测器实例（避免逐帧重建）。
+
+        Args:
+            thresholds: 自定义阈值；传入时返回一次性实例，不覆盖缓存的默认实例。
+
+        Returns:
+            ButtonDetector: 检测器实例。
+        """
+        if thresholds is not None:
+            return ButtonDetector(thresholds)
+        detector = getattr(self, "_button_detector", None)
+        if detector is None:
+            detector = ButtonDetector()
+            self._button_detector = detector
+        return detector
+
+    def find_button(
+        self,
+        box,
+        frame=None,
+        name: str | None = None,
+        thresholds: ButtonThresholds | None = None,
+        text_hsv=None,
+        backdrop_hsv=None,
+        require_backdrop: bool | None = None,
+    ):
+        """在固定 Box 内检测按钮是否出现，不使用 OCR。
+
+        只认两件事的颜色，其余都是结构判据（位置 / 形状 / 数量）：
+
+        * ``text_hsv``     —— 文字（前景）颜色区间，**主特征**；
+        * ``backdrop_hsv`` —— 底色（背景）颜色区间，可选辅助特征。
+
+        可以直接传颜色，也可以传封装好的语义阈值常量::
+
+            self.find_button(box, text_hsv=((0, 0, 170), (180, 100, 255)))
+            self.find_button(box, thresholds=SKIP_BUTTON)
+
+        Args:
+            box: 按钮所在区域（由 box_of_screen / box_of_screen_scaled 生成）。
+            frame: 输入帧，缺省取 self.next_frame()。
+            name: 结果 Box 的名称。
+            thresholds: 完整阈值（可由 ButtonThresholds.for_button 生成后复用）。
+            text_hsv: 文字颜色区间 ((h,s,v), (h,s,v))，覆盖 thresholds 中的设置。
+            backdrop_hsv: 底色区间；传入即默认开启底色校验。
+            require_backdrop: 显式指定是否校验底色。
+
+        Returns:
+            Box | None: 命中返回可直接 click() 的 Box，未命中返回 None。
+        """
+        frame = frame if frame is not None else self.next_frame()
+        if frame is None:
+            return None
+        thresholds = self._resolve_button_thresholds(thresholds, text_hsv, backdrop_hsv, require_backdrop)
+        return self.button_detector(thresholds).find(frame, box, name=name)
+
+    def find_buttons(
+        self,
+        boxes,
+        frame=None,
+        name: str | None = None,
+        thresholds: ButtonThresholds | None = None,
+        text_hsv=None,
+        backdrop_hsv=None,
+        require_backdrop: bool | None = None,
+    ):
+        """在多个候选 Box 中依次检测，返回首个命中结果。
+
+        Args:
+            boxes: 候选 Box 列表。
+            frame: 输入帧，缺省取 self.next_frame()。
+            name: 结果 Box 的名称。
+            thresholds: 完整阈值。
+            text_hsv: 文字颜色区间。
+            backdrop_hsv: 底色区间；传入即默认开启底色校验。
+            require_backdrop: 显式指定是否校验底色。
+
+        Returns:
+            Box | None: 首个命中的 Box，全部未命中返回 None。
+        """
+        frame = frame if frame is not None else self.next_frame()
+        if frame is None:
+            return None
+        thresholds = self._resolve_button_thresholds(thresholds, text_hsv, backdrop_hsv, require_backdrop)
+        detector = self.button_detector(thresholds)
+        for box in boxes or []:
+            if result := detector.find(frame, box, name=name):
+                return result
+        return None
+
+    def analyze_button(
+        self,
+        box,
+        frame=None,
+        name: str | None = None,
+        thresholds: ButtonThresholds | None = None,
+        text_hsv=None,
+        backdrop_hsv=None,
+        require_backdrop: bool | None = None,
+    ) -> ButtonDetection:
+        """返回完整检测结果（含中间指标与未命中原因），用于校准阈值与排查。
+
+        Args:
+            box: 按钮所在区域。
+            frame: 输入帧，缺省取 self.next_frame()。
+            name: 结果 Box 的名称。
+            thresholds: 完整阈值。
+            text_hsv: 文字颜色区间。
+            backdrop_hsv: 底色区间；传入即默认开启底色校验。
+            require_backdrop: 显式指定是否校验底色。
+
+        Returns:
+            ButtonDetection: 检测结果。
+        """
+        frame = frame if frame is not None else self.next_frame()
+        if frame is None:
+            return ButtonDetection(False, failed="empty_frame")
+        thresholds = self._resolve_button_thresholds(thresholds, text_hsv, backdrop_hsv, require_backdrop)
+        return self.button_detector(thresholds).analyze(frame, box, name=name)
+
+    def wait_button(
+        self,
+        box,
+        time_out: float = 5,
+        settle_time: float = -1,
+        name: str | None = None,
+        thresholds: ButtonThresholds | None = None,
+        text_hsv=None,
+        backdrop_hsv=None,
+        require_backdrop: bool | None = None,
+    ):
+        """等待固定 Box 内出现按钮，以视觉状态为准而非固定延时。
+
+        Args:
+            box: 按钮所在区域。
+            time_out: 最长等待时间。
+            settle_time: 命中后需要保持稳定的时长。
+            name: 结果 Box 的名称。
+            thresholds: 完整阈值。
+            text_hsv: 文字颜色区间。
+            backdrop_hsv: 底色区间；传入即默认开启底色校验。
+            require_backdrop: 显式指定是否校验底色。
+
+        Returns:
+            Box | None: 命中返回 Box，超时返回 None。
+        """
+        return self.wait_until(
+            lambda: self.find_button(
+                box,
+                name=name,
+                thresholds=thresholds,
+                text_hsv=text_hsv,
+                backdrop_hsv=backdrop_hsv,
+                require_backdrop=require_backdrop,
+            ),
+            time_out=time_out,
+            settle_time=settle_time,
+            raise_if_not_found=False,
         )
+
+    def _resolve_button_thresholds(self, thresholds, text_hsv, backdrop_hsv, require_backdrop):
+        """把便捷颜色参数合并进阈值；没有任何颜色参数时原样返回。"""
+        if text_hsv is None and backdrop_hsv is None and require_backdrop is None:
+            return thresholds
+        base = thresholds or DEFAULT_BUTTON_THRESHOLDS
+        return base.with_button_colors(text_hsv, backdrop_hsv, require_backdrop)
 
     def _is_debug_overlay_enabled(self) -> bool:
         config_holders = (
@@ -726,7 +801,6 @@ class RuntimeMixin:
 
             raise ValueError("box must be None / (x,y,w,h) / object(x,y,width,height)")
 
-        start_time = self.active_time()
         last_frame = parse_box(self.next_frame(), box)
         stable_start = None
         last_hash = None
@@ -735,8 +809,8 @@ class RuntimeMixin:
 
             last_hash = perceptual_hash(last_frame, method=method)
 
-        while True:
-            current_frame = parse_box(self.next_frame(), box)
+        for raw_frame in self.loop(max_wait, yield_frame=True, raise_if_time_out=False):
+            current_frame = parse_box(raw_frame, box)
 
             if method in ("phash", "dhash"):
                 h2 = perceptual_hash(current_frame, method=method)
@@ -769,11 +843,10 @@ class RuntimeMixin:
             else:
                 stable_start = None
 
-            if self.active_time() - start_time > max_wait:
-                return False
-
             last_frame = current_frame
             self.sleep(refresh_interval)
+
+        return False
 
     # ── 按键 / 移动 ────────────────────────────────────
 
@@ -956,6 +1029,272 @@ class RuntimeMixin:
             key=key,
         )
         self.send_key_up("alt")
+
+    # ── Action 生命周期 ─────────────────────────────────
+
+    def _resolve_detector(self, detector):
+        """把判据绑定到宿主任务（识别需要调用任务上的 find_feature / ocr 等方法）。
+
+        适配器在没有宿主时无法工作，因此统一在编排入口处绑定一次：
+        这样调用方可以自由构造适配器，不必手动 ``attach``。
+        已经是判据（自带 detect）的对象原样返回。
+
+        Args:
+            detector: 识别层适配器，或已绑定宿主 / 自带 detect 的判据。
+
+        Returns:
+            Detector: 可直接调用 detect(frame) 的判据。
+        """
+        if detector is None:
+            return None
+
+        attach = getattr(detector, "attach", None)
+        if callable(attach) and getattr(detector, "_task", None) is None:
+            attach(self)
+
+        # 组合器与包装器：递归绑定内部判据
+        inner = getattr(detector, "detectors", None)
+        if inner:
+            for item in inner:
+                self._resolve_detector(item)
+        elif hasattr(detector, "_detector"):
+            self._resolve_detector(getattr(detector, "_detector"))
+
+        if not hasattr(detector, "detect"):
+            raise TypeError(
+                f"判据 {detector!r} 缺少 detect(frame) 方法；"
+                "请使用 src.core.detector 下的适配器，或自定义带 detect 的对象"
+            )
+        return detector
+
+    def wait_expectation(
+        self,
+        expectation,
+        time_out: float = 1.0,
+        settle_time: float = 0.0,
+        raise_if_not_found: bool = False,
+    ):
+        """等待一个预期结果成立。
+
+        这是 Action 生命周期的 C（结果验证）收口点：所有「动作之后等某个结果」
+        都应走它，以保持 settle 语义一致。
+
+        Args:
+            expectation: 判据（``src.core.detector`` 下的适配器）。
+            time_out: 最长等待时间。
+            settle_time: 预期需「**持续成立**」的秒数；0（默认）= 命中一次即可。
+                ⚠️ 非 0 时**每次判定**都要求连续成立够时长（不是总共等这么久），
+                会显著增加耗时，只在「等 UI 稳定下来再确认」时开启。
+            raise_if_not_found: 超时未命中时是否抛 ``WaitFailedException``。
+
+        Returns:
+            Hit | None: 命中返回 Hit；超时返回 None。
+
+        Example:
+            >>> self.wait_expectation(
+            ...     TemplateDetector(FeatureList.main_ui),
+            ...     time_out=2.0,
+            ... )
+        """
+        expectation = self._resolve_detector(expectation)
+        result = self.wait_until(
+            lambda: expectation.detect(self.next_frame()),
+            time_out=time_out,
+            settle_time=settle_time,
+            raise_if_not_found=raise_if_not_found,
+        )
+        return result
+
+    @staticmethod
+    def _invoke_action(action, target):
+        """调用动作回调，兼容 0 参数或 1 参数签名。"""
+        if action is None:
+            return None
+        has_sig = False
+        takes_zero = False
+        try:
+            sig = inspect.signature(action)
+            pos_params = [
+                p for p in sig.parameters.values()
+                if p.kind in (inspect.Parameter.POSITIONAL_ONLY, inspect.Parameter.POSITIONAL_OR_KEYWORD)
+            ]
+            has_varargs = any(p.kind == inspect.Parameter.VAR_POSITIONAL for p in sig.parameters.values())
+            has_sig = True
+            takes_zero = not pos_params and not has_varargs
+        except (ValueError, TypeError):
+            pass
+
+        if has_sig:
+            return action() if takes_zero else action(target)
+
+        try:
+            return action(target)
+        except TypeError:
+            return action()
+
+    def wait_action_result(
+        self,
+        action,
+        condition=None,
+        expect=None,
+        time_out: float = 5.0,
+        settle_time: float = 0.0,
+        max_attempts: int = 1,
+        action_delay: float = 0.0,
+        after_sleep: float = 0.0,
+        expect_time_out: float = 1.0,
+        expect_settle_time: float = 0.0,
+        while_condition=None,
+        repeat_action=None,
+        repeat_interval: float = 0.0,
+        max_repeat: int = 0,
+        draw: bool = False,
+        raise_if_not_found: bool = False,
+    ) -> Hit | bool | None:
+        """执行一次完整 Action 生命周期：等条件 → 动作 → 验证结果。
+
+        三阶段流程：
+
+        1. **等条件**：``condition`` 在 ``time_out`` 内命中才继续；未命中则返回 False。
+           若 ``condition`` 为 ``None``，则跳过等待直接执行动作。
+        2. **动作 + 验证**：执行 ``action``，再用 ``expect`` 验证；
+           未通过则重试，最多 ``max_attempts`` 次。
+        3. **持续阶段**（仅当给出 ``while_condition``）：只要 ``while_condition``
+           持续命中就重复执行 ``repeat_action``；一旦未命中立即停止；
+           每轮之后继续检查 ``expect``，命中即结束并判定成功。
+
+        Args:
+            action: 主动作，签名 ``action(hit: Hit) -> bool | None`` 或 ``action() -> bool | None``。
+            condition: 前置条件判据（A），默认 ``None``（不等条件直接执行动作）。
+            expect: 预期结果判据（C）。``None`` 表示「动作成功即返回」
+                （调用方声明该动作没有可验证的结果）。
+            time_out: 等待 ``condition`` 命中的总超时；持续阶段也受此总时限约束。
+            settle_time: ``condition`` 需持续成立的秒数；0（默认）= 命中一次即可。
+                ⚠️ 非 0 时每次判定都要求连续成立够时长，会显著增加耗时。
+            max_attempts: 动作最多执行的次数（含首次）。``expect`` 未通过时会继续下一轮。
+            action_delay: 每次动作前的延时。
+            after_sleep: 每次动作后的延时。
+            expect_time_out: 每次验证 ``expect`` 的等待时间。
+            expect_settle_time: ``expect`` 需持续成立的秒数；含义同 ``settle_time``。
+            while_condition: 持续条件判据（B）；``None`` 时跳过持续阶段。
+            repeat_action: 持续阶段重复执行的动作，签名 ``repeat_action(hit) -> None`` 或 ``repeat_action() -> None``。
+            repeat_interval: 持续阶段每轮动作的前置延时。
+            max_repeat: 持续阶段的动作次数上限；0 表示只受 ``time_out`` 约束。
+            draw: 是否画调试框。注意框 4 秒过期，长循环会重复绘制。
+            raise_if_not_found: 条件未命中时是否抛 ``WaitFailedException``。
+
+        Returns:
+            Hit | bool | None: 命中 ``expect`` 时返回其 ``Hit`` 对象；
+                ``expect=None`` 且动作执行成功时返回 ``True``；
+                失败或超时未命中时返回 ``None``。
+
+        Example:
+            >>> # A≠C：看到宝箱图标 → 点击 → 等解锁界面出现
+            >>> self.wait_action_result(
+            ...     condition=TemplateDetector(FeatureList.treasure_icon),
+            ...     action=lambda hit: self.click(hit.box),
+            ...     expect=TemplateDetector(FeatureList.unlock_ui),
+            ...     time_out=5, expect_time_out=1.5, max_attempts=2,
+            ... )
+        """
+        condition = self._resolve_detector(condition)
+        expect = self._resolve_detector(expect)
+        while_condition = self._resolve_detector(while_condition)
+
+        # ── 阶段一：等待前置条件成立 ──
+        hit = None
+        if condition is not None:
+            for frame in self.loop(time_out, yield_frame=True, raise_if_time_out=False):
+                hit = condition.detect(frame)
+                if hit:
+                    break
+                self.sleep(0.01)
+
+            if not hit:
+                if raise_if_not_found:
+                    raise WaitFailedException()
+                return None
+
+            # settle：要求条件「持续成立」够长时间才认为稳定
+            if settle_time > 0:
+                def _still_holds():
+                    return bool(condition.detect(self.next_frame()))
+
+                stable = self.wait_until(
+                    _still_holds,
+                    time_out=settle_time,
+                    settle_time=settle_time,
+                    raise_if_not_found=False,
+                )
+                if not stable:
+                    if raise_if_not_found:
+                        raise WaitFailedException()
+                    return None
+
+        # ── 阶段二：执行动作并验证结果 ──
+        if max_attempts < 1:
+            max_attempts = 1
+
+        for attempt in range(max_attempts):
+            # 条件在 t0 命中，但若 settle_time > 0，动作发生在 t0 + settle_time，
+            # 此时目标可能已位移（会动的图标）。重取一帧；取不到则沿用旧值，
+            # 不因单帧抖动放弃。
+            fresh = condition.detect(self.next_frame()) if condition else None
+            target = fresh if fresh is not None else hit
+
+            if draw and condition and target and getattr(target, "box", None) is not None:
+                self.draw_boxes(f"action_{condition.name}", [target.box], color="green")
+
+            if action_delay > 0:
+                self.sleep(action_delay)
+            self._invoke_action(action, target)
+            if after_sleep > 0:
+                self.sleep(after_sleep)
+
+            if expect is None:
+                return True
+
+            result = self.wait_expectation(
+                expect,
+                time_out=expect_time_out,
+                settle_time=expect_settle_time,
+            )
+            if result:
+                return result
+            # expect 未通过 → 继续下一轮 attempt
+
+        # ── 阶段三：持续阶段（B 成立期间重复执行附加动作）──
+        if while_condition is None or repeat_action is None:
+            return None
+
+        repeat_count = 0
+        for frame in self.loop(time_out, yield_frame=True, raise_if_time_out=False):
+            if max_repeat and repeat_count >= max_repeat:
+                break
+
+            hit_b = while_condition.detect(frame)
+            if not hit_b:
+                # B 未命中 → 立即停止附加动作
+                break
+
+            if draw and getattr(hit_b, "box", None) is not None:
+                self.draw_boxes(f"while_{while_condition.name}", [hit_b.box], color="blue")
+
+            if repeat_interval > 0:
+                self.sleep(repeat_interval)
+            self._invoke_action(repeat_action, hit_b)
+            repeat_count += 1
+
+            if expect is not None:
+                result = self.wait_expectation(
+                    expect,
+                    time_out=expect_time_out,
+                    settle_time=expect_settle_time,
+                )
+                if result:
+                    return result
+
+        return None
 
     # ── 组合等待点击 ───────────────────────────────────
 

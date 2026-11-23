@@ -7,7 +7,7 @@
 三个子命令：
 
     # 1. 扫描一个任务文件，列出所有应进 ok.po 的字符串（msgid 候选）
-    python tools/task_i18n_helper.py scan --task src/tasks/onetime/DailyTask.py
+    python tools/task_i18n_helper.py scan --task src/tasks/onetime/daily_task.py
 
     # 2. 把 i18n/ 下全部 ok.po 编译成 ok.mo
     python tools/task_i18n_helper.py compile --i18n i18n

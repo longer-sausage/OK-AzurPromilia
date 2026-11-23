@@ -1,0 +1,461 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump_version:
+        description: '版本递增类型 / Bump version'
+        required: true
+        default: 'minor'
+        type: choice
+        options:
+          - minor
+          - patch
+          - major
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  queue: max
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.result.outputs.tag }}
+      safe_tag: ${{ steps.result.outputs.safe_tag }}
+      commit: ${{ steps.result.outputs.commit }}
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: true
+          token: ${{ github.token }}
+
+      - name: Resolve release tag and target commit
+        id: result
+        env:
+          MAIN_BRANCH: ${{ github.event.repository.default_branch }}
+          BUMP_TYPE: ${{ inputs.bump_version }}
+        run: |
+          set -euo pipefail
+
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            tag="$GITHUB_REF_NAME"
+            commit="$GITHUB_SHA"
+            echo "Triggered by tag push: $tag ($commit)"
+          else
+            git fetch origin --tags
+            run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            release_tags=$(git for-each-ref \
+              --format='%(refname:strip=2)%09%(objecttype)%09%(trailers:key=Release-Run,valueonly)' \
+              'refs/tags/v*')
+            tag=""
+            # 同一 run 的重跑复用远端 tag，包括上次推送后、输出前失败的情况。
+            while IFS=$'\t' read -r candidate object_type recorded_run; do
+              if [ "$object_type" = "tag" ] && [ "$recorded_run" = "$run_url" ]; then
+                tag="$candidate"
+                break
+              fi
+            done <<< "$release_tags"
+
+            if [ -n "$tag" ]; then
+              commit=$(git rev-parse "refs/tags/$tag^{commit}")
+              echo "Reusing release tag for this run: $tag ($commit)"
+            else
+              main_branch="${MAIN_BRANCH:-main}"
+              echo "Main branch name: $main_branch"
+
+              git fetch origin "$main_branch"
+              target=$(git rev-parse "origin/$main_branch")
+              echo "Target commit SHA (HEAD of $main_branch): $target"
+
+              last_tag=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -n 1 || true)
+              echo "last_tag=${last_tag:-<none>}"
+
+              bump_type="$BUMP_TYPE"
+              echo "bump_type=$bump_type"
+
+              if [ -z "$last_tag" ]; then
+                case "$bump_type" in
+                  *major*|*主*)
+                    next="v1.0.0"
+                    ;;
+                  *patch*|*补丁*)
+                    next="v0.0.1"
+                    ;;
+                  *minor*|*次*|*)
+                    next="v0.1.0"
+                    ;;
+                esac
+              else
+                version="${last_tag#v}"
+                if [[ "$version" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+                  major="${BASH_REMATCH[1]}"
+                  minor="${BASH_REMATCH[2]}"
+                  patch="${BASH_REMATCH[3]}"
+                else
+                  echo "invalid last_tag format: $last_tag" >&2
+                  exit 1
+                fi
+
+                case "$bump_type" in
+                  *major*|*主*)
+                    major=$((major + 1))
+                    minor=0
+                    patch=0
+                    ;;
+                  *patch*|*补丁*)
+                    patch=$((patch + 1))
+                    ;;
+                  *minor*|*次*|*)
+                    minor=$((minor + 1))
+                    patch=0
+                    ;;
+                esac
+                next="v${major}.${minor}.${patch}"
+              fi
+
+              echo "Computed next version: $next"
+
+              git config user.name "github-actions[bot]"
+              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+              git tag -a "$next" "$target" -m "Release $next" -m "Release-Run: $run_url"
+              git push origin "$next"
+              echo "Released and pushed $next -> $target"
+
+              tag="$next"
+              commit="$target"
+            fi
+          fi
+
+          safe_tag=$(printf '%s' "$tag" | tr '/\\:<>*?"|' '-')
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "safe_tag=$safe_tag" >> "$GITHUB_OUTPUT"
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+
+  test:
+    needs: prepare
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    outputs:
+      sha: ${{ steps.sha.outputs.sha }}
+
+    env:
+      PYTHONIOENCODING: 'UTF-8'
+      PYTHONLEGACYWINDOWSSTDIO: 'UTF-8'
+
+    strategy:
+      matrix:
+        python-version: [ 3.12 ]
+
+    steps:
+      - name: Configure git
+        run: |
+          [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+          git config --global user.email "ok-oldking@users.noreply.github.com"
+          git config --global user.name "ok-oldking"
+          echo "action_state=yellow" >> $env:GITHUB_ENV
+          echo "${{ env.action_state }}"
+
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.prepare.outputs.commit }}
+          lfs: true
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Output immutable commit SHA
+        id: sha
+        shell: pwsh
+        run: |
+          "sha=$(git rev-parse HEAD)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        run: |
+          pip install uv==0.10.9
+          uv venv .venv
+          uv pip install --python .venv packaging==26.3
+
+      - name: Verify requirements.txt reproducible
+        run: |
+          uv run --locked --no-sync python scripts/release/gen_release_requirements.py --check
+
+      - name: Install uv
+        run: |
+          pip install uv==0.10.9
+          uv venv .venv
+          uv pip install --python .venv --no-deps ok-script==2.0.6 pyappify==1.0.13
+
+      - name: inline_ok_requirements
+        env:
+          RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
+        run: |
+          uv run --locked --no-sync python -m ok.update.inline_ok_requirements --tag "$env:RELEASE_TAG"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install polib
+
+      - name: Run tests
+        timeout-minutes: 5
+        run: |
+          python -u -m unittest discover -s tests -p "test_*.py" -v
+
+  sync:
+    needs: [prepare, test]
+    runs-on: windows-latest
+    permissions:
+      contents: read
+
+    outputs:
+      start_tag: ${{ steps.sync.outputs.start_tag }}
+      end_tag: ${{ steps.sync.outputs.end_tag }}
+      changes_with_asterisk: ${{ steps.sync.outputs.changes_with_asterisk }}
+
+    env:
+      PYTHONIOENCODING: 'UTF-8'
+      PYTHONLEGACYWINDOWSSTDIO: 'UTF-8'
+
+    strategy:
+      matrix:
+        python-version: [ 3.12 ]
+
+    steps:
+      - name: Configure git
+        run: |
+          [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+          git config --global user.email "OK-AzurPromilia@users.noreply.github.com"
+          git config --global user.name "OK-AzurPromilia"
+          echo "action_state=yellow" >> $env:GITHUB_ENV
+          echo "${{ env.action_state }}"
+
+      - name: Enable case-sensitive repository sync
+        id: case_sensitive_sync
+        shell: pwsh
+        run: |
+          # partial-sync-repo clones target_* beside the checkout; the hook handles child directories that remain case-insensitive.
+          $syncRoot = Split-Path -Parent $env:GITHUB_WORKSPACE
+          foreach ($directory in @($syncRoot, $env:GITHUB_WORKSPACE)) {
+            fsutil file setCaseSensitiveInfo "$directory" enable
+            if ($LASTEXITCODE -ne 0) {
+              throw "Failed to enable case sensitivity for $directory"
+            }
+          }
+          git config --global core.ignorecase false
+          if ($LASTEXITCODE -ne 0) {
+            throw "Failed to configure case-sensitive Git paths"
+          }
+
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.test.outputs.sha }}
+          lfs: true
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Configure sync Git hooks
+        id: sync_git_config
+        shell: pwsh
+        run: |
+          # The clone hook removes stale case variants from the target index before files are copied.
+          $hooksPath = Join-Path $env:GITHUB_WORKSPACE 'scripts/release/hooks'
+          @(
+            'GIT_CONFIG_COUNT=2'
+            'GIT_CONFIG_KEY_0=core.ignorecase'
+            'GIT_CONFIG_VALUE_0=false'
+            'GIT_CONFIG_KEY_1=core.hooksPath'
+            "GIT_CONFIG_VALUE_1=$hooksPath"
+          ) | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        run: |
+          pip install uv==0.10.9
+          uv venv .venv
+          uv pip install --python .venv --no-deps ok-script==2.0.6 pyappify==1.0.13
+
+      - name: inline_ok_requirements
+        env:
+          RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
+        run: |
+          uv run --locked --no-sync python -m ok.update.inline_ok_requirements --tag "$env:RELEASE_TAG"
+
+      - name: Sync Repositories
+        id: sync
+        uses: ok-oldking/partial-sync-repo@master
+        with:
+          repos: |
+            https://cnb:${{ secrets.CNB_TOKEN }}@cnb.cool/AliceJump/ok-ap-update.git
+            https://AliceJump:${{ secrets.OK_GH }}@github.com/AliceJump/ok-ap-update.git
+          sync_list: 'deploy.txt'
+          tag: ${{ needs.prepare.outputs.tag }}
+          gitignore_file: '.update_repo_gitignore'
+          show_author: true
+
+  build:
+    needs: [prepare, test, sync]
+    if: always() && needs.test.result == 'success'
+    runs-on: windows-latest
+    permissions:
+      contents: read
+
+    env:
+      PYTHONIOENCODING: 'UTF-8'
+      PYTHONLEGACYWINDOWSSTDIO: 'UTF-8'
+
+    strategy:
+      matrix:
+        python-version: [ 3.12 ]
+
+    steps:
+      - name: Configure git
+        run: |
+          [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+          git config --global user.email "ok-oldking@users.noreply.github.com"
+          git config --global user.name "ok-oldking"
+          echo "action_state=yellow" >> $env:GITHUB_ENV
+          echo "${{ env.action_state }}"
+
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.test.outputs.sha }}
+          lfs: true
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        run: |
+          pip install uv==0.10.9
+          uv venv .venv
+          uv pip install --python .venv --no-deps ok-script==2.0.6 pyappify==1.0.13
+
+      - name: inline_ok_requirements
+        env:
+          RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
+        run: |
+          uv run --locked --no-sync python -m ok.update.inline_ok_requirements --tag "$env:RELEASE_TAG"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install polib
+
+      - name: Generate Windows launcher icon
+        shell: pwsh
+        run: |
+          @'
+          from PIL import Image
+
+          sizes = [(size, size) for size in (16, 24, 32, 48, 64, 128, 256)]
+          with Image.open("icons/icon.png") as icon:
+              icon.convert("RGBA").save("icons/icon.ico", format="ICO", sizes=sizes)
+          '@ | uv run --no-project --python (Get-Command python).Source python -
+
+      - name: Build with PyAppify Action
+        id: build-app
+        uses: ok-oldking/pyappify-action@master
+
+      - name: Add version to build filenames
+        shell: pwsh
+        env:
+          VERSION: ${{ needs.prepare.outputs.safe_tag }}
+        run: |
+          $version = "$env:VERSION"
+          Get-ChildItem -Path pyappify_dist -File | ForEach-Object {
+            Rename-Item -LiteralPath $_.FullName -NewName "$($_.BaseName)-$version$($_.Extension)"
+          }
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: pyappify_dist-${{ needs.prepare.outputs.safe_tag }}
+          path: pyappify_dist/*
+          overwrite: true
+
+  release:
+    needs: [prepare, build, sync]
+    runs-on: windows-latest
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v6
+        with:
+          name: pyappify_dist-${{ needs.prepare.outputs.safe_tag }}
+          path: pyappify_dist
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.prepare.outputs.tag }}
+          draft: false
+          body: |
+            ![Windows](https://img.shields.io/badge/platform-Windows-blue)
+
+            ### 下载 / Downloads
+
+            - [Mirror酱](https://mirrorchyan.com/zh/projects?rid=OK-AzurPromilia)
+            - [夸克网盘](https://pan.quark.cn/s/5f0cb1150fc4)
+            - [百度网盘](https://pan.baidu.com/s/1gz4JZyMtvcXL6lL9xIPEQQ?pwd=okap)
+
+            不确定选哪个？**中国大陆用户选 China，其他地区选 Global。**
+            Not sure? Pick **China** if you are in mainland China, otherwise **Global**.
+
+            | 文件 / File | 适用情况 / When to use | 下载 / Download |
+            | --- | --- | --- |
+            | `ok-ap-win32-China-setup-${{ needs.prepare.outputs.safe_tag }}.exe` | **中国大陆推荐。** 安装包自带运行环境，更新源为 CNB，国内下载与更新速度更快。<br>*Recommended in mainland China. The installer bundles its own runtime and updates from CNB, which is faster within China.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ needs.prepare.outputs.tag }}/ok-ap-win32-China-setup-${{ needs.prepare.outputs.safe_tag }}.exe) |
+            | `ok-ap-win32-Global-setup-${{ needs.prepare.outputs.safe_tag }}.exe` | **海外推荐。** 安装包自带运行环境，更新源为 GitHub，无需访问国内服务。<br>*Recommended outside mainland China. The installer bundles its own runtime and updates from GitHub, with no dependency on China-only services.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ needs.prepare.outputs.tag }}/ok-ap-win32-Global-setup-${{ needs.prepare.outputs.safe_tag }}.exe) |
+
+            > **注意 / Note**
+            > 安装包首次运行可能被 Windows Defender 拦截，选择「仍要运行」即可。
+            > *Windows Defender may block the installer on first run — choose "Run anyway".*
+
+            ### 更新日志 / Changelog
+
+            `${{ needs.sync.outputs.start_tag }}` → `${{ needs.sync.outputs.end_tag }}`
+
+            ${{ needs.sync.outputs.changes_with_asterisk }}
+          files: pyappify_dist/**
+
+      - name: Trigger MirrorChyanUploading
+        shell: bash
+        run: |
+          gh workflow run --repo "$GITHUB_REPOSITORY" mirrorchyan_release.yml -f "tag=$RELEASE_TAG"
+          gh workflow run --repo "$GITHUB_REPOSITORY" mirrorchyan_release_note.yml -f "tag=$RELEASE_TAG"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ needs.prepare.outputs.tag }}

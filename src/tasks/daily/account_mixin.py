@@ -21,8 +21,9 @@ from __future__ import annotations
 import re
 
 from src.core.account_override_mixin import AccountOverrideMixin
-from src.data.FeatureList import FeatureList
+from src.data.feature_list import FeatureList
 from src.image.hsv_config import HSVRange
+from src.image.frame_processes import make_hsv_isolator
 from src.tasks.account.account_scope_store import (
     resolve_account_id as _store_resolve_account_id,
 )
@@ -121,7 +122,7 @@ class AccountMixin(AccountOverrideMixin):
         """
         if not (result := self.find_feature(
         feature_name=FeatureList.login_out,
-            mask_function=self.make_hsv_isolator(HSVRange.WHITE),
+            mask_function=make_hsv_isolator(HSVRange.WHITE),
         )):
             return
         self.click(result)

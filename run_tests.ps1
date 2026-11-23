@@ -1,4 +1,4 @@
-Get-ChildItem -Path ".\tests\*.py" -Filter "Test*.py" | ForEach-Object {
+Get-ChildItem -Path ".\tests\*.py" -Filter "test_*.py" | ForEach-Object {
   Write-Host "Running tests in $($_.FullName)"
   try {
       # Run the Python unittest command (via uv, uses the project .venv)

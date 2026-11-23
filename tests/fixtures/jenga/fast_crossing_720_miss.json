@@ -1,0 +1,497 @@
+[
+  {
+    "t": 0.0,
+    "age": 0.04526469999109395,
+    "obs": {
+      "held": {
+        "x": 940.0,
+        "top": 240,
+        "bottom": 384,
+        "width": 88,
+        "confidence": 0.6865576505661011,
+        "kind": ""
+      },
+      "tower": {
+        "x": 604.0,
+        "top": 736,
+        "bottom": 920,
+        "width": 104,
+        "confidence": 0.7982218265533447,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 957.0,
+        "top": 176.0,
+        "bottom": 240.0,
+        "width": 32.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    "hit": false,
+    "delay": 0.0,
+    "history": 1
+  },
+  {
+    "t": 0.0634877,
+    "age": 0.05267924998770468,
+    "obs": {
+      "held": {
+        "x": 970.0,
+        "top": 220,
+        "bottom": 364,
+        "width": 88,
+        "confidence": 0.8792580366134644,
+        "kind": ""
+      },
+      "tower": {
+        "x": 592.0,
+        "top": 738,
+        "bottom": 922,
+        "width": 104,
+        "confidence": 0.8116937875747681,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 988.5,
+        "top": 171.0,
+        "bottom": 220.0,
+        "width": 29.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    "hit": false,
+    "delay": 0.0,
+    "history": 2
+  },
+  {
+    "t": 0.1279975,
+    "age": 0.05181309999898076,
+    "obs": {
+      "held": {
+        "x": 1000.0,
+        "top": 200,
+        "bottom": 344,
+        "width": 88,
+        "confidence": 0.8487064242362976,
+        "kind": ""
+      },
+      "tower": {
+        "x": 584.0,
+        "top": 738,
+        "bottom": 922,
+        "width": 104,
+        "confidence": 0.8264538645744324,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1018.5,
+        "top": 152.0,
+        "bottom": 203.0,
+        "width": 29.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    "hit": false,
+    "delay": 0.0,
+    "history": 3
+  },
+  {
+    "t": 0.1873835,
+    "age": 0.049144099990371615,
+    "obs": {
+      "held": {
+        "x": 1030.0,
+        "top": 182,
+        "bottom": 326,
+        "width": 88,
+        "confidence": 0.8675201535224915,
+        "kind": ""
+      },
+      "tower": {
+        "x": 580.0,
+        "top": 738,
+        "bottom": 922,
+        "width": 104,
+        "confidence": 0.8805445432662964,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1047.0,
+        "top": 122.0,
+        "bottom": 187.0,
+        "width": 32.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    "hit": false,
+    "delay": 0.0,
+    "history": 4
+  },
+  {
+    "t": 0.283321,
+    "age": 0.08680905000073835,
+    "obs": {
+      "held": {
+        "x": 1060.0,
+        "top": 166,
+        "bottom": 310,
+        "width": 88,
+        "confidence": 0.8809317350387573,
+        "kind": ""
+      },
+      "tower": {
+        "x": 578.0,
+        "top": 738,
+        "bottom": 922,
+        "width": 104,
+        "confidence": 0.9276772141456604,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1077.0,
+        "top": 106.0,
+        "bottom": 172.0,
+        "width": 32.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    "hit": false,
+    "delay": 0.0,
+    "history": 5
+  },
+  {
+    "t": 0.3631409,
+    "age": 0.06277915003011003,
+    "obs": {
+      "held": {
+        "x": 1100.0,
+        "top": 148,
+        "bottom": 292,
+        "width": 88,
+        "confidence": 0.79787677526474,
+        "kind": ""
+      },
+      "tower": {
+        "x": 582.0,
+        "top": 736,
+        "bottom": 920,
+        "width": 104,
+        "confidence": 0.8746796250343323,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1119.0,
+        "top": 99.0,
+        "bottom": 149.0,
+        "width": 30.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    "hit": false,
+    "delay": 0.0,
+    "history": 6
+  },
+  {
+    "t": 0.4345819,
+    "age": 0.05748545000096783,
+    "obs": {
+      "held": {
+        "x": 1126.0,
+        "top": 140,
+        "bottom": 284,
+        "width": 88,
+        "confidence": 0.8253491520881653,
+        "kind": ""
+      },
+      "tower": {
+        "x": 590.0,
+        "top": 734,
+        "bottom": 918,
+        "width": 104,
+        "confidence": 0.9210802316665649,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1144.5,
+        "top": 93.0,
+        "bottom": 141.0,
+        "width": 31.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    "hit": false,
+    "delay": 0.0,
+    "history": 7
+  },
+  {
+    "t": 0.5064232,
+    "age": 0.06040294998092577,
+    "obs": {
+      "held": {
+        "x": 1150.0,
+        "top": 136,
+        "bottom": 280,
+        "width": 88,
+        "confidence": 0.800487756729126,
+        "kind": ""
+      },
+      "tower": {
+        "x": 604.0,
+        "top": 732,
+        "bottom": 916,
+        "width": 104,
+        "confidence": 0.9761463403701782,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1167.5,
+        "top": 92.0,
+        "bottom": 139.0,
+        "width": 31.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    "hit": false,
+    "delay": 0.0,
+    "history": 8
+  },
+  {
+    "t": 0.581742,
+    "age": 0.06212550002965145,
+    "obs": {
+      "held": {
+        "x": 1172.0,
+        "top": 136,
+        "bottom": 280,
+        "width": 88,
+        "confidence": 0.878113865852356,
+        "kind": ""
+      },
+      "tower": {
+        "x": 624.0,
+        "top": 730,
+        "bottom": 914,
+        "width": 104,
+        "confidence": 0.9665747284889221,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1189.5,
+        "top": 92.0,
+        "bottom": 142.0,
+        "width": 29.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    "hit": false,
+    "delay": 0.0,
+    "history": 9
+  },
+  {
+    "t": 0.6793899,
+    "age": 0.08559140001307242,
+    "obs": {
+      "held": {
+        "x": 1190.0,
+        "top": 140,
+        "bottom": 284,
+        "width": 88,
+        "confidence": 0.869194746017456,
+        "kind": ""
+      },
+      "tower": {
+        "x": 646.0,
+        "top": 728,
+        "bottom": 912,
+        "width": 104,
+        "confidence": 0.8925859332084656,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1208.5,
+        "top": 97.0,
+        "bottom": 148.0,
+        "width": 29.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    "hit": false,
+    "delay": 0.25,
+    "history": 10
+  },
+  {
+    "t": 0.7554572,
+    "age": 0.05362089999835007,
+    "obs": {
+      "held": {
+        "x": 1220.0,
+        "top": 160,
+        "bottom": 304,
+        "width": 88,
+        "confidence": 0.8410752415657043,
+        "kind": ""
+      },
+      "tower": {
+        "x": 690.0,
+        "top": 724,
+        "bottom": 908,
+        "width": 104,
+        "confidence": 0.8044092059135437,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1238.5,
+        "top": 116.0,
+        "bottom": 165.0,
+        "width": 29.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    "hit": false,
+    "delay": 0.25,
+    "history": 11
+  },
+  {
+    "t": 0.9141621,
+    "age": 0.13613349999650382,
+    "obs": {
+      "held": {
+        "x": 1230.0,
+        "top": 176,
+        "bottom": 320,
+        "width": 88,
+        "confidence": 0.8206431865692139,
+        "kind": ""
+      },
+      "tower": {
+        "x": 724.0,
+        "top": 724,
+        "bottom": 908,
+        "width": 104,
+        "confidence": 0.5225211977958679,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1247.5,
+        "top": 130.0,
+        "bottom": 179.0,
+        "width": 31.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    "hit": false,
+    "delay": 0.25,
+    "history": 12
+  },
+  {
+    "t": 1.0637111,
+    "age": 0.12692224999773316,
+    "obs": {
+      "held": {
+        "x": 1242.0,
+        "top": 222,
+        "bottom": 366,
+        "width": 88,
+        "confidence": 0.8193398118019104,
+        "kind": ""
+      },
+      "tower": {
+        "x": 800.0,
+        "top": 720,
+        "bottom": 904,
+        "width": 104,
+        "confidence": 0.5096682906150818,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1259.0,
+        "top": 181.0,
+        "bottom": 230.0,
+        "width": 30.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    "hit": false,
+    "delay": 0.23675649090885953,
+    "history": 13
+  },
+  {
+    "t": 1.1375338,
+    "age": 0.05182310001691803,
+    "obs": {
+      "held": {
+        "x": 1236.0,
+        "top": 260,
+        "bottom": 404,
+        "width": 88,
+        "confidence": 0.8339179754257202,
+        "kind": ""
+      },
+      "tower": {
+        "x": 890.0,
+        "top": 716,
+        "bottom": 900,
+        "width": 104,
+        "confidence": 0.8180130124092102,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1255.0,
+        "top": 219.0,
+        "bottom": 266.0,
+        "width": 30.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    "hit": false,
+    "delay": 0.1377334065634273,
+    "history": 14
+  },
+  {
+    "t": 1.239716,
+    "age": 0.0770742500317283,
+    "obs": {
+      "held": {
+        "x": 1224.0,
+        "top": 286,
+        "bottom": 430,
+        "width": 88,
+        "confidence": 0.7140849828720093,
+        "kind": ""
+      },
+      "tower": {
+        "x": 932.0,
+        "top": 716,
+        "bottom": 900,
+        "width": 104,
+        "confidence": 0.9424842596054077,
+        "kind": "monkey"
+      },
+      "bird": {
+        "x": 1241.0,
+        "top": 242.0,
+        "bottom": 289.0,
+        "width": 32.0,
+        "confidence": 1.0,
+        "kind": ""
+      }
+    },
+    "hit": true,
+    "delay": 0.026226043701171875,
+    "history": 15
+  }
+]

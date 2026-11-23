@@ -40,3 +40,12 @@ def isolate_by_hsv_ranges(frame, ranges, invert=True, kernel_size=2):
         combined_mask = cv2.bitwise_not(combined_mask)
 
     return cv2.cvtColor(combined_mask, cv2.COLOR_GRAY2BGR)
+
+def make_hsv_isolator(ranges, invert=True, kernel_size=2):
+    """返回一个可直接调用的 HSV 过滤函数"""
+    return lambda frame: isolate_by_hsv_ranges(
+        frame,
+        ranges,
+        invert=invert,
+        kernel_size=kernel_size,
+    )

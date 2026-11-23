@@ -1,0 +1,3024 @@
+{
+  "samples": [
+    {
+      "observed_at": 1.0746800499910023,
+      "now": 1.3198427000024822,
+      "obs": {
+        "held": {
+          "x": 708.0,
+          "top": 148,
+          "bottom": 316,
+          "width": 120,
+          "confidence": 0.6504477262496948,
+          "kind": ""
+        },
+        "tower": {
+          "x": 964.0,
+          "top": 684,
+          "bottom": 832,
+          "width": 104,
+          "confidence": 0.561331033706665,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 715.5,
+          "top": 91.0,
+          "bottom": 133.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 1.3290712499874644,
+      "now": 1.610281400004169,
+      "obs": null
+    },
+    {
+      "observed_at": 1.6197715500020422,
+      "now": 1.905788300005952,
+      "obs": null
+    },
+    {
+      "observed_at": 1.918575299991062,
+      "now": 2.258008799981326,
+      "obs": null
+    },
+    {
+      "observed_at": 2.274059949995717,
+      "now": 2.6362648000067566,
+      "obs": null
+    },
+    {
+      "observed_at": 2.645650349993957,
+      "now": 3.014888699981384,
+      "obs": null
+    },
+    {
+      "observed_at": 3.0324560000153724,
+      "now": 3.364767599996412,
+      "obs": null
+    },
+    {
+      "observed_at": 3.376352899998892,
+      "now": 3.549477399996249,
+      "obs": {
+        "held": {
+          "x": 1248.5,
+          "top": 254,
+          "bottom": 409,
+          "width": 119,
+          "confidence": 0.6,
+          "kind": ""
+        },
+        "tower": {
+          "x": 844.0,
+          "top": 688,
+          "bottom": 864,
+          "width": 120,
+          "confidence": 0.5154092907905579,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1258.0,
+          "top": 201.0,
+          "bottom": 250.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 3.5602627499902155,
+      "now": 3.694977100007236,
+      "obs": {
+        "held": {
+          "x": 1232.0,
+          "top": 298,
+          "bottom": 452,
+          "width": 120,
+          "confidence": 0.8040494918823242,
+          "kind": ""
+        },
+        "tower": {
+          "x": 772.0,
+          "top": 692,
+          "bottom": 868,
+          "width": 120,
+          "confidence": 0.5244572758674622,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1240.5,
+          "top": 242.0,
+          "bottom": 289.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 3.7033780999772716,
+      "now": 3.781537200004095,
+      "obs": {
+        "held": {
+          "x": 1196.0,
+          "top": 326,
+          "bottom": 480,
+          "width": 120,
+          "confidence": 0.7693367004394531,
+          "kind": ""
+        },
+        "tower": {
+          "x": 720.0,
+          "top": 696,
+          "bottom": 872,
+          "width": 120,
+          "confidence": 0.8752692937850952,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1205.0,
+          "top": 273.0,
+          "bottom": 321.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 3.7926351499918383,
+      "now": 3.8474018999841064,
+      "obs": {
+        "held": {
+          "x": 1166.0,
+          "top": 332,
+          "bottom": 486,
+          "width": 120,
+          "confidence": 0.8121496438980103,
+          "kind": ""
+        },
+        "tower": {
+          "x": 694.0,
+          "top": 698,
+          "bottom": 874,
+          "width": 120,
+          "confidence": 0.7500277161598206,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1175.5,
+          "top": 278.0,
+          "bottom": 326.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 3.8594819999998435,
+      "now": 3.999189499998465,
+      "obs": {
+        "held": {
+          "x": 1156.0,
+          "top": 332,
+          "bottom": 486,
+          "width": 120,
+          "confidence": 0.9062424898147583,
+          "kind": ""
+        },
+        "tower": {
+          "x": 682.0,
+          "top": 732,
+          "bottom": 876,
+          "width": 108,
+          "confidence": 0.5255352258682251,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1164.0,
+          "top": 259.0,
+          "bottom": 323.0,
+          "width": 32.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 4.01033930000267,
+      "now": 4.143167200003518,
+      "obs": {
+        "held": {
+          "x": 1094.0,
+          "top": 316,
+          "bottom": 470,
+          "width": 120,
+          "confidence": 0.7295998334884644,
+          "kind": ""
+        },
+        "tower": {
+          "x": 662.0,
+          "top": 732,
+          "bottom": 876,
+          "width": 108,
+          "confidence": 0.6254686713218689,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1101.0,
+          "top": 258.0,
+          "bottom": 306.0,
+          "width": 32.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 4.170129200007068,
+      "now": 4.217321100004483,
+      "obs": {
+        "held": {
+          "x": 1022.0,
+          "top": 280,
+          "bottom": 434,
+          "width": 120,
+          "confidence": 0.6928220987319946,
+          "kind": ""
+        },
+        "tower": {
+          "x": 658.0,
+          "top": 732,
+          "bottom": 876,
+          "width": 108,
+          "confidence": 0.840820848941803,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1029.0,
+          "top": 207.0,
+          "bottom": 272.0,
+          "width": 32.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 4.245487050007796,
+      "now": 4.333378299983451,
+      "obs": {
+        "held": {
+          "x": 994.5,
+          "top": 253,
+          "bottom": 419,
+          "width": 125,
+          "confidence": 0.6,
+          "kind": ""
+        },
+        "tower": {
+          "x": 664.0,
+          "top": 732,
+          "bottom": 876,
+          "width": 108,
+          "confidence": 0.8353826999664307,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1000.5,
+          "top": 201.0,
+          "bottom": 249.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 4.362760999967577,
+      "now": 4.4112505999801215,
+      "obs": {
+        "held": {
+          "x": 934.0,
+          "top": 214,
+          "bottom": 382,
+          "width": 124,
+          "confidence": 0.7862045764923096,
+          "kind": ""
+        },
+        "tower": {
+          "x": 682.0,
+          "top": 730,
+          "bottom": 874,
+          "width": 108,
+          "confidence": 0.9443473815917969,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 938.0,
+          "top": 146.0,
+          "bottom": 209.0,
+          "width": 32.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 4.445476299995789,
+      "now": 4.508215099980589,
+      "obs": {
+        "held": {
+          "x": 904.0,
+          "top": 196,
+          "bottom": 364,
+          "width": 124,
+          "confidence": 0.8363426923751831,
+          "kind": ""
+        },
+        "tower": {
+          "x": 702.0,
+          "top": 728,
+          "bottom": 872,
+          "width": 108,
+          "confidence": 0.90288245677948,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 908.0,
+          "top": 143.0,
+          "bottom": 194.0,
+          "width": 28.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 4.53526534998673,
+      "now": 4.8172764999908395,
+      "obs": null
+    },
+    {
+      "observed_at": 4.827954150008736,
+      "now": 5.002337299985811,
+      "obs": {
+        "held": {
+          "x": 748.0,
+          "top": 156,
+          "bottom": 324,
+          "width": 120,
+          "confidence": 0.6272083520889282,
+          "kind": ""
+        },
+        "tower": {
+          "x": 844.0,
+          "top": 688,
+          "bottom": 864,
+          "width": 120,
+          "confidence": 0.5413822531700134,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 754.0,
+          "top": 93.0,
+          "bottom": 143.0,
+          "width": 28.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 5.036058999976376,
+      "now": 5.205031699995743,
+      "obs": {
+        "held": {
+          "x": 702.0,
+          "top": 182.0,
+          "bottom": 350.0,
+          "width": 124.0,
+          "confidence": 0.696354329586029,
+          "kind": ""
+        },
+        "tower": {
+          "x": 944.0,
+          "top": 684,
+          "bottom": 860,
+          "width": 120,
+          "confidence": 0.5327672958374023,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 707.0,
+          "top": 122.0,
+          "bottom": 173.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 5.237885899987305,
+      "now": 5.379420399985975,
+      "obs": {
+        "held": {
+          "x": 682.0,
+          "top": 234.0,
+          "bottom": 402.0,
+          "width": 124.0,
+          "confidence": 0.7495476007461548,
+          "kind": ""
+        },
+        "tower": {
+          "x": 1048.0,
+          "top": 692,
+          "bottom": 860,
+          "width": 104,
+          "confidence": 0.5031022429466248,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 688.0,
+          "top": 171.0,
+          "bottom": 219.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 5.394051399984164,
+      "now": 5.482112800003961,
+      "obs": {
+        "held": {
+          "x": 684.0,
+          "top": 272.0,
+          "bottom": 440.0,
+          "width": 124.0,
+          "confidence": 0.8589870929718018,
+          "kind": ""
+        },
+        "tower": {
+          "x": 1124.0,
+          "top": 696,
+          "bottom": 864,
+          "width": 104,
+          "confidence": 0.7587383985519409,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 689.5,
+          "top": 212.0,
+          "bottom": 262.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 5.522191600000951,
+      "now": 5.569909799989546,
+      "obs": {
+        "held": {
+          "x": 698.0,
+          "top": 306.0,
+          "bottom": 474.0,
+          "width": 124.0,
+          "confidence": 0.8635498881340027,
+          "kind": ""
+        },
+        "tower": {
+          "x": 1180.0,
+          "top": 700,
+          "bottom": 868,
+          "width": 104,
+          "confidence": 0.7505663633346558,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 705.5,
+          "top": 247.0,
+          "bottom": 296.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 5.609274749993347,
+      "now": 5.888504700007616,
+      "obs": null
+    },
+    {
+      "observed_at": 5.900601099972846,
+      "now": 6.219557699980214,
+      "obs": null
+    },
+    {
+      "observed_at": 6.230403499997919,
+      "now": 6.558172299992293,
+      "obs": null
+    },
+    {
+      "observed_at": 6.569167399982689,
+      "now": 6.889925099996617,
+      "obs": null
+    },
+    {
+      "observed_at": 6.901972099993145,
+      "now": 7.2309093000076246,
+      "obs": null
+    },
+    {
+      "observed_at": 7.243515500013018,
+      "now": 7.421793899993645,
+      "obs": {
+        "held": {
+          "x": 1264.0,
+          "top": 236,
+          "bottom": 404.0,
+          "width": 124.0,
+          "confidence": 0.5297345519065857,
+          "kind": ""
+        },
+        "tower": {
+          "x": 912.0,
+          "top": 684,
+          "bottom": 860,
+          "width": 120,
+          "confidence": 0.5455077290534973,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1259.0,
+          "top": 179.0,
+          "bottom": 227.0,
+          "width": 32.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 7.452481449989136,
+      "now": 7.6158265999984,
+      "obs": {
+        "held": {
+          "x": 1250.0,
+          "top": 290.0,
+          "bottom": 458.0,
+          "width": 124.0,
+          "confidence": 0.8053959608078003,
+          "kind": ""
+        },
+        "tower": {
+          "x": 812.0,
+          "top": 688,
+          "bottom": 864,
+          "width": 120,
+          "confidence": 0.5356862545013428,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1245.5,
+          "top": 239.0,
+          "bottom": 288.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 7.670257649995619,
+      "now": 7.810624599980656,
+      "obs": {
+        "held": {
+          "x": 1210.0,
+          "top": 324.0,
+          "bottom": 492.0,
+          "width": 124.0,
+          "confidence": 0.8489670753479004,
+          "kind": ""
+        },
+        "tower": {
+          "x": 732.0,
+          "top": 720,
+          "bottom": 868,
+          "width": 104,
+          "confidence": 0.5489242076873779,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1202.5,
+          "top": 271.0,
+          "bottom": 317.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 7.842195400007768,
+      "now": 7.901032399997348,
+      "obs": {
+        "held": {
+          "x": 1144.0,
+          "top": 324.0,
+          "bottom": 492.0,
+          "width": 124.0,
+          "confidence": 0.7615360021591187,
+          "kind": ""
+        },
+        "tower": {
+          "x": 682.0,
+          "top": 724,
+          "bottom": 872,
+          "width": 104,
+          "confidence": 0.8465895652770996,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1138.0,
+          "top": 273.0,
+          "bottom": 322.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 7.938120100006927,
+      "now": 7.988802899984876,
+      "obs": {
+        "held": {
+          "x": 1118.0,
+          "top": 316.0,
+          "bottom": 484.0,
+          "width": 124.0,
+          "confidence": 0.920250654220581,
+          "kind": ""
+        },
+        "tower": {
+          "x": 668.0,
+          "top": 726,
+          "bottom": 874,
+          "width": 104,
+          "confidence": 0.937792956829071,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1113.0,
+          "top": 264.0,
+          "bottom": 312.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 8.02066334997653,
+      "now": 8.070378200005507,
+      "obs": {
+        "held": {
+          "x": 1076.0,
+          "top": 298.0,
+          "bottom": 466.0,
+          "width": 124.0,
+          "confidence": 0.8315305113792419,
+          "kind": ""
+        },
+        "tower": {
+          "x": 660.0,
+          "top": 726,
+          "bottom": 874,
+          "width": 104,
+          "confidence": 0.8060422539710999,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1071.5,
+          "top": 243.0,
+          "bottom": 290.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 8.113365549972514,
+      "now": 8.284020599996438,
+      "obs": {
+        "held": {
+          "x": 1032.0,
+          "top": 274.0,
+          "bottom": 448.81932982205603,
+          "width": 124.0,
+          "confidence": 0.8157107830047607,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 658.0,
+          "top": 732,
+          "bottom": 876,
+          "width": 108,
+          "confidence": 0.6247919797897339,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1026.0,
+          "top": 202.0,
+          "bottom": 266.0,
+          "width": 32.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 8.327724600007059,
+      "now": 8.46481639999547,
+      "obs": {
+        "held": {
+          "x": 942.0,
+          "top": 218.0,
+          "bottom": 392.81672007070796,
+          "width": 124.0,
+          "confidence": 0.7780231237411499,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 674.0,
+          "top": 732,
+          "bottom": 876,
+          "width": 108,
+          "confidence": 0.6542827486991882,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 936.0,
+          "top": 162.0,
+          "bottom": 212.0,
+          "width": 28.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 8.503342749987496,
+      "now": 8.549678599985782,
+      "obs": {
+        "held": {
+          "x": 868.0,
+          "top": 176.0,
+          "bottom": 350.56487659433105,
+          "width": 124.0,
+          "confidence": 0.7754541635513306,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 714.0,
+          "top": 728,
+          "bottom": 872,
+          "width": 108,
+          "confidence": 0.8732953667640686,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 862.0,
+          "top": 117.0,
+          "bottom": 166.0,
+          "width": 28.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 8.587054649979109,
+      "now": 8.6351932999969,
+      "obs": {
+        "held": {
+          "x": 828.0,
+          "top": 160.0,
+          "bottom": 334.147654687513,
+          "width": 124.0,
+          "confidence": 0.8043555617332458,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 746.0,
+          "top": 726,
+          "bottom": 870,
+          "width": 108,
+          "confidence": 0.875706672668457,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 821.0,
+          "top": 101.0,
+          "bottom": 153.0,
+          "width": 28.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 8.676525399991078,
+      "now": 8.984012300003087,
+      "obs": null
+    },
+    {
+      "observed_at": 8.995320499991067,
+      "now": 9.130933399981586,
+      "obs": {
+        "held": {
+          "x": 714.0,
+          "top": 180.0,
+          "bottom": 354.0565022039508,
+          "width": 124.0,
+          "confidence": 0.7024670243263245,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 916.0,
+          "top": 684,
+          "bottom": 860,
+          "width": 120,
+          "confidence": 0.5299011468887329,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 705.5,
+          "top": 122.0,
+          "bottom": 173.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 9.176979099982418,
+      "now": 9.492747799988138,
+      "obs": null
+    },
+    {
+      "observed_at": 9.50290784999379,
+      "now": 9.878166299982695,
+      "obs": null
+    },
+    {
+      "observed_at": 9.886725649994332,
+      "now": 10.212635500007309,
+      "obs": null
+    },
+    {
+      "observed_at": 10.22631795000052,
+      "now": 10.55158470000606,
+      "obs": null
+    },
+    {
+      "observed_at": 10.56137724997825,
+      "now": 10.875057400000514,
+      "obs": null
+    },
+    {
+      "observed_at": 10.88559059999534,
+      "now": 11.200247900007525,
+      "obs": null
+    },
+    {
+      "observed_at": 11.211337649991037,
+      "now": 11.393094900005963,
+      "obs": {
+        "held": {
+          "x": 1249.0,
+          "top": 247,
+          "bottom": 420.94778183166613,
+          "width": 118,
+          "confidence": 0.6,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 928.0,
+          "top": 684,
+          "bottom": 860,
+          "width": 120,
+          "confidence": 0.5180132985115051,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1259.5,
+          "top": 195.0,
+          "bottom": 243.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 11.403065349993994,
+      "now": 11.535529299988411,
+      "obs": {
+        "held": {
+          "x": 1231.0,
+          "top": 300.0,
+          "bottom": 473.94778183166613,
+          "width": 118,
+          "confidence": 0.8066030144691467,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 836.0,
+          "top": 688,
+          "bottom": 864,
+          "width": 120,
+          "confidence": 0.5782071352005005,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1238.5,
+          "top": 246.0,
+          "bottom": 293.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 11.545165699993959,
+      "now": 11.58917979997932,
+      "obs": {
+        "held": {
+          "x": 1203.0,
+          "top": 322.0,
+          "bottom": 495.94778183166613,
+          "width": 118,
+          "confidence": 0.8534223437309265,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 776.0,
+          "top": 692,
+          "bottom": 868,
+          "width": 120,
+          "confidence": 0.8186933994293213,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1210.0,
+          "top": 272.0,
+          "bottom": 320.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 11.60086654999759,
+      "now": 11.648187399987364,
+      "obs": {
+        "held": {
+          "x": 1185.0,
+          "top": 328.0,
+          "bottom": 501.94778183166613,
+          "width": 118,
+          "confidence": 0.9409926533699036,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 752.0,
+          "top": 694,
+          "bottom": 870,
+          "width": 120,
+          "confidence": 0.8400816917419434,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1192.5,
+          "top": 277.0,
+          "bottom": 324.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 11.6594535500044,
+      "now": 11.70605720000458,
+      "obs": {
+        "held": {
+          "x": 1175.0,
+          "top": 330.0,
+          "bottom": 503.94778183166613,
+          "width": 118,
+          "confidence": 0.9449222087860107,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 732.0,
+          "top": 696,
+          "bottom": 872,
+          "width": 120,
+          "confidence": 0.7959298491477966,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1182.5,
+          "top": 277.0,
+          "bottom": 324.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 11.716885399975581,
+      "now": 11.84020859998418,
+      "obs": {
+        "held": {
+          "x": 1153.0,
+          "top": 330.0,
+          "bottom": 503.94778183166613,
+          "width": 118,
+          "confidence": 0.8468559384346008,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 718.0,
+          "top": 728,
+          "bottom": 872,
+          "width": 108,
+          "confidence": 0.5767520070075989,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1160.0,
+          "top": 275.0,
+          "bottom": 321.0,
+          "width": 32.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 11.852210949989967,
+      "now": 11.898345699999481,
+      "obs": {
+        "held": {
+          "x": 1103.0,
+          "top": 318.0,
+          "bottom": 491.94778183166613,
+          "width": 118,
+          "confidence": 0.7236340641975403,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 686.0,
+          "top": 732,
+          "bottom": 876,
+          "width": 108,
+          "confidence": 0.75890052318573,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1109.0,
+          "top": 245.0,
+          "bottom": 310.0,
+          "width": 32.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 11.909366199979559,
+      "now": 11.95933069998864,
+      "obs": {
+        "held": {
+          "x": 1077.0,
+          "top": 306.0,
+          "bottom": 479.94778183166613,
+          "width": 118,
+          "confidence": 0.8942804932594299,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 674.0,
+          "top": 734,
+          "bottom": 878,
+          "width": 108,
+          "confidence": 0.8986047506332397,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1082.5,
+          "top": 251.0,
+          "bottom": 301.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 11.971758750005392,
+      "now": 12.020077799999854,
+      "obs": {
+        "held": {
+          "x": 1063.0,
+          "top": 298.0,
+          "bottom": 471.94778183166613,
+          "width": 118,
+          "confidence": 0.9350374341011047,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 666.0,
+          "top": 734,
+          "bottom": 878,
+          "width": 108,
+          "confidence": 0.9045158624649048,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1068.5,
+          "top": 244.0,
+          "bottom": 294.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 12.029092250013491,
+      "now": 12.075672000006307,
+      "obs": {
+        "held": {
+          "x": 1035.0,
+          "top": 282.0,
+          "bottom": 455.94778183166613,
+          "width": 118,
+          "confidence": 0.9113285541534424,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 660.0,
+          "top": 734,
+          "bottom": 878,
+          "width": 108,
+          "confidence": 0.9595749378204346,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1039.5,
+          "top": 227.0,
+          "bottom": 276.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 12.103656199993566,
+      "now": 12.148029400006635,
+      "obs": {
+        "held": {
+          "x": 991.0,
+          "top": 254.0,
+          "bottom": 427.94778183166613,
+          "width": 118,
+          "confidence": 0.8247790932655334,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 658.0,
+          "top": 734,
+          "bottom": 878,
+          "width": 108,
+          "confidence": 0.9448727369308472,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 993.5,
+          "top": 181.0,
+          "bottom": 245.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 12.17780400000629,
+      "now": 12.228256500005955,
+      "obs": {
+        "held": {
+          "x": 961.0,
+          "top": 234.0,
+          "bottom": 407.94778183166613,
+          "width": 118,
+          "confidence": 0.8865628838539124,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 658.0,
+          "top": 734,
+          "bottom": 878,
+          "width": 108,
+          "confidence": 0.8478997945785522,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 963.0,
+          "top": 176.0,
+          "bottom": 225.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 12.260565799981123,
+      "now": 12.443253999983426,
+      "obs": {
+        "held": {
+          "x": 931.0,
+          "top": 214.0,
+          "bottom": 387.94778183166613,
+          "width": 118,
+          "confidence": 0.878456711769104,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 666.0,
+          "top": 732,
+          "bottom": 876,
+          "width": 108,
+          "confidence": 0.6312457323074341,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 932.5,
+          "top": 158.0,
+          "bottom": 208.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 12.453284100018209,
+      "now": 12.577681599999778,
+      "obs": {
+        "held": {
+          "x": 843.0,
+          "top": 166.0,
+          "bottom": 339.94778183166613,
+          "width": 118,
+          "confidence": 0.7321497201919556,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 698.0,
+          "top": 728,
+          "bottom": 872,
+          "width": 108,
+          "confidence": 0.5523964762687683,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 846.0,
+          "top": 111.0,
+          "bottom": 161.0,
+          "width": 28.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 12.608130999986315,
+      "now": 12.726616800006013,
+      "obs": {
+        "held": {
+          "x": 781.0,
+          "top": 148.0,
+          "bottom": 321.94778183166613,
+          "width": 118,
+          "confidence": 0.6913307309150696,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 754.0,
+          "top": 724,
+          "bottom": 868,
+          "width": 108,
+          "confidence": 0.513673722743988,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 782.5,
+          "top": 93.0,
+          "bottom": 141.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 12.76143494999269,
+      "now": 12.806230499991216,
+      "obs": {
+        "held": {
+          "x": 733.0,
+          "top": 154.0,
+          "bottom": 327.94778183166613,
+          "width": 118,
+          "confidence": 0.7093973755836487,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 816.0,
+          "top": 720,
+          "bottom": 864,
+          "width": 108,
+          "confidence": 0.7915331721305847,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 733.5,
+          "top": 101.0,
+          "bottom": 152.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 12.848258599988185,
+      "now": 12.899056700000074,
+      "obs": {
+        "held": {
+          "x": 717.0,
+          "top": 164.0,
+          "bottom": 337.94778183166613,
+          "width": 118,
+          "confidence": 0.8805588483810425,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 856.0,
+          "top": 718,
+          "bottom": 862,
+          "width": 108,
+          "confidence": 0.8820206522941589,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 718.0,
+          "top": 110.0,
+          "bottom": 159.0,
+          "width": 28.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 12.936166600004071,
+      "now": 13.071779099991545,
+      "obs": {
+        "held": {
+          "x": 699.0,
+          "top": 184.0,
+          "bottom": 357.94778183166613,
+          "width": 118,
+          "confidence": 0.7927611470222473,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 892.0,
+          "top": 684,
+          "bottom": 860,
+          "width": 120,
+          "confidence": 0.546453595161438,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 700.5,
+          "top": 128.0,
+          "bottom": 177.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 13.111847249994753,
+      "now": 13.416049599996768,
+      "obs": null
+    },
+    {
+      "observed_at": 13.426331699971342,
+      "now": 13.713844299985794,
+      "obs": null
+    },
+    {
+      "observed_at": 13.726620200002799,
+      "now": 14.049746599979699,
+      "obs": null
+    },
+    {
+      "observed_at": 14.05991104998975,
+      "now": 14.39763639998273,
+      "obs": null
+    },
+    {
+      "observed_at": 14.408957999985432,
+      "now": 14.723834100004751,
+      "obs": null
+    },
+    {
+      "observed_at": 14.735207899968373,
+      "now": 15.066912099980982,
+      "obs": null
+    },
+    {
+      "observed_at": 15.077954750013305,
+      "now": 15.403115799999796,
+      "obs": null
+    },
+    {
+      "observed_at": 15.412543699989328,
+      "now": 15.580132100003539,
+      "obs": {
+        "held": {
+          "x": 1231.0,
+          "top": 310,
+          "bottom": 483.94778183166613,
+          "width": 96,
+          "confidence": 0.6,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 836.0,
+          "top": 688,
+          "bottom": 864,
+          "width": 120,
+          "confidence": 0.5423707962036133,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1225.0,
+          "top": 260.0,
+          "bottom": 306.0,
+          "width": 32.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 15.592042150005,
+      "now": 15.643782800005283,
+      "obs": {
+        "held": {
+          "x": 1188.0,
+          "top": 326.0,
+          "bottom": 499.94778183166613,
+          "width": 96,
+          "confidence": 0.7724760174751282,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 758.0,
+          "top": 692,
+          "bottom": 868,
+          "width": 120,
+          "confidence": 0.8148176074028015,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1179.5,
+          "top": 278.0,
+          "bottom": 326.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 15.652959099999862,
+      "now": 15.70122459999402,
+      "obs": {
+        "held": {
+          "x": 1166.0,
+          "top": 326.0,
+          "bottom": 499.94778183166613,
+          "width": 96,
+          "confidence": 0.8371129631996155,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 736.0,
+          "top": 694,
+          "bottom": 870,
+          "width": 120,
+          "confidence": 0.8932552337646484,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1158.0,
+          "top": 276.0,
+          "bottom": 326.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 15.711260999989463,
+      "now": 15.75916529999813,
+      "obs": {
+        "held": {
+          "x": 1142.0,
+          "top": 322.0,
+          "bottom": 495.94778183166613,
+          "width": 96,
+          "confidence": 0.8872206211090088,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 718.0,
+          "top": 696,
+          "bottom": 872,
+          "width": 120,
+          "confidence": 0.8536778092384338,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1134.0,
+          "top": 272.0,
+          "bottom": 320.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 15.768533199996455,
+      "now": 15.815481300000101,
+      "obs": {
+        "held": {
+          "x": 1116.0,
+          "top": 314.0,
+          "bottom": 487.94778183166613,
+          "width": 96,
+          "confidence": 0.841733992099762,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 702.0,
+          "top": 698,
+          "bottom": 874,
+          "width": 120,
+          "confidence": 0.8271518349647522,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1108.0,
+          "top": 261.0,
+          "bottom": 308.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 15.826664199994411,
+      "now": 15.87787309999112,
+      "obs": {
+        "held": {
+          "x": 1102.0,
+          "top": 308.0,
+          "bottom": 481.94778183166613,
+          "width": 96,
+          "confidence": 0.905241847038269,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 688.0,
+          "top": 700,
+          "bottom": 876,
+          "width": 120,
+          "confidence": 0.7749750018119812,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1093.5,
+          "top": 237.0,
+          "bottom": 301.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 15.887136849982198,
+      "now": 16.012312100006966,
+      "obs": {
+        "held": {
+          "x": 1074.0,
+          "top": 294.0,
+          "bottom": 467.94778183166613,
+          "width": 96,
+          "confidence": 0.8825710415840149,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 678.0,
+          "top": 732,
+          "bottom": 876,
+          "width": 108,
+          "confidence": 0.6124525666236877,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1064.5,
+          "top": 239.0,
+          "bottom": 287.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 16.021071750001283,
+      "now": 16.06610699999146,
+      "obs": {
+        "held": {
+          "x": 1014.0,
+          "top": 260.0,
+          "bottom": 433.94778183166613,
+          "width": 96,
+          "confidence": 0.8799572587013245,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 660.0,
+          "top": 734,
+          "bottom": 878,
+          "width": 108,
+          "confidence": 0.8343113660812378,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1005.5,
+          "top": 191.0,
+          "bottom": 257.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 16.102076849987498,
+      "now": 16.149022500001593,
+      "obs": {
+        "held": {
+          "x": 968.0,
+          "top": 232.0,
+          "bottom": 405.94778183166613,
+          "width": 96,
+          "confidence": 0.887174129486084,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 658.0,
+          "top": 734,
+          "bottom": 878,
+          "width": 108,
+          "confidence": 0.9672135710716248,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 960.0,
+          "top": 163.0,
+          "bottom": 227.0,
+          "width": 32.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 16.177867799968226,
+      "now": 16.22636010000133,
+      "obs": {
+        "held": {
+          "x": 938.0,
+          "top": 212.0,
+          "bottom": 385.94778183166613,
+          "width": 96,
+          "confidence": 0.8909562826156616,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 658.0,
+          "top": 734,
+          "bottom": 878,
+          "width": 108,
+          "confidence": 0.9765698909759521,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 930.5,
+          "top": 156.0,
+          "bottom": 205.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 16.260225300007733,
+      "now": 16.310045999998692,
+      "obs": {
+        "held": {
+          "x": 894.0,
+          "top": 186.0,
+          "bottom": 359.94778183166613,
+          "width": 96,
+          "confidence": 0.9224486351013184,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 664.0,
+          "top": 734,
+          "bottom": 878,
+          "width": 108,
+          "confidence": 0.8413544297218323,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 885.5,
+          "top": 114.0,
+          "bottom": 178.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 16.344947950012283,
+      "now": 16.399157699983334,
+      "obs": {
+        "held": {
+          "x": 866.0,
+          "top": 172.0,
+          "bottom": 345.94778183166613,
+          "width": 96,
+          "confidence": 0.8920998573303223,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 674.0,
+          "top": 732,
+          "bottom": 876,
+          "width": 108,
+          "confidence": 0.813439130783081,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 856.5,
+          "top": 115.0,
+          "bottom": 166.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 16.43581650001579,
+      "now": 16.565762599988375,
+      "obs": {
+        "held": {
+          "x": 826.0,
+          "top": 156.0,
+          "bottom": 329.94778183166613,
+          "width": 96,
+          "confidence": 0.8638597130775452,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 698.0,
+          "top": 728,
+          "bottom": 872,
+          "width": 108,
+          "confidence": 0.6152732968330383,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 816.5,
+          "top": 101.0,
+          "bottom": 153.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 16.60325049998937,
+      "now": 16.742745499999728,
+      "obs": {
+        "held": {
+          "x": 768.0,
+          "top": 148.0,
+          "bottom": 321.94778183166613,
+          "width": 96,
+          "confidence": 0.6538099646568298,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 750.0,
+          "top": 724,
+          "bottom": 868,
+          "width": 108,
+          "confidence": 0.5172576904296875,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 759.0,
+          "top": 93.0,
+          "bottom": 140.0,
+          "width": 28.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 16.776170750003075,
+      "now": 16.960481299989624,
+      "obs": {
+        "held": {
+          "x": 726.0,
+          "top": 166.0,
+          "bottom": 339.94778183166613,
+          "width": 96,
+          "confidence": 0.713463544845581,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 820.0,
+          "top": 688,
+          "bottom": 864,
+          "width": 120,
+          "confidence": 0.5514470338821411,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 715.5,
+          "top": 111.0,
+          "bottom": 162.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 16.971438899985515,
+      "now": 17.14507619998767,
+      "obs": {
+        "held": {
+          "x": 698.0,
+          "top": 212.0,
+          "bottom": 385.94778183166613,
+          "width": 96,
+          "confidence": 0.7724112272262573,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 904.0,
+          "top": 684,
+          "bottom": 860,
+          "width": 120,
+          "confidence": 0.5096068978309631,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 689.5,
+          "top": 158.0,
+          "bottom": 207.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 17.18493600000511,
+      "now": 17.5822433999856,
+      "obs": null
+    },
+    {
+      "observed_at": 17.59761264998815,
+      "now": 17.87137399998028,
+      "obs": null
+    },
+    {
+      "observed_at": 17.883184650010662,
+      "now": 18.205998399993405,
+      "obs": null
+    },
+    {
+      "observed_at": 18.223702599992976,
+      "now": 18.567807599989465,
+      "obs": null
+    },
+    {
+      "observed_at": 18.57816454998101,
+      "now": 18.904960699990625,
+      "obs": null
+    },
+    {
+      "observed_at": 18.91754044999834,
+      "now": 19.267213799990714,
+      "obs": null
+    },
+    {
+      "observed_at": 19.277747150015784,
+      "now": 19.59981980000157,
+      "obs": null
+    },
+    {
+      "observed_at": 19.614417750010034,
+      "now": 19.78643879998708,
+      "obs": {
+        "held": {
+          "x": 1148.0,
+          "top": 328,
+          "bottom": 501.94778183166613,
+          "width": 99,
+          "confidence": 0.618675172328949,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 820.0,
+          "top": 688,
+          "bottom": 864,
+          "width": 120,
+          "confidence": 0.5557049512863159,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1142.5,
+          "top": 255.0,
+          "bottom": 320.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 19.795468450000044,
+      "now": 19.84153750000405,
+      "obs": {
+        "held": {
+          "x": 1082.0,
+          "top": 302.0,
+          "bottom": 475.94778183166613,
+          "width": 99,
+          "confidence": 0.7833694815635681,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 752.0,
+          "top": 692,
+          "bottom": 868,
+          "width": 120,
+          "confidence": 0.8647425770759583,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1077.5,
+          "top": 249.0,
+          "bottom": 298.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 19.85225954998168,
+      "now": 19.900162100006128,
+      "obs": {
+        "held": {
+          "x": 1054.0,
+          "top": 286.0,
+          "bottom": 459.94778183166613,
+          "width": 99,
+          "confidence": 0.8898789286613464,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 730.0,
+          "top": 694,
+          "bottom": 870,
+          "width": 120,
+          "confidence": 0.897865355014801,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1047.5,
+          "top": 216.0,
+          "bottom": 280.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 19.91133429997717,
+      "now": 19.964029700000538,
+      "obs": {
+        "held": {
+          "x": 1024.0,
+          "top": 268.0,
+          "bottom": 441.94778183166613,
+          "width": 99,
+          "confidence": 0.904570996761322,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 710.0,
+          "top": 696,
+          "bottom": 872,
+          "width": 120,
+          "confidence": 0.8750129342079163,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1018.0,
+          "top": 211.0,
+          "bottom": 260.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 19.97611685001175,
+      "now": 20.03023909998592,
+      "obs": {
+        "held": {
+          "x": 994.0,
+          "top": 250.0,
+          "bottom": 423.94778183166613,
+          "width": 99,
+          "confidence": 0.8718973994255066,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 692.0,
+          "top": 698,
+          "bottom": 874,
+          "width": 120,
+          "confidence": 0.8305932283401489,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 987.5,
+          "top": 177.0,
+          "bottom": 241.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 20.04265459999442,
+      "now": 20.095797699992545,
+      "obs": {
+        "held": {
+          "x": 964.0,
+          "top": 230.0,
+          "bottom": 403.94778183166613,
+          "width": 99,
+          "confidence": 0.8983147144317627,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 678.0,
+          "top": 700,
+          "bottom": 876,
+          "width": 120,
+          "confidence": 0.7834138870239258,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 956.0,
+          "top": 159.0,
+          "bottom": 224.0,
+          "width": 32.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 20.10455274998094,
+      "now": 20.230525599996326,
+      "obs": {
+        "held": {
+          "x": 950.0,
+          "top": 220.0,
+          "bottom": 393.94778183166613,
+          "width": 99,
+          "confidence": 0.9229332804679871,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 674.0,
+          "top": 732,
+          "bottom": 876,
+          "width": 108,
+          "confidence": 0.6116657257080078,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 941.5,
+          "top": 164.0,
+          "bottom": 215.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 20.24309475001064,
+      "now": 20.382201900007203,
+      "obs": {
+        "held": {
+          "x": 876.0,
+          "top": 178.0,
+          "bottom": 351.94778183166613,
+          "width": 99,
+          "confidence": 0.8782191872596741,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 658.0,
+          "top": 732,
+          "bottom": 876,
+          "width": 108,
+          "confidence": 0.5652443766593933,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 869.0,
+          "top": 122.0,
+          "bottom": 171.0,
+          "width": 28.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 20.417970599984983,
+      "now": 20.467546700005187,
+      "obs": {
+        "held": {
+          "x": 810.0,
+          "top": 152.0,
+          "bottom": 325.94778183166613,
+          "width": 99,
+          "confidence": 0.7982550859451294,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 660.0,
+          "top": 732,
+          "bottom": 876,
+          "width": 108,
+          "confidence": 0.7592405676841736,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 801.5,
+          "top": 95.0,
+          "bottom": 145.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 20.504260799993062,
+      "now": 20.550580399984028,
+      "obs": {
+        "held": {
+          "x": 776.0,
+          "top": 148.0,
+          "bottom": 321.94778183166613,
+          "width": 99,
+          "confidence": 0.8350852727890015,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 670.0,
+          "top": 730,
+          "bottom": 874,
+          "width": 108,
+          "confidence": 0.841222882270813,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 766.5,
+          "top": 94.0,
+          "bottom": 144.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 20.5855356999964,
+      "now": 20.633692999981577,
+      "obs": {
+        "held": {
+          "x": 756.0,
+          "top": 150.0,
+          "bottom": 323.94778183166613,
+          "width": 99,
+          "confidence": 0.853410005569458,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 688.0,
+          "top": 728,
+          "bottom": 872,
+          "width": 108,
+          "confidence": 0.7783640027046204,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 747.5,
+          "top": 96.0,
+          "bottom": 147.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 20.66881694996846,
+      "now": 20.790549800003646,
+      "obs": {
+        "held": {
+          "x": 730.0,
+          "top": 162.0,
+          "bottom": 335.94778183166613,
+          "width": 99,
+          "confidence": 0.799602210521698,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 710.0,
+          "top": 728,
+          "bottom": 872,
+          "width": 108,
+          "confidence": 0.6005570888519287,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 722.5,
+          "top": 106.0,
+          "bottom": 155.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 20.82810219997191,
+      "now": 20.954480299988063,
+      "obs": {
+        "held": {
+          "x": 706.0,
+          "top": 188.0,
+          "bottom": 361.94778183166613,
+          "width": 99,
+          "confidence": 0.8310438990592957,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 758.0,
+          "top": 724,
+          "bottom": 868,
+          "width": 108,
+          "confidence": 0.5458803176879883,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 698.5,
+          "top": 132.0,
+          "bottom": 182.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 20.986920099996496,
+      "now": 21.116625199996633,
+      "obs": {
+        "held": {
+          "x": 694.0,
+          "top": 234.0,
+          "bottom": 407.94778183166613,
+          "width": 99,
+          "confidence": 0.8774909973144531,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 824.0,
+          "top": 688,
+          "bottom": 864,
+          "width": 120,
+          "confidence": 0.5813143849372864,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 687.5,
+          "top": 182.0,
+          "bottom": 232.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 21.144614599994384,
+      "now": 21.27679839998018,
+      "obs": {
+        "held": {
+          "x": 702.0,
+          "top": 280.0,
+          "bottom": 453.94778183166613,
+          "width": 99,
+          "confidence": 0.798202633857727,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 904.0,
+          "top": 684,
+          "bottom": 860,
+          "width": 120,
+          "confidence": 0.5050433278083801,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 695.5,
+          "top": 226.0,
+          "bottom": 274.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 21.314522550004767,
+      "now": 21.601755499985302,
+      "obs": null
+    },
+    {
+      "observed_at": 21.61228009997285,
+      "now": 21.9786230000027,
+      "obs": null
+    },
+    {
+      "observed_at": 21.98791125000571,
+      "now": 22.3154041999951,
+      "obs": null
+    },
+    {
+      "observed_at": 22.327092299994547,
+      "now": 22.650183699995978,
+      "obs": null
+    },
+    {
+      "observed_at": 22.660052949999226,
+      "now": 22.985820899979444,
+      "obs": null
+    },
+    {
+      "observed_at": 23.00089479997405,
+      "now": 23.342124199989485,
+      "obs": null
+    },
+    {
+      "observed_at": 23.353661050001392,
+      "now": 23.52879879999091,
+      "obs": {
+        "held": {
+          "x": 1212.0,
+          "top": 324,
+          "bottom": 497.94778183166613,
+          "width": 116,
+          "confidence": 0.5330149531364441,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 952.0,
+          "top": 708,
+          "bottom": 856,
+          "width": 104,
+          "confidence": 0.5183992385864258,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1204.5,
+          "top": 272.0,
+          "bottom": 319.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 23.542249349993654,
+      "now": 23.667394599993713,
+      "obs": {
+        "held": {
+          "x": 1148.0,
+          "top": 326.0,
+          "bottom": 499.94778183166613,
+          "width": 116,
+          "confidence": 0.7440164685249329,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 852.0,
+          "top": 688,
+          "bottom": 864,
+          "width": 120,
+          "confidence": 0.5399250388145447,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1142.0,
+          "top": 272.0,
+          "bottom": 319.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 23.681982949987287,
+      "now": 23.81590679998044,
+      "obs": {
+        "held": {
+          "x": 1096.0,
+          "top": 306.0,
+          "bottom": 479.94778183166613,
+          "width": 116,
+          "confidence": 0.7881900668144226,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 792.0,
+          "top": 688,
+          "bottom": 864,
+          "width": 120,
+          "confidence": 0.5401126742362976,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1087.5,
+          "top": 251.0,
+          "bottom": 299.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 23.827632400003495,
+      "now": 23.879399400000693,
+      "obs": {
+        "held": {
+          "x": 1038.0,
+          "top": 274.0,
+          "bottom": 447.94778183166613,
+          "width": 116,
+          "confidence": 0.8362100720405579,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 740.0,
+          "top": 692,
+          "bottom": 868,
+          "width": 120,
+          "confidence": 0.8166323304176331,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1030.5,
+          "top": 222.0,
+          "bottom": 272.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 23.88870300000417,
+      "now": 23.93775129999267,
+      "obs": {
+        "held": {
+          "x": 1008.0,
+          "top": 256.0,
+          "bottom": 429.94778183166613,
+          "width": 116,
+          "confidence": 0.9705044031143188,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 718.0,
+          "top": 694,
+          "bottom": 870,
+          "width": 120,
+          "confidence": 0.9524102210998535,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1000.5,
+          "top": 204.0,
+          "bottom": 253.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 23.94572225000593,
+      "now": 23.998011199990287,
+      "obs": {
+        "held": {
+          "x": 978.0,
+          "top": 236.0,
+          "bottom": 409.94778183166613,
+          "width": 116,
+          "confidence": 0.9185671806335449,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 702.0,
+          "top": 696,
+          "bottom": 872,
+          "width": 120,
+          "confidence": 0.9164801239967346,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 970.5,
+          "top": 183.0,
+          "bottom": 232.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 24.01013325000531,
+      "now": 24.065198299998883,
+      "obs": {
+        "held": {
+          "x": 948.0,
+          "top": 216.0,
+          "bottom": 389.94778183166613,
+          "width": 116,
+          "confidence": 0.8359907269477844,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 684.0,
+          "top": 698,
+          "bottom": 874,
+          "width": 120,
+          "confidence": 0.9201833009719849,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 939.5,
+          "top": 161.0,
+          "bottom": 210.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 24.101891399972374,
+      "now": 24.151580699981423,
+      "obs": {
+        "held": {
+          "x": 904.0,
+          "top": 190.0,
+          "bottom": 363.94778183166613,
+          "width": 116,
+          "confidence": 0.7755347490310669,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 668.0,
+          "top": 700,
+          "bottom": 876,
+          "width": 120,
+          "confidence": 0.8808443546295166,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 894.5,
+          "top": 134.0,
+          "bottom": 184.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 24.178611749986885,
+      "now": 24.23024509998504,
+      "obs": {
+        "held": {
+          "x": 876.0,
+          "top": 174.0,
+          "bottom": 347.94778183166613,
+          "width": 116,
+          "confidence": 0.8971059918403625,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 658.0,
+          "top": 700,
+          "bottom": 876,
+          "width": 120,
+          "confidence": 0.8083924055099487,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 865.5,
+          "top": 120.0,
+          "bottom": 171.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 24.262180199992144,
+      "now": 24.3981824000075,
+      "obs": {
+        "held": {
+          "x": 848.0,
+          "top": 162.0,
+          "bottom": 335.94778183166613,
+          "width": 116,
+          "confidence": 0.8895203471183777,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 658.0,
+          "top": 732,
+          "bottom": 876,
+          "width": 108,
+          "confidence": 0.6029863357543945,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 838.5,
+          "top": 109.0,
+          "bottom": 160.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 24.434274350001942,
+      "now": 24.52363250000053,
+      "obs": {
+        "held": {
+          "x": 772.0,
+          "top": 148,
+          "bottom": 321.94778183166613,
+          "width": 116,
+          "confidence": 0.6523000597953796,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 662.0,
+          "top": 732,
+          "bottom": 876,
+          "width": 108,
+          "confidence": 0.7583882212638855,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 765.5,
+          "top": 92.0,
+          "bottom": 139.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 24.55927185001201,
+      "now": 24.608642399980454,
+      "obs": {
+        "held": {
+          "x": 744.0,
+          "top": 154.0,
+          "bottom": 327.94778183166613,
+          "width": 116,
+          "confidence": 0.759299099445343,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 682.0,
+          "top": 730,
+          "bottom": 874,
+          "width": 108,
+          "confidence": 0.8955878615379333,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 736.5,
+          "top": 97.0,
+          "bottom": 148.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 24.637323599978117,
+      "now": 24.68110409998917,
+      "obs": {
+        "held": {
+          "x": 722.0,
+          "top": 168.0,
+          "bottom": 341.94778183166613,
+          "width": 116,
+          "confidence": 0.788635790348053,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 700.0,
+          "top": 728,
+          "bottom": 872,
+          "width": 108,
+          "confidence": 0.9741770029067993,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 714.0,
+          "top": 115.0,
+          "bottom": 166.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 24.722410200018203,
+      "now": 24.774889899999835,
+      "obs": {
+        "held": {
+          "x": 706.0,
+          "top": 190.0,
+          "bottom": 363.94778183166613,
+          "width": 116,
+          "confidence": 0.866226851940155,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 726.0,
+          "top": 726,
+          "bottom": 870,
+          "width": 108,
+          "confidence": 0.7825374007225037,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 698.0,
+          "top": 136.0,
+          "bottom": 185.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 24.809751349996077,
+      "now": 24.938861100003123,
+      "obs": {
+        "held": {
+          "x": 700.0,
+          "top": 208.0,
+          "bottom": 381.94778183166613,
+          "width": 116,
+          "confidence": 0.7780722379684448,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 750.0,
+          "top": 724,
+          "bottom": 868,
+          "width": 108,
+          "confidence": 0.5671979784965515,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 691.5,
+          "top": 151.0,
+          "bottom": 200.0,
+          "width": 29.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 24.97058549997746,
+      "now": 25.135678699996788,
+      "obs": {
+        "held": {
+          "x": 696.0,
+          "top": 256.0,
+          "bottom": 429.94778183166613,
+          "width": 116,
+          "confidence": 0.7887943387031555,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 820.0,
+          "top": 688,
+          "bottom": 864,
+          "width": 120,
+          "confidence": 0.5841779112815857,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 687.5,
+          "top": 202.0,
+          "bottom": 252.0,
+          "width": 31.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 25.176294949982548,
+      "now": 25.35804609998013,
+      "obs": {
+        "held": {
+          "x": 718.0,
+          "top": 306.0,
+          "bottom": 479.94778183166613,
+          "width": 116,
+          "confidence": 0.75286865234375,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 912.0,
+          "top": 684,
+          "bottom": 860,
+          "width": 120,
+          "confidence": 0.5181319117546082,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 711.0,
+          "top": 252.0,
+          "bottom": 300.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 25.36906359999557,
+      "now": 25.544293999992078,
+      "obs": {
+        "held": {
+          "x": 766.0,
+          "top": 330.0,
+          "bottom": 503.94778183166613,
+          "width": 116,
+          "confidence": 0.7111406326293945,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 1012.0,
+          "top": 708,
+          "bottom": 856,
+          "width": 104,
+          "confidence": 0.574547529220581,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 759.0,
+          "top": 278.0,
+          "bottom": 326.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      }
+    },
+    {
+      "observed_at": 25.578968199988594,
+      "now": 25.850828900001943,
+      "obs": null
+    }
+  ]
+}

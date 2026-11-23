@@ -1,76 +1,53 @@
 ---
 name: ok-script-tasks
-description: Create and modify automation task classes for the ok-script Python library, including BaseTask one-time tasks, TriggerTask background tasks, task config UI metadata, registration in ok-script app config, custom ok_tasks scripts, and bilingual English/Chinese task behavior. Use when Codex needs to implement, refactor, review, or explain ok-script tasks in any project, independent of any particular app.
+description: Create, modify, and review OK-AzurPromilia automation tasks, including BaseGameTask and TriggerTask behavior, task registration, configuration migration, UI navigation, polling, and localized task text. Use for task work in this repository.
 ---
 
-# OK Script Tasks
+# OK-AzurPromilia Tasks
 
-## Overview
+## 开始前
 
-Use this skill to create or modify tasks built on the PyPI `ok-script` library. Keep guidance generic to `ok-script`; inspect the current project only to discover its local base classes, scene helpers, feature names, and registration style.
+1. 读取根目录 `AGENTS.md`，以 `pyproject.toml` 和 `uv.lock` 的锁定版本为准。
+2. 阅读目标任务及相邻实现；一次性任务参考 `src/tasks/onetime/home_daily_task.py`，触发任务参考 `src/tasks/trigger/skip_dialog_task.py`。
+3. 先查 `src/core/base_game_task.py`、`src/core/base_mixin/`、`src/core/detector/` 和 `src/data/page.py` 的已有能力，再决定是否新增辅助方法。
 
-When more detail is needed, read:
+## 实现流程
 
-- `references/task-api.md` for task lifecycle, config, execution, GUI, and bilingual rules.
-- `references/templates.md` for reusable one-time task, trigger task, feature/OCR, and registration templates.
-- Use `$ok-script-i18n` after task creation when gettext catalogs need task strings added, synced, or compiled.
+1. 使用 `snake_case.py` 模块名和 `PascalCase` 类名。一次性任务继承 `BaseGameTask`；触发任务按本项目顺序继承 `BaseGameTask, TriggerTask`。
+2. 在 `__init__` 中先调用 `super().__init__(*args, **kwargs)`，再设置名称、说明、图标和必要配置。优先用 `.update(...)` 扩展配置字典，保留基类默认项。
+3. 将可编辑设置声明在 `default_config`，在 `config_description` 中写用途；仅在需要特定控件时添加 `config_type`。读取框架加载后的 `self.config`，不要直接改运行中的配置 JSON。
+4. 为触发任务明确 `_enabled` 默认值和 `trigger_interval`。没有处理目标时及时返回；只有实际处理了事件、需要重新扫描高优先级任务时才返回真值。
+5. 优先复用 `ui_ensure`、`wait_action_result` 和现有 detector；沿用目标任务的页面、特征和输入封装，避免重复实现导航或识别逻辑。
+6. 在 `src/config.py` 的 `onetime_tasks` 或 `trigger_tasks` 注册真实模块路径及类名。接入一键日常时，同时查看 `src/tasks/daily/daily_feature.py` 的子任务配置与账号覆盖约定。
+7. 按下述规则补齐配置迁移、翻译及相关验证，再检查最终 diff。
 
-## Workflow
+## 轮询与重试
 
-1. Inspect the target project for existing tasks, app config, and any project-specific base class.
-   Prefer existing project helpers over inheriting directly from `BaseTask` when the project already has a base task class.
-2. Decide the task type:
-   - Use `BaseTask` or a project one-time base for user-started workflows that should finish and disable themselves.
-   - Use `TriggerTask` for background checks that run repeatedly while enabled.
-   - Mix in feature/OCR/project helpers only when the task actually needs them.
-3. Add or update task metadata in `__init__`:
-   `name`, `description`, `default_config`, `config_description`, `config_type`, `supported_languages`, icons, grouping, and scheduling flags.
-4. Implement `run()` with small, observable steps.
-   Use `self.log_info`, `self.log_warning`, `self.info_set`, `self.wait_until`, `self.next_frame`, `self.sleep`, `self.click_relative`, `self.find_one`, `self.wait_click_feature`, `self.ocr`, and `self.wait_ocr` instead of ad hoc polling or direct device calls.
-5. Register the task according to the project style:
-   built-in config list, `ok_tasks` custom task folder, or imported script package.
-6. If the project uses gettext catalogs, sync task translations with `$ok-script-i18n`.
-7. Validate with the project test or headless path when available.
-   At minimum, import the task module and instantiate the class if device-dependent execution cannot be run.
+- 带超时的轮询、多帧检测和重试统一用 `self.loop(...)`，保留暂停期间冻结计时的行为。
+- 默认每轮产出新帧，将该帧传给支持 `frame` 的识别方法；不要在循环体无条件重复 `next_frame()`。
+- 动作内部自行取帧或无需帧时，使用 `yield_frame=False`。
+- 找到目标后用 `break` 或 `return` 结束；默认超时抛出 `TimeoutError`。需要兜底时使用 `raise_if_time_out=False`，并在循环后明确处理失败。
+- 不另写基于墙钟时间的超时循环；具体参数和例子以 `AGENTS.md`、`BaseGameTask.loop` 为准。
 
-## Bilingual Output
+## 配置与语言
 
-Support English and Chinese in both code review and generated code.
+- 保持已有配置键稳定，不为统一语言而重命名。确需改名时，同一提交内添加 `config_key_migrations` 并修改默认值及引用。
+- 启动应用前，按 `src/core/config_migration.py` 验证旧配置值迁移；同时更新相关文档和 gettext msgid。
+- 涉及多账号覆盖时，另查 `src/tasks/account/account_scope_store.py`：普通任务的迁移只处理该任务 JSON，不会自动迁移 `account_scoped_overrides.json`；须同时处理受影响的账号覆盖键并验证旧值保留。
+- UI 名称、说明、配置标签和富文本说明使用 gettext；按 `$ok-script-i18n` 同步 `i18n/*/LC_MESSAGES/ok.po` 并编译 `.mo`。
+- OCR 文本放入 `assets/lang/*.json`，通过 `self.lang.<模块>.<语义化key>` 读取，不放进 gettext 或任务配置充当翻译表。
+- 新 OCR key 按 `AGENTS.md` 补齐 `zh_CN`、`zh_TW`、`en_US`、`ja_JP`、`ko_KR`、`es_ES`；读取接口见 `src/data/lang/`。
+- 新控件元数据以锁定的框架实现和本项目补丁为依据，不照搬其他项目或不同版本的 Qt/headless 行为。
 
-- Answer the user in the language they use. If unclear, use English with concise Chinese labels where useful.
-- Prefer stable English config keys because config keys become persisted JSON fields. Add Chinese help in `config_description` or through the project's translation system.
-- Include OCR match text for every active OCR locale of the target project instead of assuming a fixed language pair; in ok-end-field only `zh_CN` and `zh_TW` are active OCR locales (see `$ok-script-ocr-lang`).
-- Use `supported_languages` only to hide a task in unsupported locales. Common locale names are `en_US`, `zh_CN`, `zh_TW`, `ja_JP`, `ko_KR`, and `es_ES`.
-- Do not hard-code assumptions from the source project used to study `ok-script` unless the target project explicitly uses them.
+## 验证
 
-## Config UI: Conditional Visibility and Numeric Ranges
+- 从 `tests/test_*.py` 选择覆盖本次行为的测试。配置迁移和轮询改动可分别运行下列现有模块：
 
-`self.config_type[key]` accepts extra metadata for generated configuration UIs. `sub_configs` is honored by the shared resolver `ok/core/config_schema.py` and by the Qt card (`ok/ui/qt/tasks/ConfigCard.py`). The resolver also preserves `min` and `max` as `minimum` and `maximum` schema metadata for headless/web fields, including fields with `float` defaults; Qt widget behavior is described separately below.
-
-- **`sub_configs`** — show child options only for specific parent values:
-
-  ```python
-  self.config_type["浮层信息"] = {
-      "sub_configs": {True: ["浮层文字透明度", "浮层背景透明度", "浮层字号"]},
-  }
+  ```bash
+  uv run --locked python -m unittest tests.test_config_migration
+  uv run --locked python -m unittest tests.test_loop
   ```
 
-  The rule maps *parent value* → *child keys*. A child is visible only when its parent's current value is a key of the map (lists union across selected values). A value with no entry (e.g. `False` here) hides every child. Children may themselves be parents, giving nested folding. Children are rendered indented, and the parent's switch/dropdown/multi-select drives updates live.
-  Project example: `src/core/BattleConfig.py` (`KEY_ENABLE_ROTATION`), `src/tasks/onetime/DeliveryTask.py`.
-  The parent must be a widget that emits change signals: bool → `SwitchButton`, `drop_down`, or multi-selection.
-
-- **`min` / `max`** — on Qt config cards, these are numeric bounds for `SpinBox`. Only **int** defaults get a bounded `SpinBox`; a `float` default becomes a `DoubleSpinBox` that ignores `min`/`max`. This Qt limitation does not affect the headless/web schema: it still outputs `minimum` and `maximum` for fields with these keys, including `float` fields. Use an `int` default only when the Qt widget itself must enforce the bounds (e.g. a 0–100 opacity percentage or a pixel size), then convert to a float internally if needed.
-
-- An explicit `config_type[key]["type"]` takes priority. Only when `type` is absent is the widget kind inferred from the **default value's type**, not the current value: `bool` → switch, `int` → `SpinBox`, `float` → `DoubleSpinBox`, `list` → list editor. Pick the default's type deliberately for this fallback path.
-
-- Config keys and `config_description` strings are user-visible and must go through gettext (see `$ok-script-i18n`).
-
-## Essential Rules
-
-- Always call `super().__init__(*args, **kwargs)` before setting task fields.
-- Do not bypass `Config`: set defaults in `self.default_config`; read values through `self.config.get(...)` after `after_init()` loads config.
-- For `TriggerTask`, keep `self.default_config['_enabled']` intentional and set `trigger_interval` to avoid excessive polling.
-- Return truthy from a trigger task only after it handled something meaningful; falsey return lets the executor continue scanning other trigger tasks.
-- For one-time tasks, allow normal completion; the executor disables the task after `run()` returns.
-- Keep direct sleeps short and use `wait_until`, `wait_ocr`, or `wait_click_feature` for state-dependent waiting.
-- Avoid locale-specific config keys unless the project already follows that style.
+- 语言访问器或任务配置可见性改动，分别查看 `tests/test_lang_accessor.py`、`tests/test_task_config_visibility.py`。
+- 新增行为缺少覆盖时补必要的回归测试；按改动风险运行完整测试：`uv run --locked python -m unittest discover -s tests -p "test_*.py"`。
+- 核对注册、配置键、翻译和最终 diff；需要真实游戏窗口的行为，说明已验证范围和仍待实机验证部分。

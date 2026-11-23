@@ -1,0 +1,1256 @@
+{
+  "source": "2026-09-28/174906",
+  "horizontal_geometry": [
+    972.8266197769963,
+    285.5309991504179
+  ],
+  "handoff_direction": -1.0,
+  "released_at": 180631.04125100002,
+  "released_piece": {
+    "x": 792.0,
+    "top": 330.0,
+    "bottom": 503.25838288607906,
+    "width": 116,
+    "confidence": 0.849926769733429,
+    "kind": "owl"
+  },
+  "rows": [
+    {
+      "t": 180632.299391,
+      "age": 0.26292614999692887,
+      "obs": {
+        "held": {
+          "x": 714.0,
+          "top": 156,
+          "bottom": 329.25838288607906,
+          "width": 116,
+          "confidence": 0.5838654637336731,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 1044.0,
+          "top": 760,
+          "bottom": 908,
+          "width": 104,
+          "confidence": 0.5994282960891724,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 709.0,
+          "top": 89.0,
+          "bottom": 149.0,
+          "width": 32.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 0,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180632.3503791,
+      "age": 0.042105000000447035,
+      "obs": {
+        "held": {
+          "x": 692.0,
+          "top": 244.0,
+          "bottom": 417.25838288607906,
+          "width": 116,
+          "confidence": 0.706294059753418,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 1056.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.9181652069091797,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 687.5,
+          "top": 175.0,
+          "bottom": 240.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 1,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180632.4098859,
+      "age": 0.052443399996263906,
+      "obs": {
+        "held": {
+          "x": 692.0,
+          "top": 254.0,
+          "bottom": 427.25838288607906,
+          "width": 116,
+          "confidence": 0.9154676198959351,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 1056.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.9961256384849548,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 688.5,
+          "top": 183.0,
+          "bottom": 248.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 2,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180632.4677054,
+      "age": 0.0492202999885194,
+      "obs": {
+        "held": {
+          "x": 696.0,
+          "top": 272.0,
+          "bottom": 445.25838288607906,
+          "width": 116,
+          "confidence": 0.8729375600814819,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 1056.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.997442364692688,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 692.0,
+          "top": 201.0,
+          "bottom": 266.0,
+          "width": 34.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 3,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180632.527672,
+      "age": 0.04987709998385981,
+      "obs": {
+        "held": {
+          "x": 702.0,
+          "top": 288.0,
+          "bottom": 461.25838288607906,
+          "width": 116,
+          "confidence": 0.8434396386146545,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 1054.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.9543089866638184,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 699.5,
+          "top": 219.0,
+          "bottom": 285.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 4,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180632.5980499,
+      "age": 0.057826500007649884,
+      "obs": {
+        "held": {
+          "x": 712.0,
+          "top": 302.0,
+          "bottom": 475.25838288607906,
+          "width": 116,
+          "confidence": 0.890796422958374,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 1050.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.9631639719009399,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 710.0,
+          "top": 234.0,
+          "bottom": 302.0,
+          "width": 34.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 5,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180632.6535901,
+      "age": 0.045950550003908575,
+      "obs": {
+        "held": {
+          "x": 724.0,
+          "top": 314.0,
+          "bottom": 487.25838288607906,
+          "width": 116,
+          "confidence": 0.9072502255439758,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 1044.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.9730623960494995,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 724.0,
+          "top": 249.0,
+          "bottom": 316.0,
+          "width": 34.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 6,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180632.7181572,
+      "age": 0.052459700003964826,
+      "obs": {
+        "held": {
+          "x": 740.0,
+          "top": 322.0,
+          "bottom": 495.25838288607906,
+          "width": 116,
+          "confidence": 0.9104179739952087,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 1038.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.9249405860900879,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 740.0,
+          "top": 256.0,
+          "bottom": 322.0,
+          "width": 34.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 7,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180632.7741138,
+      "age": 0.0480905499716755,
+      "obs": {
+        "held": {
+          "x": 758.0,
+          "top": 326.0,
+          "bottom": 499.25838288607906,
+          "width": 116,
+          "confidence": 0.8922379016876221,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 1030.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.8262535929679871,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 758.5,
+          "top": 259.0,
+          "bottom": 324.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 8,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180632.8325191,
+      "age": 0.04906009999103844,
+      "obs": {
+        "held": {
+          "x": 768.0,
+          "top": 326.0,
+          "bottom": 499.25838288607906,
+          "width": 116,
+          "confidence": 0.7991381883621216,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 1022.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.8429104685783386,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 768.5,
+          "top": 259.0,
+          "bottom": 324.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 9,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180632.8948908,
+      "age": 0.05084690000512637,
+      "obs": {
+        "held": {
+          "x": 790.0,
+          "top": 324.0,
+          "bottom": 497.25838288607906,
+          "width": 116,
+          "confidence": 0.8126009106636047,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 1014.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.8131878972053528,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 790.0,
+          "top": 257.0,
+          "bottom": 322.0,
+          "width": 34.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 10,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180632.9619354,
+      "age": 0.05352195000159554,
+      "obs": {
+        "held": {
+          "x": 814.0,
+          "top": 318.0,
+          "bottom": 491.25838288607906,
+          "width": 116,
+          "confidence": 0.8465366959571838,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 1004.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.783214271068573,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 814.5,
+          "top": 252.0,
+          "bottom": 319.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 11,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180633.0370061,
+      "age": 0.04421344998991117,
+      "obs": {
+        "held": {
+          "x": 854.0,
+          "top": 302.0,
+          "bottom": 475.25838288607906,
+          "width": 116,
+          "confidence": 0.8028951287269592,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 988.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.7957420349121094,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 855.5,
+          "top": 239.0,
+          "bottom": 306.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 12,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180633.1133385,
+      "age": 0.04619384999386966,
+      "obs": {
+        "held": {
+          "x": 882.0,
+          "top": 288.0,
+          "bottom": 461.25838288607906,
+          "width": 116,
+          "confidence": 0.905234694480896,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 974.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.8426972031593323,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 883.0,
+          "top": 224.0,
+          "bottom": 290.0,
+          "width": 34.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 13,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180633.1996711,
+      "age": 0.050690250005573034,
+      "obs": {
+        "held": {
+          "x": 926.0,
+          "top": 262.0,
+          "bottom": 435.25838288607906,
+          "width": 116,
+          "confidence": 0.872016191482544,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 958.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.9358999133110046,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 927.5,
+          "top": 195.0,
+          "bottom": 260.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 14,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180633.2816975,
+      "age": 0.047815099998842925,
+      "obs": {
+        "held": {
+          "x": 956.0,
+          "top": 244.0,
+          "bottom": 417.25838288607906,
+          "width": 116,
+          "confidence": 0.8631098866462708,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 942.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.950320839881897,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 957.5,
+          "top": 175.0,
+          "bottom": 240.0,
+          "width": 35.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 15,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180633.3575454,
+      "age": 0.04248545001610182,
+      "obs": {
+        "held": {
+          "x": 986.0,
+          "top": 224.0,
+          "bottom": 397.25838288607906,
+          "width": 116,
+          "confidence": 0.9102740287780762,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 926.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.8545445799827576,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 987.0,
+          "top": 156.0,
+          "bottom": 223.0,
+          "width": 34.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 16,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180633.4365795,
+      "age": 0.04525674998876639,
+      "obs": {
+        "held": {
+          "x": 1030.0,
+          "top": 196.0,
+          "bottom": 369.25838288607906,
+          "width": 116,
+          "confidence": 0.869025468826294,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 910.0,
+          "top": 778,
+          "bottom": 926,
+          "width": 104,
+          "confidence": 0.8075209259986877,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1032.5,
+          "top": 130.0,
+          "bottom": 197.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 17,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180633.6151979,
+      "age": 0.14058370000566356,
+      "obs": {
+        "held": {
+          "x": 1060.0,
+          "top": 180.0,
+          "bottom": 353.25838288607906,
+          "width": 116,
+          "confidence": 0.8357871174812317,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 896.0,
+          "top": 760,
+          "bottom": 928,
+          "width": 104,
+          "confidence": 0.6176790595054626,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1062.5,
+          "top": 113.0,
+          "bottom": 178.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.0,
+      "history": 18,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180633.7841268,
+      "age": 0.13347069997689687,
+      "obs": {
+        "held": {
+          "x": 1140.0,
+          "top": 148.0,
+          "bottom": 321.25838288607906,
+          "width": 116,
+          "confidence": 0.6785956025123596,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 868.0,
+          "top": 760,
+          "bottom": 928,
+          "width": 104,
+          "confidence": 0.6507924199104309,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1143.5,
+          "top": 92.0,
+          "bottom": 142.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.25,
+      "history": 19,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180633.8632199,
+      "age": 0.04443554999306798,
+      "obs": {
+        "held": {
+          "x": 1184.0,
+          "top": 144.0,
+          "bottom": 317.25838288607906,
+          "width": 116,
+          "confidence": 0.8381611108779907,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 842.0,
+          "top": 762,
+          "bottom": 930,
+          "width": 104,
+          "confidence": 0.8852688670158386,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1190.0,
+          "top": 92.0,
+          "bottom": 144.0,
+          "width": 30.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.25,
+      "history": 20,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180633.9467939,
+      "age": 0.045204499969258904,
+      "obs": {
+        "held": {
+          "x": 1210.0,
+          "top": 152.0,
+          "bottom": 325.25838288607906,
+          "width": 116,
+          "confidence": 0.8796175718307495,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 830.0,
+          "top": 762,
+          "bottom": 930,
+          "width": 104,
+          "confidence": 0.9087769389152527,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1216.0,
+          "top": 91.0,
+          "bottom": 150.0,
+          "width": 32.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.25,
+      "history": 21,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180634.0327707,
+      "age": 0.050002100004348904,
+      "obs": {
+        "held": {
+          "x": 1230.0,
+          "top": 168.0,
+          "bottom": 341.25838288607906,
+          "width": 116,
+          "confidence": 0.7901789546012878,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 822.0,
+          "top": 762,
+          "bottom": 930,
+          "width": 104,
+          "confidence": 0.8810995221138,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1237.0,
+          "top": 99.0,
+          "bottom": 165.0,
+          "width": 34.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.25,
+      "history": 22,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180634.1085569,
+      "age": 0.043075199995655566,
+      "obs": {
+        "held": {
+          "x": 1240.0,
+          "top": 184.0,
+          "bottom": 357.25838288607906,
+          "width": 116,
+          "confidence": 0.8207588791847229,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 814.0,
+          "top": 762,
+          "bottom": 930,
+          "width": 104,
+          "confidence": 0.8945451378822327,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1246.5,
+          "top": 116.0,
+          "bottom": 181.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.25,
+      "history": 23,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180634.1893998,
+      "age": 0.045727399992756546,
+      "obs": {
+        "held": {
+          "x": 1248.0,
+          "top": 202.0,
+          "bottom": 375.25838288607906,
+          "width": 116,
+          "confidence": 0.9153032302856445,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 810.0,
+          "top": 762,
+          "bottom": 930,
+          "width": 104,
+          "confidence": 0.9304989576339722,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1253.5,
+          "top": 134.0,
+          "bottom": 200.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.25,
+      "history": 24,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180634.2797511,
+      "age": 0.04985795001266524,
+      "obs": {
+        "held": {
+          "x": 1252.0,
+          "top": 230.0,
+          "bottom": 403.25838288607906,
+          "width": 116,
+          "confidence": 0.9006701707839966,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 806.0,
+          "top": 762,
+          "bottom": 930,
+          "width": 104,
+          "confidence": 0.9196709394454956,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1258.5,
+          "top": 165.0,
+          "bottom": 231.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.25,
+      "history": 25,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180634.3659907,
+      "age": 0.04893179997452535,
+      "obs": {
+        "held": {
+          "x": 1250.0,
+          "top": 260.0,
+          "bottom": 433.25838288607906,
+          "width": 116,
+          "confidence": 0.8865916132926941,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 804.0,
+          "top": 762,
+          "bottom": 930,
+          "width": 104,
+          "confidence": 0.9346693754196167,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1256.5,
+          "top": 192.0,
+          "bottom": 256.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.25,
+      "history": 26,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180634.4523571,
+      "age": 0.049930700013646856,
+      "obs": {
+        "held": {
+          "x": 1244.0,
+          "top": 278.0,
+          "bottom": 451.6595297997012,
+          "width": 116,
+          "confidence": 0.8628323078155518,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 804.0,
+          "top": 762,
+          "bottom": 930,
+          "width": 104,
+          "confidence": 0.9816504120826721,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1249.5,
+          "top": 209.0,
+          "bottom": 274.0,
+          "width": 35.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.25,
+      "history": 27,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180634.5359224,
+      "age": 0.04598255001474172,
+      "obs": {
+        "held": {
+          "x": 1234.0,
+          "top": 294.0,
+          "bottom": 467.6470315258217,
+          "width": 116,
+          "confidence": 0.8337379097938538,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 806.0,
+          "top": 762,
+          "bottom": 930,
+          "width": 104,
+          "confidence": 0.9618593454360962,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1240.5,
+          "top": 226.0,
+          "bottom": 291.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.25,
+      "history": 28,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180634.6159097,
+      "age": 0.044379200000548735,
+      "obs": {
+        "held": {
+          "x": 1214.0,
+          "top": 312.0,
+          "bottom": 485.7091023773758,
+          "width": 116,
+          "confidence": 0.8711682558059692,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 812.0,
+          "top": 762,
+          "bottom": 930,
+          "width": 104,
+          "confidence": 0.9132213592529297,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1221.0,
+          "top": 247.0,
+          "bottom": 313.0,
+          "width": 32.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.25,
+      "history": 29,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180634.6942954,
+      "age": 0.0438715000054799,
+      "obs": {
+        "held": {
+          "x": 1190.0,
+          "top": 324.0,
+          "bottom": 497.70068330663355,
+          "width": 116,
+          "confidence": 0.8668050765991211,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 818.0,
+          "top": 762,
+          "bottom": 930,
+          "width": 104,
+          "confidence": 0.9231928586959839,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1195.5,
+          "top": 258.0,
+          "bottom": 325.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.25,
+      "history": 30,
+      "handoff_target": null,
+      "handoff_waited": false,
+      "route": null
+    },
+    {
+      "t": 180634.7666824,
+      "age": 0.04322829996817745,
+      "obs": {
+        "held": {
+          "x": 1170.0,
+          "top": 326.0,
+          "bottom": 499.6955170861435,
+          "width": 116,
+          "confidence": 0.8924789428710938,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 826.0,
+          "top": 762,
+          "bottom": 930,
+          "width": 104,
+          "confidence": 0.8741735816001892,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1175.5,
+          "top": 260.0,
+          "bottom": 325.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.25,
+      "history": 31,
+      "handoff_target": 180636.8878467219,
+      "handoff_waited": true,
+      "route": {
+        "current": [
+          11.686196801602161,
+          0.25,
+          44.703152883350604,
+          65.9525595838453
+        ],
+        "alternative": [
+          7.699550802917667,
+          2.121164321899414,
+          39.142633279740316,
+          35.27752942879977
+        ]
+      }
+    },
+    {
+      "t": 180634.8662557,
+      "age": 0.04437295001116581,
+      "obs": {
+        "held": {
+          "x": 1136.0,
+          "top": 322.0,
+          "bottom": 495.7403997174784,
+          "width": 116,
+          "confidence": 0.7666416168212891,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 840.0,
+          "top": 762,
+          "bottom": 930,
+          "width": 104,
+          "confidence": 0.7992513179779053,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1140.5,
+          "top": 253.0,
+          "bottom": 318.0,
+          "width": 33.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": false,
+      "delay": 0.15576553344726562,
+      "history": 32,
+      "handoff_target": 180636.8878467219,
+      "handoff_waited": true,
+      "route": null
+    },
+    {
+      "t": 180634.9480457,
+      "age": 0.04155759999412112,
+      "obs": {
+        "held": {
+          "x": 1110.0,
+          "top": 314.0,
+          "bottom": 487.80662831505856,
+          "width": 116,
+          "confidence": 0.8184456825256348,
+          "kind": "owl"
+        },
+        "tower": {
+          "x": 854.0,
+          "top": 760,
+          "bottom": 928,
+          "width": 104,
+          "confidence": 0.8051827549934387,
+          "kind": "owl"
+        },
+        "bird": {
+          "x": 1114.0,
+          "top": 247.0,
+          "bottom": 313.0,
+          "width": 32.0,
+          "confidence": 1.0,
+          "kind": ""
+        }
+      },
+      "hit": true,
+      "delay": 0.08631515502929688,
+      "history": 33,
+      "handoff_target": null,
+      "handoff_waited": true,
+      "route": null
+    }
+  ]
+}

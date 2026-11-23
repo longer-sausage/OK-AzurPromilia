@@ -104,6 +104,8 @@ share/python-wheels/
 *.egg
 MANIFEST
 test/
+# 上面的 test/ 会误伤本项目的调试任务目录（已在 config.py 注册）
+!src/tasks/test/
 .claude
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -300,3 +302,7 @@ python/
 ############################
 # 🪟 Windows
 *.bat
+
+############################
+# 🤖 AI 助手本地工作目录
+.workbuddy/

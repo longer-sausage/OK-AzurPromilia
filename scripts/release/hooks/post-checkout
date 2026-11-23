@@ -1,0 +1,2 @@
+#!/bin/sh
+python "$GITHUB_WORKSPACE/scripts/release/hooks/reconcile_index.py"

@@ -1,0 +1,29 @@
+name: mirrorchyan_release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        default: ''
+        required: false
+
+jobs:
+  mirrorchyan:
+    if: ${{ github.repository_owner == 'longer-sausage' }}
+    runs-on: macos-latest
+
+    steps:
+      - uses: MirrorChyan/uploading-action@v1
+        with:
+          filetype: latest-release
+          filename: 'ok-ap-win32-China-setup-*.exe'
+          mirrorchyan_rid: OK-AzurPromilia
+          tag: ${{ inputs.tag }}
+
+          os: ''
+          arch: ''
+
+          owner: longer-sausage
+          repo: OK-AzurPromilia
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          upload_token: ${{ secrets.MirrorChyanUploadToken }}
