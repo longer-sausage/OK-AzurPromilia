@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "note": "示例数据（结构与真实数据一致，数值不完整）。真实数值请从 promilia.wiki 的养成规划器导出后用 Dataset.from_file() 导入，或直接替换本文件。",
+  "materials": {
+    "尤尼": {"category": "currency"},
+    "角色经验": {"category": "exp"},
+    "奇波经验": {"category": "exp"},
+    "普通的灵粹": {"category": "exp"},
+    "星脉结晶": {"category": "currency"},
+    "大星脉结晶": {"category": "currency"},
+    "风之碎晶": {"category": "ascension"},
+    "星辉粉尘": {"category": "ascension"},
+    "强化石": {"category": "ascension"}
+  },
+  "exp_items": {
+    "小型灵粹": 100,
+    "普通的灵粹": 500,
+    "浓缩灵粹": 2000
+  },
+  "dungeons": [
+    {"name": "灵粹试炼", "stamina": 20, "drops": {"普通的灵粹": 8}},
+    {"name": "经验试炼", "stamina": 20, "drops": {"角色经验": 5, "奇波经验": 4}},
+    {"name": "碎晶采集", "stamina": 30, "drops": {"风之碎晶": 2}},
+    {"name": "星辉回廊", "stamina": 40, "drops": {"星辉粉尘": 3, "星脉结晶": 1}}
+  ],
+  "aliases": {
+    "星脉结晶": {"大星脉结晶": 5}
+  },
+  "entries": [
+    {
+      "key": "char_amber",
+      "name": "琥珀（示例角色）",
+      "kind": "character",
+      "rarity": 5,
+      "max_level": 80,
+      "levels": [
+        {"from": 1, "to": 20, "exp": 4000, "credits": 2400, "materials": {"风之碎晶": 3}},
+        {"from": 21, "to": 40, "exp": 12000, "credits": 7200, "materials": {"风之碎晶": 6}},
+        {"from": 41, "to": 60, "exp": 26000, "credits": 15600, "materials": {"风之碎晶": 9}},
+        {"from": 61, "to": 80, "exp": 52000, "credits": 31200, "materials": {"风之碎晶": 12}}
+      ]
+    },
+    {
+      "key": "char_lumen",
+      "name": "流明（示例角色）",
+      "kind": "character",
+      "rarity": 4,
+      "max_level": 70,
+      "levels": [
+        {"from": 1, "to": 20, "exp": 3200, "credits": 1920, "materials": {"风之碎晶": 2}},
+        {"from": 21, "to": 40, "exp": 9600, "credits": 5760, "materials": {"风之碎晶": 5}},
+        {"from": 41, "to": 60, "exp": 21000, "credits": 12600, "materials": {"风之碎晶": 7}},
+        {"from": 61, "to": 70, "exp": 14000, "credits": 8400, "materials": {"风之碎晶": 5}}
+      ]
+    },
+    {
+      "key": "pet_gale",
+      "name": "风吟（示例奇波）",
+      "kind": "pet",
+      "rarity": 5,
+      "max_level": 60,
+      "levels": [
+        {"from": 1, "to": 20, "exp": 3600, "credits": 1800, "materials": {"星辉粉尘": 2}},
+        {"from": 21, "to": 40, "exp": 11000, "credits": 5500, "materials": {"星辉粉尘": 4}},
+        {"from": 41, "to": 60, "exp": 24000, "credits": 12000, "materials": {"星辉粉尘": 8}}
+      ],
+      "potentials": [
+        {"name": "生命", "levels": [
+          {"level": 1, "exp": 100}, {"level": 2, "exp": 100}, {"level": 3, "exp": 100},
+          {"level": 4, "exp": 100}, {"level": 5, "exp": 100}, {"level": 6, "exp": 100},
+          {"level": 7, "exp": 100}, {"level": 8, "exp": 100}, {"level": 9, "exp": 100}
+        ]},
+        {"name": "攻击", "levels": [
+          {"level": 1, "exp": 100}, {"level": 2, "exp": 100}, {"level": 3, "exp": 100},
+          {"level": 4, "exp": 100}, {"level": 5, "exp": 100}, {"level": 6, "exp": 100},
+          {"level": 7, "exp": 100}, {"level": 8, "exp": 100}, {"level": 9, "exp": 100}
+        ]},
+        {"name": "防御", "levels": [
+          {"level": 1, "exp": 100}, {"level": 2, "exp": 100}, {"level": 3, "exp": 100},
+          {"level": 4, "exp": 100}, {"level": 5, "exp": 100}, {"level": 6, "exp": 100},
+          {"level": 7, "exp": 100}, {"level": 8, "exp": 100}, {"level": 9, "exp": 100}
+        ]},
+        {"name": "暴击率", "levels": [
+          {"level": 1, "exp": 100}, {"level": 2, "exp": 100}, {"level": 3, "exp": 100},
+          {"level": 4, "exp": 100}, {"level": 5, "exp": 100}, {"level": 6, "exp": 100},
+          {"level": 7, "exp": 100}, {"level": 8, "exp": 100}, {"level": 9, "exp": 100}
+        ]},
+        {"name": "破韧值", "levels": [
+          {"level": 1, "exp": 100}, {"level": 2, "exp": 100}, {"level": 3, "exp": 100},
+          {"level": 4, "exp": 100}, {"level": 5, "exp": 100}, {"level": 6, "exp": 100},
+          {"level": 7, "exp": 100}, {"level": 8, "exp": 100}, {"level": 9, "exp": 100}
+        ]},
+        {"name": "超限强度", "levels": [
+          {"level": 1, "exp": 100}, {"level": 2, "exp": 100}, {"level": 3, "exp": 100},
+          {"level": 4, "exp": 100}, {"level": 5, "exp": 100}, {"level": 6, "exp": 100},
+          {"level": 7, "exp": 100}, {"level": 8, "exp": 100}, {"level": 9, "exp": 100}
+        ]}
+      ]
+    },
+    {
+      "key": "spirit_star",
+      "name": "星辉灵子（示例灵子）",
+      "kind": "spirit",
+      "rarity": 4,
+      "max_level": 40,
+      "levels": [
+        {"from": 1, "to": 20, "exp": 2000, "credits": 1000, "materials": {"星辉粉尘": 3}},
+        {"from": 21, "to": 40, "exp": 6000, "credits": 3000, "materials": {"星辉粉尘": 6}}
+      ]
+    },
+    {
+      "key": "equip_blade",
+      "name": "试作长刃（示例装备）",
+      "kind": "equipment",
+      "rarity": 4,
+      "max_level": 60,
+      "levels": [
+        {"from": 1, "to": 20, "exp": 2400, "credits": 1200, "materials": {"强化石": 4}},
+        {"from": 21, "to": 40, "exp": 7200, "credits": 3600, "materials": {"强化石": 8}},
+        {"from": 41, "to": 60, "exp": 15000, "credits": 7500, "materials": {"强化石": 12}}
+      ],
+      "star_stages": [
+        {"star": 1, "copies": 1, "materials": {"星脉结晶": 10}},
+        {"star": 2, "copies": 1, "materials": {"星脉结晶": 15}},
+        {"star": 3, "copies": 2, "materials": {"星脉结晶": 25}}
+      ]
+    }
+  ]
+}
