@@ -15,7 +15,7 @@ from ok import CaptureException
 
 from src.config import config
 from src.image.jenga_detector import ASSETS, JengaDetector, JengaObservation, JengaPiece, _detail
-from src.tasks.trigger.auto_jenga_task import AutoJengaTask, JengaPlayer, _fit_figure_eight_phase
+from src.tasks.onetime.auto_jenga_task import AutoJengaTask, JengaPlayer, _fit_figure_eight_phase
 
 FIXTURES = Path(__file__).parent / "fixtures" / "jenga"
 
@@ -43,6 +43,7 @@ def fixed_fall_time(gap, scale=228):
 def task_harness():
     executor, app = MagicMock(), MagicMock()
     app.tr.side_effect = lambda value: value
+    executor.exclusive_owner = None
     executor.paused = False
     executor.exit_event = threading.Event()
     task = AutoJengaTask(executor, app)
@@ -1709,7 +1710,7 @@ class TestJengaPrediction(unittest.TestCase):
 
 
 class TestJengaTask(unittest.TestCase):
-    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
+    @patch("src.tasks.onetime.auto_jenga_task.JengaPlayer")
     def test_reentry_uses_current_scene_even_with_a_previous_high_tower(self, player_type):
         task = task_harness()
         task._can_input = MagicMock(return_value=True)
@@ -1732,7 +1733,7 @@ class TestJengaTask(unittest.TestCase):
                 self.assertTrue(task.enabled)
         task.executor.interaction.send_key_down.assert_not_called()
 
-    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
+    @patch("src.tasks.onetime.auto_jenga_task.JengaPlayer")
     def test_miss_and_unknown_result_can_drop_again_on_the_unchanged_receiver(self, player_type):
         for result in ("miss", None):
             with self.subTest(result=result):
@@ -1767,8 +1768,8 @@ class TestJengaTask(unittest.TestCase):
         self.assertIsNone(task._wait_placement(42))
         self.assertTrue(task.enabled)
 
-    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
-    def test_capture_exception_keeps_task_enabled_for_the_next_trigger(self, player_type):
+    @patch("src.tasks.onetime.auto_jenga_task.JengaPlayer")
+    def test_capture_exception_keeps_task_enabled_for_the_next_run(self, player_type):
         task = task_harness()
         task.next_frame = MagicMock(side_effect=CaptureException("capture disconnected"))
         task.run()
@@ -1785,7 +1786,7 @@ class TestJengaTask(unittest.TestCase):
         self.assertIsNotNone(player_type.return_value.update.call_args.args[0])
         task.executor.interaction.send_key_down.assert_not_called()
 
-    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
+    @patch("src.tasks.onetime.auto_jenga_task.JengaPlayer")
     def test_interruptions_during_capture_yield_and_reenter_with_a_new_window(self, player_type):
         for reason in ("complete", "pause", "capture_method", "resize", "missing", "focus", "disable_enable"):
             with self.subTest(reason=reason):
@@ -1841,8 +1842,8 @@ class TestJengaTask(unittest.TestCase):
                 task._drop.assert_called_once()
                 self.assertEqual(task._drop.call_args.args[0], 84)
 
-    @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter")
-    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
+    @patch("src.tasks.onetime.auto_jenga_task.time.perf_counter")
+    @patch("src.tasks.onetime.auto_jenga_task.JengaPlayer")
     def test_unobserved_new_round_reacquires_after_old_height_blocks_detection(self, player_type, clock):
         task = task_harness()
         task._can_input = MagicMock(return_value=True)
@@ -1873,8 +1874,8 @@ class TestJengaTask(unittest.TestCase):
         self.assertGreater(observations[-1].tower.top, 780)
         task.executor.interaction.send_key_down.assert_not_called()
 
-    @patch("src.tasks.trigger.auto_jenga_task.time.sleep")
-    @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter")
+    @patch("src.tasks.onetime.auto_jenga_task.time.sleep")
+    @patch("src.tasks.onetime.auto_jenga_task.time.perf_counter")
     def test_real_predictor_resumes_multiple_drops_after_miss_and_unknown(self, clock, sleep):
         for fps, phase in ((10, 2.6), (30, 0.7)):
             with self.subTest(fps=fps, phase=phase):
@@ -1933,7 +1934,7 @@ class TestJengaTask(unittest.TestCase):
                     self.assertGreater(later - earlier, 2.8)
                 self.assertTrue(task.enabled)
 
-    @patch("src.tasks.trigger.auto_jenga_task.win32gui.GetForegroundWindow", return_value=42)
+    @patch("src.tasks.onetime.auto_jenga_task.win32gui.GetForegroundWindow", return_value=42)
     def test_prepared_drop_is_cancelled_by_pause_or_rapid_disable_enable(self, foreground):
         for reason in ("pause", "disable_enable", "capture_method", "interaction"):
             with self.subTest(reason=reason):
@@ -1952,8 +1953,8 @@ class TestJengaTask(unittest.TestCase):
                 self.assertFalse(task._drop(42, capture_context=context))
                 task.executor.interaction.send_key_down.assert_not_called()
 
-    @patch("src.tasks.trigger.auto_jenga_task.win32gui.GetForegroundWindow", return_value=42)
-    @patch("src.tasks.trigger.auto_jenga_task.time.sleep")
+    @patch("src.tasks.onetime.auto_jenga_task.win32gui.GetForegroundWindow", return_value=42)
+    @patch("src.tasks.onetime.auto_jenga_task.time.sleep")
     def test_window_reconnection_releases_key_through_the_original_interaction(self, sleep, foreground):
         task = task_harness()
         original = task.executor.interaction
@@ -1965,7 +1966,7 @@ class TestJengaTask(unittest.TestCase):
         replacement.send_key_up.assert_not_called()
         self.assertIsNone(task._held_key)
 
-    @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter", return_value=10)
+    @patch("src.tasks.onetime.auto_jenga_task.time.perf_counter", return_value=10)
     def test_judgment_rejects_repeated_stale_or_invalid_capture_timestamps(self, clock):
         for timestamp in (10, 9, math.nan, math.inf):
             with self.subTest(timestamp=timestamp):
@@ -1977,8 +1978,8 @@ class TestJengaTask(unittest.TestCase):
                 task.loop = MagicMock(return_value=[np.full((20, 20, 3), i, np.uint8) for i in range(4)])
                 self.assertIsNone(task._wait_placement(42))
 
-    @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter")
-    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
+    @patch("src.tasks.onetime.auto_jenga_task.time.perf_counter")
+    @patch("src.tasks.onetime.auto_jenga_task.JengaPlayer")
     def test_bad_timestamp_stream_yields_and_fresh_capture_reenters(self, player_type, clock):
         for timestamp in (0.05, -1, math.nan, math.inf):
             with self.subTest(timestamp=timestamp):
@@ -2019,8 +2020,8 @@ class TestJengaTask(unittest.TestCase):
                 task.executor.interaction.send_key_down.assert_not_called()
 
 
-    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
-    @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter")
+    @patch("src.tasks.onetime.auto_jenga_task.JengaPlayer")
+    @patch("src.tasks.onetime.auto_jenga_task.time.perf_counter")
     def test_round_runs_past_120_seconds_until_manual_disable(self, clock, player_type):
         clock.side_effect = (i * 0.001 for i in range(100))
         task = task_harness()
@@ -2058,8 +2059,8 @@ class TestJengaTask(unittest.TestCase):
         task._jenga_detector.placement_result = MagicMock(return_value="perfect")
         self.assertIsNone(task._wait_placement(42))
 
-    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
-    @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter")
+    @patch("src.tasks.onetime.auto_jenga_task.JengaPlayer")
+    @patch("src.tasks.onetime.auto_jenga_task.time.perf_counter")
     def test_all_judgments_keep_placement_wait_and_only_success_confirms_new_top(self, clock, player_type):
         for result in ("perfect", "good", "miss", None):
             with self.subTest(result=result):
@@ -2090,9 +2091,9 @@ class TestJengaTask(unittest.TestCase):
                 )
                 self.assertTrue(task.enabled)
 
-    @patch("src.tasks.trigger.auto_jenga_task.JengaPlayer")
-    @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter")
-    def test_renderer_stall_yields_then_next_trigger_reacquires(self, clock, player_type):
+    @patch("src.tasks.onetime.auto_jenga_task.JengaPlayer")
+    @patch("src.tasks.onetime.auto_jenga_task.time.perf_counter")
+    def test_renderer_stall_yields_then_next_run_reacquires(self, clock, player_type):
         clock.side_effect = (i * 0.1 for i in range(200))
         task = task_harness()
         task._can_input = MagicMock(return_value=True)
@@ -2117,10 +2118,10 @@ class TestJengaTask(unittest.TestCase):
         task.executor.interaction.send_key_down.assert_not_called()
 
     def test_registered(self):
-        self.assertIn(["src.tasks.trigger.auto_jenga_task", "AutoJengaTask"], config["trigger_tasks"])
+        self.assertIn(["src.tasks.onetime.auto_jenga_task", "AutoJengaTask"], config["onetime_tasks"])
 
-    @patch("src.tasks.trigger.auto_jenga_task.win32gui.GetForegroundWindow", return_value=42)
-    @patch("src.tasks.trigger.auto_jenga_task.time.sleep")
+    @patch("src.tasks.onetime.auto_jenga_task.win32gui.GetForegroundWindow", return_value=42)
+    @patch("src.tasks.onetime.auto_jenga_task.time.sleep")
     def test_input_uses_interact_key_and_always_releases(self, sleep, foreground):
         task = task_harness()
         self.assertTrue(task._drop(42))
@@ -2132,8 +2133,8 @@ class TestJengaTask(unittest.TestCase):
         self.assertIsNone(task._held_key)
         self.assertEqual(task.executor.interaction.send_key_up.call_count, 2)
 
-    @patch("src.tasks.trigger.auto_jenga_task.win32gui.GetForegroundWindow", return_value=42)
-    @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter", return_value=10.02)
+    @patch("src.tasks.onetime.auto_jenga_task.win32gui.GetForegroundWindow", return_value=42)
+    @patch("src.tasks.onetime.auto_jenga_task.time.perf_counter", return_value=10.02)
     def test_delayed_dispatch_never_sends_expired_prediction(self, clock, foreground):
         task = task_harness()
         self.assertFalse(task._drop(42, deadline=10.015))
@@ -2141,7 +2142,7 @@ class TestJengaTask(unittest.TestCase):
         task.executor.interaction.send_key_up.assert_not_called()
         self.assertIsNone(task._held_key)
 
-    @patch("src.tasks.trigger.auto_jenga_task.win32gui.GetForegroundWindow", return_value=42)
+    @patch("src.tasks.onetime.auto_jenga_task.win32gui.GetForegroundWindow", return_value=42)
     def test_pause_disable_focus_exit_never_press(self, foreground):
         for reason in ("pause", "disable", "focus", "exit", "destroy"):
             task = task_harness()

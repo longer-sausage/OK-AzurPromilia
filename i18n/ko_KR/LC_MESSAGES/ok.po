@@ -109,8 +109,8 @@ msgstr ""
 msgid "宝箱开锁"
 msgstr "보물상자 잠금 해제"
 
-msgid "宝箱开锁触发式任务：校准颜色条带后按钥匙位置逐个点击开锁。"
-msgstr "보물상자 잠금 해제 트리거 작업: 색상 밴드를 보정한 뒤 열쇠 위치에 따라 차례로 클릭하여 잠금을 해제합니다."
+msgid "进入开锁界面后启动任务，自动校准颜色条带并开锁。"
+msgstr "잠금 해제 화면에서 작업을 시작하면 색상 띠를 보정하고 보물상자를 엽니다."
 
 msgid "家园每日"
 msgstr "홈 데일리"
@@ -121,19 +121,19 @@ msgstr "홈 데일리 작업 완료"
 msgid "执行家园每日：收菜、做饭、喂饭"
 msgstr "홈 데일리 실행: 수확, 요리, 먹이 주기"
 
-#: src/tasks/trigger/auto_jenga_task.py
+#: src/tasks/onetime/auto_jenga_task.py
 msgid "自动祖赞卡之梯"
 msgstr "주잔카의 사다리 자동 진행"
 
-#: src/tasks/trigger/auto_jenga_task.py
-msgid "检测到祖赞卡之梯界面自动完成。"
-msgstr "주잔카의 사다리 화면을 감지하면 자동으로 진행합니다."
+#: src/tasks/onetime/auto_jenga_task.py
+msgid "进入祖赞卡之梯后启动任务，自动放置图腾。"
+msgstr "주잔카의 사다리에 입장한 뒤 작업을 시작하면 토템을 자동으로 배치합니다."
 
-#: src/tasks/trigger/auto_jenga_task.py
+#: src/tasks/onetime/auto_jenga_task.py
 msgid "正在对准图腾"
 msgstr "토템 위치 맞추는 중"
 
-#: src/tasks/trigger/auto_jenga_task.py
+#: src/tasks/onetime/auto_jenga_task.py
 msgid "祖赞卡之梯辅助已停止"
 msgstr "주잔카의 사다리 보조 중지됨"
 
@@ -151,3 +151,5 @@ msgstr ""
 "의뢰 데일리 실행: 체력을 소모하여 선택한 일일 의뢰를 반복 (자동 전투를 먼저 "
 "해제해야 함)"
 
+msgid "进入音游后启动任务，自动演奏当前曲目。"
+msgstr "리듬 게임에 입장한 뒤 작업을 시작하면 현재 곡을 자동으로 연주합니다."

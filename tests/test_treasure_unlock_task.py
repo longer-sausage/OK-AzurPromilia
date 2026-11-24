@@ -12,7 +12,7 @@ from ok import Box
 
 from src.data.feature_list import FeatureList
 from src.image.treasure_band_detector import TreasureBandDetector
-from src.tasks.trigger.treasure_unlock_task import TreasureUnlockTask
+from src.tasks.onetime.treasure_unlock_task import TreasureUnlockTask
 
 FRAME_WIDTH, FRAME_HEIGHT = 1920, 1080
 ROI = Box(1305, 251, 43, 589)
@@ -369,28 +369,28 @@ class TestPresenceAgainstOcclusion(unittest.TestCase):
 
 
 class TestRunLoop(unittest.TestCase):
-    """run() 的时间片与状态衔接。"""
+    """每次手动启动都要从当前宝箱重新校准。"""
 
     def test_run_returns_immediately_without_treasure(self):
         game = FakeGame()
         game.has_treasure = False
         h = TaskHarness(game)
+        h.task._state = TreasureUnlockTask.UNLOCKING
         h.run_once()
         self.assertEqual(h.task._state, TreasureUnlockTask.WAIT_TREASURE)
+        self.assertEqual(game.clicks, [])
 
     def test_run_resets_after_finish(self):
         game = FakeGame()
         h = TaskHarness(game)
-        h.calibrate()
-        for center_y in (300, 580, 700):
-            game.key_center_y = center_y
-            h.step()
-        game.has_treasure = False
-        for _ in range(300):
-            h.step()
-            if h.task._state == TreasureUnlockTask.FINISHED:
-                break
+        def next_frame():
+            game.key_center_y = game.bands[0][1] + 20 if game.bands else None
+            game.has_treasure = bool(game.bands)
+            return game.frame()
+
+        h.task.next_frame = next_frame
         h.run_once()
+        self.assertEqual(game.clicks, [band[1] for band in BANDS])
         self.assertEqual(h.task._state, TreasureUnlockTask.WAIT_TREASURE)
         self.assertEqual(h.task._calibrated_bands, [], "完成后应清空校准结果")
 

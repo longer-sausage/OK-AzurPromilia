@@ -7,7 +7,6 @@ from dataclasses import dataclass, field, replace
 
 import numpy as np
 import win32gui
-from ok import TriggerTask
 
 from src.core.base_game_task import BaseGameTask
 from src.icons import Icons
@@ -288,13 +287,12 @@ class RhythmPlayer:
         return self.held, hit
 
 
-class AutoRhythmTask(BaseGameTask, TriggerTask):
+class AutoRhythmTask(BaseGameTask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = "自动音游"
-        self.description = "检测到音游界面自动完成。"
-        self.icon = Icons.Trigger
-        self.trigger_interval = 0
+        self.description = self.tr("进入音游后启动任务，自动演奏当前曲目。")
+        self.icon = Icons.Task
         self.default_config.update({"输入延迟 (ms)": 50})
         self._rhythm_detector = RhythmDetector()
         self.player = RhythmPlayer()
@@ -351,7 +349,8 @@ class AutoRhythmTask(BaseGameTask, TriggerTask):
     def _watch_input(self, done, hwnd):
         while not done.wait(0.02):
             if (
-                self.executor.paused
+                self.paused
+                or self.executor.paused
                 or not self.enabled
                 or self.executor.exit_event.is_set()
                 or win32gui.GetForegroundWindow() != hwnd
@@ -363,6 +362,7 @@ class AutoRhythmTask(BaseGameTask, TriggerTask):
                 return
 
     def run(self):
+        self.ensure_in_front()
         capture_started = time.perf_counter()
         frame = self.next_frame()
         captured = time.perf_counter()

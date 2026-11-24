@@ -108,8 +108,8 @@ msgstr "星結輔助觸發式任務：締結星結時，游標指向目標出現
 msgid "宝箱开锁"
 msgstr "寶箱開鎖"
 
-msgid "宝箱开锁触发式任务：校准颜色条带后按钥匙位置逐个点击开锁。"
-msgstr "寶箱開鎖觸發式任務：校準顏色條帶後按鑰匙位置逐個點擊開鎖。"
+msgid "进入开锁界面后启动任务，自动校准颜色条带并开锁。"
+msgstr "進入開鎖介面後啟動任務，自動校準色帶並開鎖。"
 
 msgid "家园每日"
 msgstr "家園每日"
@@ -120,19 +120,19 @@ msgstr "完成家園每日任務"
 msgid "执行家园每日：收菜、做饭、喂饭"
 msgstr "執行家園每日：收菜、做飯、餵飯"
 
-#: src/tasks/trigger/auto_jenga_task.py
+#: src/tasks/onetime/auto_jenga_task.py
 msgid "自动祖赞卡之梯"
 msgstr "自動祖贊卡之梯"
 
-#: src/tasks/trigger/auto_jenga_task.py
-msgid "检测到祖赞卡之梯界面自动完成。"
-msgstr "偵測到祖贊卡之梯介面自動完成。"
+#: src/tasks/onetime/auto_jenga_task.py
+msgid "进入祖赞卡之梯后启动任务，自动放置图腾。"
+msgstr "進入祖贊卡之梯後啟動任務，自動放置圖騰。"
 
-#: src/tasks/trigger/auto_jenga_task.py
+#: src/tasks/onetime/auto_jenga_task.py
 msgid "正在对准图腾"
 msgstr "正在對準圖騰"
 
-#: src/tasks/trigger/auto_jenga_task.py
+#: src/tasks/onetime/auto_jenga_task.py
 msgid "祖赞卡之梯辅助已停止"
 msgstr "祖贊卡之梯輔助已停止"
 
@@ -148,3 +148,5 @@ msgstr "委託每日"
 msgid "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
 msgstr "執行委託每日：消耗體力刷選定的每日委託（需先解鎖自動戰鬥）"
 
+msgid "进入音游后启动任务，自动演奏当前曲目。"
+msgstr "進入音遊後啟動任務，自動演奏目前曲目。"

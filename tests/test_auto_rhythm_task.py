@@ -11,7 +11,7 @@ import numpy as np
 
 from src.config import config
 from src.image.rhythm_detector import RhythmDetector, RhythmNote
-from src.tasks.trigger.auto_rhythm_task import AutoRhythmTask, RhythmPlayer
+from src.tasks.onetime.auto_rhythm_task import AutoRhythmTask, RhythmPlayer
 
 FIXTURES = Path(__file__).parent / "fixtures" / "rhythm"
 
@@ -567,7 +567,7 @@ class TestRhythmTaskLifecycle(unittest.TestCase):
         task = task_harness()
         task._set_keys(("q", "e"))
         task.executor.interaction.reset_mock()
-        with patch("src.tasks.trigger.auto_rhythm_task.time.sleep"):
+        with patch("src.tasks.onetime.auto_rhythm_task.time.sleep"):
             task._set_keys(("q", "e"), retrigger=("e",))
         calls = [(call[0], call.args[0]) for call in task.executor.interaction.mock_calls]
         self.assertEqual(calls, [("send_key_up", "e"), ("send_key_down", "e")])
@@ -607,11 +607,11 @@ class TestRhythmTaskLifecycle(unittest.TestCase):
                 player.next_deadline.side_effect = [10.24, float("inf")]
                 with (
                     patch(
-                        "src.tasks.trigger.auto_rhythm_task.time.perf_counter", side_effect=lambda clock=clock: clock[0]
+                        "src.tasks.onetime.auto_rhythm_task.time.perf_counter", side_effect=lambda clock=clock: clock[0]
                     ),
-                    patch("src.tasks.trigger.auto_rhythm_task.win32gui.GetForegroundWindow", return_value=123),
-                    patch("src.tasks.trigger.auto_rhythm_task.threading.Thread"),
-                    patch("src.tasks.trigger.auto_rhythm_task.RhythmPlayer", return_value=player),
+                    patch("src.tasks.onetime.auto_rhythm_task.win32gui.GetForegroundWindow", return_value=123),
+                    patch("src.tasks.onetime.auto_rhythm_task.threading.Thread"),
+                    patch("src.tasks.onetime.auto_rhythm_task.RhythmPlayer", return_value=player),
                     patch.object(task._cancel, "wait", side_effect=wait),
                     self.assertRaisesRegex(RuntimeError, "capture complete"),
                 ):
@@ -626,7 +626,7 @@ class TestRhythmTaskLifecycle(unittest.TestCase):
     def test_construct_and_registered(self):
         task = task_harness()
         self.assertEqual(task.name, "自动音游")
-        self.assertIn(["src.tasks.trigger.auto_rhythm_task", "AutoRhythmTask"], config["trigger_tasks"])
+        self.assertIn(["src.tasks.onetime.auto_rhythm_task", "AutoRhythmTask"], config["onetime_tasks"])
 
     def test_double_down_before_either_up_and_disable_cleanup(self):
         task = task_harness()
@@ -650,7 +650,7 @@ class TestRhythmTaskLifecycle(unittest.TestCase):
                 if reason == "stop":
                     task.executor.exit_event.set()
                 with patch(
-                    "src.tasks.trigger.auto_rhythm_task.win32gui.GetForegroundWindow",
+                    "src.tasks.onetime.auto_rhythm_task.win32gui.GetForegroundWindow",
                     return_value=0 if reason == "focus" else 123,
                 ):
                     task._watch_input(threading.Event(), 123)
@@ -666,15 +666,15 @@ class TestRhythmTaskLifecycle(unittest.TestCase):
         player.next_deadline.return_value = float("inf")
         player.update.return_value = (("q", "e"), note(587, "purple"))
         with (
-            patch("src.tasks.trigger.auto_rhythm_task.win32gui.GetForegroundWindow", return_value=123),
-            patch("src.tasks.trigger.auto_rhythm_task.RhythmPlayer", return_value=player),
+            patch("src.tasks.onetime.auto_rhythm_task.win32gui.GetForegroundWindow", return_value=123),
+            patch("src.tasks.onetime.auto_rhythm_task.RhythmPlayer", return_value=player),
             self.assertRaisesRegex(RuntimeError, "capture failed"),
         ):
             task.run()
         self.assertFalse(task._held_keys)
         self.assertEqual(task.executor.interaction.send_key_up.call_count, 2)
 
-    @patch("src.tasks.trigger.auto_rhythm_task.time.sleep")
+    @patch("src.tasks.onetime.auto_rhythm_task.time.sleep")
     def test_retrigger_sleeps_between_up_and_down(self, mock_sleep):
         task = task_harness()
         task._held_keys = {"e"}
@@ -686,7 +686,7 @@ class TestRhythmTaskLifecycle(unittest.TestCase):
     def test_cancel_during_retrigger_does_not_press_again(self):
         task = task_harness()
         task._held_keys = {"e"}
-        with patch("src.tasks.trigger.auto_rhythm_task.time.sleep", side_effect=lambda _: task._cancel.set()):
+        with patch("src.tasks.onetime.auto_rhythm_task.time.sleep", side_effect=lambda _: task._cancel.set()):
             task._set_keys(("e",), retrigger=True)
         task.executor.interaction.send_key_down.assert_not_called()
         self.assertFalse(task._held_keys)

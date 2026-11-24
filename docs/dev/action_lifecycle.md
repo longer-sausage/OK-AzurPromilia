@@ -36,7 +36,7 @@
   - [判据必须接受外部 `frame`](#判据必须接受外部-frame)
 - [9. 什么时候不该用它](#9-什么时候不该用它)
 - [10. 真实落地样例](#10-真实落地样例)
-  - [`TreasureUnlockTask._click_band`（`src/tasks/trigger/treasure_unlock_task.py`）](#treasureunlocktask_click_bandsrctaskstriggertreasure_unlock_taskpy)
+  - [`TreasureUnlockTask._click_band`（`src/tasks/onetime/treasure_unlock_task.py`）](#treasureunlocktask_click_bandsrctasksonetimetreasure_unlock_taskpy)
 - [相关文档](#相关文档)
 
 ---
@@ -652,7 +652,7 @@ target = fresh if fresh is not None else hit
 
 ## 10. 真实落地样例
 
-### `TreasureUnlockTask._click_band`（`src/tasks/trigger/treasure_unlock_task.py`）
+### `TreasureUnlockTask._click_band`（`src/tasks/onetime/treasure_unlock_task.py`）
 
 点条带后用「稳定消失」确认生效——只用到 C，所以走 `wait_expectation`：
 

@@ -113,10 +113,8 @@ msgstr ""
 msgid "宝箱开锁"
 msgstr "Desbloqueo de cofres"
 
-msgid "宝箱开锁触发式任务：校准颜色条带后按钥匙位置逐个点击开锁。"
-msgstr ""
-"Tarea de activación de desbloqueo de cofres: tras calibrar las bandas de "
-"color, hace clic en cada posición de llave para desbloquear."
+msgid "进入开锁界面后启动任务，自动校准颜色条带并开锁。"
+msgstr "Inicia la tarea en la pantalla de la cerradura para calibrar las bandas de color y abrir el cofre."
 
 msgid "家园每日"
 msgstr "Diario del hogar"
@@ -127,19 +125,19 @@ msgstr "Completa las tareas diarias del hogar"
 msgid "执行家园每日：收菜、做饭、喂饭"
 msgstr "Ejecutar el diario del hogar: cosechar, cocinar y alimentar"
 
-#: src/tasks/trigger/auto_jenga_task.py
+#: src/tasks/onetime/auto_jenga_task.py
 msgid "自动祖赞卡之梯"
 msgstr "Escalera de Zuzanka automática"
 
-#: src/tasks/trigger/auto_jenga_task.py
-msgid "检测到祖赞卡之梯界面自动完成。"
-msgstr "Juega automáticamente al detectar la pantalla de la escalera de Zuzanka."
+#: src/tasks/onetime/auto_jenga_task.py
+msgid "进入祖赞卡之梯后启动任务，自动放置图腾。"
+msgstr "Inicia la tarea en la escalera de Zuzanka para colocar los tótems automáticamente."
 
-#: src/tasks/trigger/auto_jenga_task.py
+#: src/tasks/onetime/auto_jenga_task.py
 msgid "正在对准图腾"
 msgstr "Alineando el tótem"
 
-#: src/tasks/trigger/auto_jenga_task.py
+#: src/tasks/onetime/auto_jenga_task.py
 msgid "祖赞卡之梯辅助已停止"
 msgstr "Asistencia de la escalera de Zuzanka detenida"
 
@@ -159,3 +157,5 @@ msgstr ""
 "Ejecutar el encargo diario: gasta vigor para repetir el encargo diario "
 "seleccionado (requiere desbloquear antes el combate automático)"
 
+msgid "进入音游后启动任务，自动演奏当前曲目。"
+msgstr "Inicia la tarea en el juego de ritmo para tocar la canción actual automáticamente."
