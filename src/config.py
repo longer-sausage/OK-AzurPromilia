@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+
 from src.interaction.game_interaction import GameInteraction
 
 version = "dev"
@@ -41,12 +42,31 @@ def make_bottom_left_black(frame):  # 可选. 某些游戏截图时遮挡UID使�
         return frame
 
 
+def make_privacy_processor():
+    """落盘截图前按 ``configs/privacy.json`` 套上最多 8 块遮挡。
+
+    遮挡配置在「隐私遮挡」页里拖动调整；配置读不到时退回默认的单块 UID 遮挡，
+    避免因为配置文件损坏把 UID 泄露到日志/诊断包里。
+    """
+    from src.core.privacy import make_screenshot_processor
+
+    processor = make_screenshot_processor()
+
+    def process(frame):
+        try:
+            return processor(frame)
+        except Exception:
+            return make_bottom_left_black(frame)
+
+    return process
+
+
 config = {
     "custom_tasks": True,
     "debug": False,  # Optional, default: False
     "use_gui": True,  # 目前只支持True
     "config_folder": "configs",  # 最好不要修改
-    "screenshot_processor": make_bottom_left_black,  # 在截图的时候对frame进行修改, 可选
+    "screenshot_processor": make_privacy_processor(),  # 落盘截图前套 UID 遮挡（配置见 configs/privacy.json）
     "gui_icon": "icons/icon.png",  # 窗口图标, 最好不需要修改文件名
     "wait_until_before_delay": 0,
     "wait_until_check_delay": 0,
@@ -106,6 +126,9 @@ config = {
         ["src.tasks.onetime.home_daily_task", "HomeDailyTask"],
         ["src.tasks.onetime.commission_daily_task", "CommissionDailyTask"],
         ["src.tasks.onetime.claim_daily_task", "ClaimDailyTask"],
+        ["src.tasks.onetime.flow_task", "FlowTask"],
+        ["src.tasks.onetime.route_task", "RouteTask"],
+        ["src.tasks.onetime.settlement_task", "SettlementTask"],
         ["src.tasks.test.test_screenshot_task", "TestScreenshotTask"],
         ["src.tasks.test.test_interaction_task", "TestInteractionTask"],
         ["src.tasks.test.test_treasure_band_task", "TestTreasureBandTask"],
@@ -114,6 +137,14 @@ config = {
     "custom_tabs": [
         ["src.gui.global_config_tab", "GlobalConfigTab"],
         ["src.gui.account_config_tab", "AccountConfigTab"],
+        ["src.gui.daily_order_tab", "DailyOrderTab"],
+        ["src.gui.flow_tab", "FlowTab"],
+        ["src.gui.offline_tools_tab", "OfflineToolsTab"],
+        ["src.gui.privacy_tab", "PrivacyTab"],
+        ["src.gui.repo_tab", "RepoTab"],
+        ["src.gui.float_window_tab", "FloatWindowTab"],
+        ["src.gui.ui_extras_tab", "UiExtrasTab"],
+        ["src.gui.diagnostics_tab", "DiagnosticsTab"],
     ],
     "trigger_tasks": [  # 不断执行的触发式任务
         ["src.tasks.trigger.auto_jenga_task", "AutoJengaTask"],
@@ -121,5 +152,6 @@ config = {
         ["src.tasks.trigger.skip_dialog_task", "SkipDialogTask"],
         ["src.tasks.trigger.star_link_assist_task", "StarLinkAssistTask"],
         ["src.tasks.trigger.treasure_unlock_task", "TreasureUnlockTask"],
+        ["src.tasks.trigger.auto_combat_assist_task", "AutoCombatAssistTask"],
     ],
 }

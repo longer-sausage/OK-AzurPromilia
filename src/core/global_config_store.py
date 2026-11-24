@@ -4,9 +4,9 @@ import threading
 
 from ok import ConfigOption
 from ok.util.config import Config
-from ok.util.file import get_relative_path, read_json_file, write_json_file
 from qfluentwidgets import FluentIcon
 
+from src.core.runtime_config import RUNTIME_CONFIG_NAME, load_runtime_settings, runtime_config_option
 from src.icons import Icons
 from src.interaction.key_config import DEFAULT_COMMON_KEYS
 
@@ -30,6 +30,7 @@ ensure_main_once_action_sleep_option = ConfigOption(
 GLOBAL_CONFIG_OPTIONS = [
     key_config_option,
     ensure_main_once_action_sleep_option,
+    runtime_config_option,
 ]
 
 _LOCK = threading.Lock()
@@ -59,3 +60,12 @@ def get_all_visible_configs():
         if not option.name.startswith("_"):
             configs.append((option.name, get_global_config(option.name), option))
     return sorted(configs, key=lambda item: item[0])
+
+
+def get_runtime_settings():
+    """读取当前「超时/重试/自恢复」策略快照。
+
+    每次调用都重新读一次 ``Config``（底层是磁盘 JSON 的 dict 视图，读取成本可忽略），
+    这样用户在全局配置页改完参数后，下一次任务就会生效，不需要重启。
+    """
+    return load_runtime_settings(get_global_config(RUNTIME_CONFIG_NAME))

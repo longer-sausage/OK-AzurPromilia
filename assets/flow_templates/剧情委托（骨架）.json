@@ -1,0 +1,52 @@
+{
+  "name": "剧情委托（骨架）",
+  "description": "骨架流程：需要你先标三个模板 story_commission_entry / story_commission_auto / story_commission_settle，标好把名字对上就能跑。",
+  "version": 1,
+  "steps": [
+    {
+      "type": "action",
+      "action": "ensure_main",
+      "comment": "先回到主界面"
+    },
+    {
+      "type": "wait_template",
+      "template": "loading_check",
+      "expect": "disappear",
+      "timeout": 30
+    },
+    {
+      "type": "click",
+      "template": "story_commission_entry",
+      "timeout": 25,
+      "comment": "【需要标注】剧情委托入口（列表里你常刷的那一条）"
+    },
+    {
+      "type": "wait",
+      "seconds": 2.0,
+      "comment": "等界面切换"
+    },
+    {
+      "type": "click",
+      "template": "story_commission_auto",
+      "timeout": 25,
+      "comment": "【需要标注】自动战斗 / 开始按钮"
+    },
+    {
+      "type": "wait_template",
+      "template": "story_commission_settle",
+      "timeout": 1200,
+      "comment": "【需要标注】结算界面的稳定元素；剧情委托通常比战斗久，超时给了 20 分钟"
+    },
+    {
+      "type": "click",
+      "template": "confirm_button",
+      "timeout": 15,
+      "comment": "结算确认（这个模板仓库里已有）"
+    },
+    {
+      "type": "action",
+      "action": "ensure_main",
+      "comment": "收尾回主界面"
+    }
+  ]
+}

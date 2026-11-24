@@ -1,0 +1,25 @@
+{
+  "name": "一条龙",
+  "description": "家园 → 委托 → 收菜 按顺序跑，每项单独给预算，失败即停。装好后在「流程 / 队列」任务里把队列文件填成本名字即可。",
+  "stop_on_failure": true,
+  "items": [
+    {
+      "kind": "task",
+      "ref": "HomeDailyTask",
+      "name": "家园每日",
+      "budget_minutes": 15
+    },
+    {
+      "kind": "task",
+      "ref": "CommissionDailyTask",
+      "name": "委托每日",
+      "budget_minutes": 30
+    },
+    {
+      "kind": "task",
+      "ref": "ClaimDailyTask",
+      "name": "每日收菜",
+      "budget_minutes": 10
+    }
+  ]
+}

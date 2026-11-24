@@ -166,7 +166,8 @@ msgstr "Escalera de Zuzanka automática"
 
 #: src/tasks/trigger/auto_jenga_task.py
 msgid "检测到祖赞卡之梯界面自动完成。"
-msgstr "Juega automáticamente al detectar la pantalla de la escalera de Zuzanka."
+msgstr ""
+"Juega automáticamente al detectar la pantalla de la escalera de Zuzanka."
 
 #: src/tasks/trigger/auto_jenga_task.py
 msgid "正在对准图腾"
@@ -192,3 +193,1406 @@ msgstr ""
 "Ejecutar el encargo diario: gasta vigor para repetir el encargo diario "
 "seleccionado (requiere desbloquear antes el combate automático)"
 
+msgid "工具与诊断"
+msgstr "Herramientas y diagnóstico"
+
+msgid "失败帧复测"
+msgstr "Reanálisis de fotograma fallido"
+
+msgid "失败帧列表"
+msgstr "Fotogramas fallidos"
+
+msgid "刷新"
+msgstr "Actualizar"
+
+msgid "打开目录"
+msgstr "Abrir carpeta"
+
+msgid "清空"
+msgstr "Vaciar"
+
+msgid "复测全部模板"
+msgstr "Reanalizar todas las plantillas"
+
+msgid "复测中…正在用这一帧跑全部模板"
+msgstr "Reanalizando… ejecutando todas las plantillas sobre este fotograma"
+
+msgid "请选择一个失败帧"
+msgstr "Selecciona un fotograma fallido"
+
+msgid "未识别到可用的模板特征集，请先连接游戏"
+msgstr "No hay un conjunto de plantillas disponible; conecta primero al juego"
+
+msgid "模板"
+msgstr "Plantilla"
+
+msgid "得分"
+msgstr "Puntuación"
+
+msgid "阈值"
+msgstr "Umbral"
+
+msgid "判定"
+msgstr "Veredicto"
+
+msgid "位置"
+msgstr "Posición"
+
+msgid "素材包安装"
+msgstr "Instalación de paquete de recursos"
+
+msgid "素材包路径或 URL"
+msgstr "Ruta o URL del paquete"
+
+msgid "本地 zip 路径，或 http(s) 直链"
+msgstr "Ruta zip local o enlace directo http(s)"
+
+msgid "浏览…"
+msgstr "Examinar…"
+
+msgid "安装"
+msgstr "Instalar"
+
+msgid "安装前会逐个校验 SHA-256；校验不通过不会改动任何文件，旧素材会带时间戳备份。"
+msgstr ""
+"Se verifica el SHA-256 de cada archivo antes de instalar; si el paquete está"
+" dañado no se modifica nada y los recursos anteriores se respaldan con marca"
+" de tiempo."
+
+msgid "失败帧库为空：任务失败时会自动保存识别帧"
+msgstr ""
+"Aún no hay fotogramas fallidos: el fotograma de reconocimiento se guarda al "
+"fallar una tarea"
+
+msgid "复测完成：{summary}"
+msgstr "Reanálisis completado: {summary}"
+
+msgid "复测失败：{error}"
+msgstr "Error en el reanálisis: {error}"
+
+msgid "已清空 {count} 个失败帧"
+msgstr "Se vaciaron {count} fotogramas fallidos"
+
+msgid "无法打开目录：{error}"
+msgstr "No se puede abrir la carpeta: {error}"
+
+msgid "安装失败：{error}"
+msgstr "Error de instalación: {error}"
+
+msgid "正在校验素材包…"
+msgstr "Verificando el paquete de recursos…"
+
+msgid "正在下载素材包…"
+msgstr "Descargando el paquete de recursos…"
+
+msgid "请填写素材包路径或 URL"
+msgstr "Introduce la ruta o URL del paquete de recursos"
+
+msgid "{time}　{task}　{width}×{height}　{message}"
+msgstr "{time}　{task}　{width}×{height}　{message}"
+
+msgid "未知任务"
+msgstr "Tarea desconocida"
+
+msgid "选择素材包"
+msgstr "Seleccionar paquete de recursos"
+
+msgid "素材包文件 (*.zip)"
+msgstr "Paquete de recursos (*.zip)"
+
+msgid "自动化策略"
+msgstr "Política de automatización"
+
+msgid "超时、重试与失败自恢复策略"
+msgstr "Tiempos de espera, reintentos y recuperación de fallos"
+
+msgid "单步超时(秒)"
+msgstr "Tiempo de espera por paso (s)"
+
+msgid "重试间隔(秒)"
+msgstr "Intervalo de reintento (s)"
+
+msgid "动作后等待(秒)"
+msgstr "Espera tras la acción (s)"
+
+msgid "卡死检测阈值(秒)"
+msgstr "Umbral de detección de bloqueo (s)"
+
+msgid "低配模式"
+msgstr "Modo para equipos de gama baja"
+
+msgid "失败后自动返回主菜单"
+msgstr "Volver al menú principal tras un fallo"
+
+msgid "最大返回次数"
+msgstr "Número máximo de pulsaciones de volver"
+
+msgid "失败帧保留数量"
+msgstr "Fotogramas fallidos a conservar"
+
+msgid "单个等待/轮询步骤的默认超时；任务里显式传超时的位置不受影响"
+msgstr ""
+"Tiempo de espera predeterminado de un paso de espera o sondeo; los puntos "
+"que indican uno explícito no se ven afectados"
+
+msgid "条件没满足时两次重试之间的间隔（与 wait_until_check_delay 取较大值），0 表示不额外等待"
+msgstr ""
+"Intervalo entre reintentos cuando no se cumple la condición (el mayor entre "
+"este y wait_until_check_delay); 0 = sin espera extra"
+
+msgid "失败自恢复时每次按返回键后的等待；0 表示用框架的默认间隔"
+msgstr ""
+"Espera tras cada pulsación de retroceso durante la recuperación; 0 usa el "
+"valor por defecto del framework"
+
+msgid "画面长时间不变（判定为可能卡死）的阈值，只记录警告不中止任务"
+msgstr ""
+"Umbral de pantalla sin cambios (posible bloqueo); solo registra un aviso y "
+"nunca aborta la tarea"
+
+msgid "低配机器：所有超时统一放宽 1.5 倍，卡死阈值同步放宽"
+msgstr ""
+"Equipos de gama baja: todos los tiempos de espera se amplían 1,5 veces, "
+"incluido el umbral de bloqueo"
+
+msgid "任务失败后自动按返回键退回主菜单，只退菜单不重跑任务"
+msgstr ""
+"Tras un fallo, pulsa Atrás para volver al menú principal; nunca vuelve a "
+"ejecutar la tarea"
+
+msgid "失败后最多按几次返回键"
+msgstr "Número máximo de pulsaciones de Atrás tras un fallo"
+
+msgid "失败帧库最多保留多少帧，超出后丢弃最旧的"
+msgstr ""
+"Cuántos fotogramas fallidos se conservan; los más antiguos se descartan"
+
+msgid "流程与队列"
+msgstr "Flujos y colas"
+
+msgid "新队列"
+msgstr "Cola nueva"
+
+msgid "流程"
+msgstr "Flujo"
+
+msgid "任务队列"
+msgstr "Cola de tareas"
+
+msgid "配置档"
+msgstr "Perfil"
+
+msgid "还没有流程文件：用「导入 JSON」或「从录制 JSON 生成」创建"
+msgstr ""
+"Todavía no hay flujos: créalo con «Importar JSON» o «Generar desde "
+"grabación»"
+
+msgid "队列在「流程 / 队列」任务里执行：任务类型选「执行队列」并填队列名字"
+msgstr ""
+"Las colas se ejecutan en la tarea «Flujo / Cola»: elige «Ejecutar cola» y "
+"escribe el nombre de la cola"
+
+msgid "新配置档名字"
+msgstr "Nombre del perfil nuevo"
+
+msgid "保存当前配置"
+msgstr "Guardar configuración actual"
+
+msgid "应用"
+msgstr "Aplicar"
+
+msgid "删除"
+msgstr "Eliminar"
+
+msgid "应用配置档前会自动把当前 configs/ 备份到 configs/profiles/.backup_<时间戳>/"
+msgstr ""
+"Antes de aplicar un perfil, la carpeta configs/ actual se respalda en "
+"configs/profiles/.backup_<marca de tiempo>/"
+
+msgid "（没有流程）"
+msgstr "(sin flujos)"
+
+msgid "（没有队列）"
+msgstr "(sin colas)"
+
+msgid "（没有配置档）"
+msgstr "(sin perfiles)"
+
+msgid "选择流程 JSON"
+msgstr "Seleccionar JSON de flujo"
+
+msgid "JSON 文件 (*.json)"
+msgstr "Archivos JSON (*.json)"
+
+msgid "选择录制 JSON"
+msgstr "Seleccionar JSON de grabación"
+
+msgid "流程文件"
+msgstr "Archivo de flujo"
+
+msgid "校验"
+msgstr "Validar"
+
+msgid "导入 JSON"
+msgstr "Importar JSON"
+
+msgid "从录制 JSON 生成"
+msgstr "Generar desde grabación"
+
+msgid "队列文件"
+msgstr "Archivo de cola"
+
+msgid "新建模板"
+msgstr "Nueva plantilla"
+
+msgid "还没有流程文件"
+msgstr "Todavía no hay flujos"
+
+msgid "用「导入 JSON」或「从录制 JSON 生成」创建第一份流程"
+msgstr "Crea el primer flujo con «Importar JSON» o «Generar desde grabación»"
+
+msgid "断点：无"
+msgstr "Punto de control: ninguno"
+
+msgid "没有选中流程"
+msgstr "Ningún flujo seleccionado"
+
+msgid "校验通过，没有发现问题"
+msgstr "Validación correcta, no se encontraron problemas"
+
+msgid "校验完成：{errors} 个错误"
+msgstr "Validación completada: {errors} error(es)"
+
+msgid "录制文件里没有 events 数组"
+msgstr "El archivo de grabación no tiene un arreglo events"
+
+msgid "还没有队列文件"
+msgstr "Todavía no hay colas"
+
+msgid "（已禁用）"
+msgstr "(desactivado)"
+
+msgid "不限时"
+msgstr "sin límite"
+
+msgid "没有选中队列"
+msgstr "Ninguna cola seleccionada"
+
+msgid "队列校验通过：{enabled} 项启用"
+msgstr "Validación de cola correcta: {enabled} elemento(s) activo(s)"
+
+msgid "示例队列：把一条龙和流程串起来"
+msgstr "Cola de ejemplo: encadena la rutina diaria y los flujos"
+
+msgid "请填写配置档名字"
+msgstr "Introduce un nombre de perfil"
+
+msgid "没有选中配置档"
+msgstr "Ningún perfil seleccionado"
+
+msgid "共 {steps} 步，嵌套 {depth} 层，容器 {containers} 个"
+msgstr "{steps} paso(s), profundidad {depth}, {containers} contenedor(es)"
+
+msgid "已导入流程：{name}"
+msgstr "Flujo importado: {name}"
+
+msgid "已生成流程 {name}：{summary}"
+msgstr "Flujo creado: {name} — {summary}"
+
+msgid "已删除流程：{name}"
+msgstr "Flujo eliminado: {name}"
+
+msgid "失败策略：{policy}"
+msgstr "Política de fallos: {policy}"
+
+msgid "启用 {enabled} 项，总预算 {budget} 分钟"
+msgstr "{enabled} elemento(s) activo(s), presupuesto total {budget} minuto(s)"
+
+msgid "已创建空队列模板：{name}"
+msgstr "Plantilla de cola vacía creada: {name}"
+
+msgid "已删除队列：{name}"
+msgstr "Cola eliminada: {name}"
+
+msgid "已保存配置档：{name}"
+msgstr "Perfil guardado: {name}"
+
+msgid "断点：已完成 {completed}/{total} 个顶层步骤，任务里勾「从断点继续」即可续跑"
+msgstr ""
+"Punto de control: {completed}/{total} pasos de nivel superior hechos; activa"
+" «Continuar desde el punto de control» en la tarea"
+
+msgid "失败即停"
+msgstr "detener al fallar"
+
+msgid "失败后继续"
+msgstr "continuar tras fallar"
+
+msgid "已删除配置档：{name}"
+msgstr "Perfil eliminado: {name}"
+
+msgid "导入失败：{error}"
+msgstr "Error al importar: {error}"
+
+msgid "读取录制失败：{error}"
+msgstr "No se pudo leer la grabación: {error}"
+
+msgid "删除失败：{error}"
+msgstr "Error al eliminar: {error}"
+
+msgid "流程 / 队列"
+msgstr "Flujo / Cola"
+
+msgid "按 JSON 流程逐步操作游戏，或按队列依次执行多个流程/任务。流程与队列文件在「流程与队列」页里管理。"
+msgstr ""
+"Controla el juego paso a paso con un flujo JSON, o ejecuta varios flujos y "
+"tareas en orden como una cola. Los archivos de flujo y cola se gestionan en "
+"la página «Flujos y colas»."
+
+msgid "任务类型"
+msgstr "Tipo de trabajo"
+
+msgid "从断点继续"
+msgstr "Continuar desde el punto de control"
+
+msgid "预算(分钟)"
+msgstr "Presupuesto (minutos)"
+
+msgid "执行流程：跑一份 JSON 流程；执行队列：按顺序跑队列里的每一项"
+msgstr ""
+"Ejecutar flujo: ejecuta un flujo JSON; Ejecutar cola: ejecuta cada elemento "
+"de una cola en orden"
+
+msgid "configs/flows 下的文件名（不带 .json）"
+msgstr "Nombre de archivo en configs/flows (sin .json)"
+
+msgid "configs/queues 下的文件名（不带 .json）"
+msgstr "Nombre de archivo en configs/queues (sin .json)"
+
+msgid "只对流程生效：跳过上次已经跑完的顶层步骤"
+msgstr "Solo para flujos: omite los pasos de nivel superior ya completados"
+
+msgid "流程里某一步失败后是否继续后面的步骤"
+msgstr "Si continuar con los pasos siguientes cuando uno falla"
+
+msgid "0 表示不限；流程会被预算打断，任务类只能事后标记"
+msgstr ""
+"0 significa sin límite; los flujos se interrumpen por el presupuesto, las "
+"tareas solo se marcan después"
+
+msgid "离线工具"
+msgstr "Herramientas sin conexión"
+
+msgid "养成计算"
+msgstr "Calculadora de progresión"
+
+msgid "抽卡分析"
+msgstr "Análisis de gacha"
+
+msgid "记账与报表"
+msgstr "Registro e informes"
+
+msgid "还没有目标：选好参数后点「添加目标」"
+msgstr "Sin objetivos: ajusta los parámetros y pulsa «Añadir objetivo»"
+
+msgid "每行一个：材料=数量，例如 尤尼=20000"
+msgstr "Uno por línea: material=cantidad, p. ej. Unia=20000"
+
+msgid "可选：2.8%,28.8%,100% 这样的表，长度需等于硬保底"
+msgstr ""
+"Opcional: una tabla como 2.8%,28.8%,100%; su longitud debe igualar el pity "
+"máximo"
+
+msgid "计算"
+msgstr "Calcular"
+
+msgid "例如：获得的奖励：尤尼 ×1,500 / 12 × 波力果 / 消耗：星脉结晶 ×3"
+msgstr ""
+"p. ej. Recompensas: Unia ×1,500 / 12 × Fruta Boli / Coste: Cristal Estelar "
+"×3"
+
+msgid "计算完成"
+msgstr "Cálculo completado"
+
+msgid "材料清单："
+msgstr "Materiales:"
+
+msgid "保存养成材料单"
+msgstr "Guardar lista de materiales"
+
+msgid "运行报表："
+msgstr "Informe de ejecuciones:"
+
+msgid "导出 CSV"
+msgstr "Exportar CSV"
+
+msgid "CSV 文件 (*.csv)"
+msgstr "Archivos CSV (*.csv)"
+
+msgid "养成目标"
+msgstr "Objetivo de progresión"
+
+msgid "起始等级"
+msgstr "Nivel inicial"
+
+msgid "目标等级"
+msgstr "Nivel objetivo"
+
+msgid "份数"
+msgstr "Copias"
+
+msgid "潜能等级"
+msgstr "Nivel de potencial"
+
+msgid "升星"
+msgstr "Subir estrellas"
+
+msgid "添加目标"
+msgstr "Añadir objetivo"
+
+msgid "清空目标"
+msgstr "Vaciar objetivos"
+
+msgid "导出 PNG"
+msgstr "Exportar PNG"
+
+msgid "重新载入数据"
+msgstr "Recargar datos"
+
+msgid "库存"
+msgstr "Inventario"
+
+msgid "目标份数"
+msgstr "Copias deseadas"
+
+msgid "已垫抽数"
+msgstr "Pity acumulado"
+
+msgid "预算抽数"
+msgstr "Tiradas de presupuesto"
+
+msgid "出目标概率"
+msgstr "Probabilidad de objetivo"
+
+msgid "自定义概率表"
+msgstr "Tabla de probabilidades propia"
+
+msgid "把结算界面的文字粘进来记账；要直接识别画面，请在任务列表运行「结算记账」。"
+msgstr ""
+"Pega el texto del resultado para registrarlo; para leer la pantalla "
+"directamente, ejecuta «Registro de liquidación» en la lista de tareas."
+
+msgid "记账"
+msgstr "Registrar"
+
+msgid "刷新统计"
+msgstr "Actualizar estadísticas"
+
+msgid "导出记账 CSV"
+msgstr "Exportar CSV del registro"
+
+msgid "导出报表 CSV"
+msgstr "Exportar CSV del informe"
+
+msgid "没有可用的养成目标"
+msgstr "No hay objetivos de progresión disponibles"
+
+msgid "请先添加至少一个目标"
+msgstr "Añade al menos un objetivo primero"
+
+msgid "请先点「计算」"
+msgstr "Pulsa primero «Calcular»"
+
+msgid "PNG 图片 (*.png)"
+msgstr "Imágenes PNG (*.png)"
+
+msgid "请先粘贴结算文字"
+msgstr "Pega primero el texto del resultado"
+
+msgid "  还没有运行记录"
+msgstr "  aún no hay ejecuciones registradas"
+
+msgid "今日明细："
+msgstr "Detalle de hoy:"
+
+msgid "（没有可用数据）"
+msgstr "(sin datos disponibles)"
+
+msgid "没有可用的养成数据"
+msgstr "No hay datos de progresión disponibles"
+
+msgid "已选 {count} 个目标：{items}"
+msgstr "{count} objetivo(s) seleccionado(s): {items}"
+
+msgid "货币凑法："
+msgstr "Composición de moneda:"
+
+msgid "经验道具："
+msgstr "Objetos de EXP:"
+
+msgid "已导出：{path}"
+msgstr "Exportado: {path}"
+
+msgid "软保底关键点：71 抽 {p71}、81 抽 {p81}、90 抽必出"
+msgstr ""
+"Hitos del pity suave: tirada 71 {p71}, tirada 81 {p81}, tirada 90 "
+"garantizada"
+
+msgid "参数：目标 {copies} 份，已垫 {pity} 抽，出目标 {rate}"
+msgstr ""
+"Parámetros: {copies} copias, pity {pity}, probabilidad de objetivo {rate}"
+
+msgid "手动记账"
+msgstr "registro manual"
+
+msgid "已记录 {count} 条"
+msgstr "Se registraron {count} entradas"
+
+msgid "今日：收入 {income:g} / 支出 {expense:g}"
+msgstr "Hoy: ingresos {income:g} / gastos {expense:g}"
+
+msgid "累计：收入 {income:g} / 支出 {expense:g} / 净 {net:g}"
+msgstr "Total: ingresos {income:g} / gastos {expense:g} / neto {net:g}"
+
+msgid "  共 {count} 次，成功 {success} 次，成功率 {rate:.1f}%，平均 {avg:.0f} 秒"
+msgstr ""
+"  {count} ejecución(es), {success} con éxito, {rate:.1f}% de acierto, "
+"{avg:.0f}s de media"
+
+msgid "数据载入成功：{summary}（共 {total} 个目标）"
+msgstr "Datos cargados: {summary} ({total} objetivos en total)"
+
+msgid "导出失败：{error}"
+msgstr "Error al exportar: {error}"
+
+msgid "结算记账"
+msgstr "Registro de liquidación"
+
+msgid "识别结算界面（或任意物品列表界面）上的「物品 ×数量」，把收益记进 ledger.jsonl，并给出今日与累计收支。"
+msgstr ""
+"Lee las entradas «objeto ×cantidad» de la pantalla de resultado (o de "
+"cualquier lista de objetos) y las registra en ledger.jsonl, mostrando el "
+"balance de hoy y el acumulado."
+
+msgid "记录来源"
+msgstr "Origen del registro"
+
+msgid "最低置信度"
+msgstr "Confianza mínima"
+
+msgid "写进记账本的来源标记，用来区分结算 / 手动 / 商店等场景"
+msgstr ""
+"Etiqueta de origen guardada en el registro, para distinguir liquidación, "
+"manual y tienda"
+
+msgid "OCR 置信度低于该值的文本会被丢弃，0 表示全部保留"
+msgstr ""
+"Se descarta el texto OCR por debajo de esta confianza; 0 lo conserva todo"
+
+msgid "一条龙顺序"
+msgstr "Orden de la rutina diaria"
+
+msgid "保存顺序与开关"
+msgstr "Guardar orden e interruptores"
+
+msgid "拖动任务调整顺序；勾选框控制该项是否执行。任务运行中不能保存。"
+msgstr ""
+"Arrastra las tareas para reordenarlas; la casilla decide si se ejecuta. No "
+"se puede guardar mientras la tarea está en marcha."
+
+msgid "一键日常的执行顺序"
+msgstr "Orden de ejecución de la rutina diaria"
+
+msgid "已载入当前顺序；拖动或勾选后点「保存」"
+msgstr "Orden actual cargado; arrastra o marca y pulsa Guardar"
+
+msgid "已恢复默认顺序（记得点保存）"
+msgstr "Orden predeterminado restaurado (recuerda guardar)"
+
+msgid "顺序已保存"
+msgstr "Orden guardado"
+
+msgid "上移"
+msgstr "Subir"
+
+msgid "下移"
+msgstr "Bajar"
+
+msgid "恢复默认"
+msgstr "Restaurar predeterminado"
+
+msgid "没有找到「一键日常」任务，无法编辑顺序"
+msgstr "No se encontró la tarea «Rutina diaria»; no se puede editar el orden"
+
+msgid "没有找到「一键日常」任务"
+msgstr "No se encontró la tarea «Rutina diaria»"
+
+msgid "任务正在运行，先停止再改顺序"
+msgstr "La tarea está en marcha; deténla antes de cambiar el orden"
+
+msgid "列表是空的"
+msgstr "La lista está vacía"
+
+msgid "已保存：{order}"
+msgstr "Guardado: {order}"
+
+msgid "保存失败：{error}"
+msgstr "Error al guardar: {error}"
+
+msgid "导航路线"
+msgstr "Ruta de navegación"
+
+msgid "按保存好的路线逐个航点导航/等待/点击，跑通一次就能存下来复用。路线文件在 configs/routes 下。"
+msgstr ""
+"Recorre una ruta guardada punto por punto (navegar, esperar, hacer clic); "
+"cuando funcione puedes guardarla y reutilizarla. Los archivos de ruta están "
+"en configs/routes."
+
+msgid "路线文件"
+msgstr "Archivo de ruta"
+
+msgid "configs/routes 下的文件名（不带 .json）"
+msgstr "Nombre de archivo en configs/routes (sin .json)"
+
+msgid "跳过上次已经跑完的航点"
+msgstr "Omite los puntos ya completados la última vez"
+
+msgid "隐私遮挡"
+msgstr "Ocultación de privacidad"
+
+msgid "宽"
+msgstr "An"
+
+msgid "高"
+msgstr "Al"
+
+msgid "标签，如 UID / 昵称"
+msgstr "Etiqueta, p. ej. UID / apodo"
+
+msgid "UID / 昵称 / 聊天遮挡"
+msgstr "Ocultación de UID / apodo / chat"
+
+msgid "已添加 1 块，记得点保存"
+msgstr "Se añadió un bloque (recuerda guardar)"
+
+msgid "已删除 1 块，记得点保存"
+msgstr "Se eliminó un bloque (recuerda guardar)"
+
+msgid "已应用修改，记得点保存"
+msgstr "Cambios aplicados (recuerda guardar)"
+
+msgid "已恢复默认遮挡，记得点保存"
+msgstr "Máscara predeterminada restaurada (recuerda guardar)"
+
+msgid "遮挡配置已保存"
+msgstr "Configuración de máscaras guardada"
+
+msgid "1 秒后取当前鼠标位置与颜色，请把鼠标移到目标位置"
+msgstr ""
+"En 1 segundo se captura la posición y el color del cursor; mueve antes el "
+"ratón al objetivo"
+
+msgid "纯色"
+msgstr "Color sólido"
+
+msgid "马赛克"
+msgstr "Mosaico"
+
+msgid "启用遮挡"
+msgstr "Ocultación activada"
+
+msgid "关闭遮挡"
+msgstr "Ocultación desactivada"
+
+msgid "添加"
+msgstr "Añadir"
+
+msgid "应用修改"
+msgstr "Aplicar cambios"
+
+msgid "坐标拾取"
+msgstr "Capturar coordenadas"
+
+msgid "保存"
+msgstr "Guardar"
+
+msgid "没有选中遮挡块"
+msgstr "Ningún bloque seleccionado"
+
+msgid "坐标用 1920×1080 参考空间；最多 {max_blocks} 块。遮挡只作用于落盘截图与失败帧。"
+msgstr ""
+"Las coordenadas usan el espacio de referencia 1920×1080; hasta {max_blocks} "
+"bloques. La ocultación solo se aplica a las capturas guardadas y a los "
+"fotogramas de error."
+
+msgid "已载入 {count} 块遮挡"
+msgstr "Se cargaron {count} bloque(s) de ocultación"
+
+msgid "已保存到 {path}（下次截图生效）"
+msgstr "Guardado en {path} (se aplica desde la próxima captura)"
+
+msgid "取到客户区 ({x}, {y}) → 参考 ({rx:g}, {ry:g})，颜色 {color}"
+msgstr "Cliente ({x}, {y}) → referencia ({rx:g}, {ry:g}), color {color}"
+
+msgid "最多 {max_blocks} 块遮挡"
+msgstr "Como máximo {max_blocks} bloques"
+
+msgid "诊断包"
+msgstr "Paquete de diagnóstico"
+
+msgid "语言包"
+msgstr "Paquete de idioma"
+
+msgid "包含截图"
+msgstr "Incluir capturas"
+
+msgid "生成诊断包"
+msgstr "Crear paquete de diagnóstico"
+
+msgid "默认不含截图；记账只放合计，不放明细"
+msgstr ""
+"Las capturas se excluyen por defecto; el registro aporta solo totales, no el"
+" detalle"
+
+msgid "扫描程序目录下的「语言包<代码>」文件夹；应用前自动备份 i18n 与 assets/lang"
+msgstr ""
+"Busca carpetas «語言包<código>» junto a la app; antes de aplicar se respaldan "
+"i18n y assets/lang"
+
+msgid "选择保存目录"
+msgstr "Elegir carpeta de salida"
+
+msgid "把配置、日志、模板清单、失败帧与系统信息打成一个 zip"
+msgstr ""
+"Emmpaqueta configuración, registros, lista de plantillas, fotogramas "
+"fallidos e información del sistema en un zip"
+
+msgid "还原最近备份"
+msgstr "Restaurar la última copia"
+
+msgid "（没有找到语言包）"
+msgstr "(no se encontró ningún paquete de idioma)"
+
+msgid "把「语言包<代码>」文件夹放到程序目录下再刷新"
+msgstr "Coloca una carpeta «語言包<código>» junto a la app y actualiza"
+
+msgid "没有选中语言包"
+msgstr "Ningún paquete de idioma seleccionado"
+
+msgid "没有可用的语言包备份"
+msgstr "No hay copia de seguridad del paquete de idioma"
+
+msgid "找到 {count} 个语言包；应用前会自动备份 i18n 与 assets/lang"
+msgstr ""
+"Se encontraron {count} paquete(s) de idioma; antes de aplicar se respaldan "
+"i18n y assets/lang"
+
+msgid "已还原 {name}"
+msgstr "Se restauró {name}"
+
+msgid "界面与提醒"
+msgstr "Interfaz y recordatorios"
+
+msgid "关闭行为"
+msgstr "Comportamiento al cerrar"
+
+msgid "提醒"
+msgstr "Recordatorios"
+
+msgid "任务栏进度与快捷键"
+msgstr "Progreso en la barra de tareas y atajos"
+
+msgid "启用提醒"
+msgstr "Activar recordatorios"
+
+msgid "每日重置提醒"
+msgstr "Recordatorio del reinicio diario"
+
+msgid "体力提醒"
+msgstr "Recordatorio de resistencia"
+
+msgid "保存提醒设置"
+msgstr "Guardar ajustes de recordatorios"
+
+msgid "在任务栏显示进度"
+msgstr "Mostrar el progreso en la barra de tareas"
+
+msgid "校验快捷键"
+msgstr "Validar atajos"
+
+msgid "保存快捷键"
+msgstr "Guardar atajos"
+
+msgid "快捷键在程序启动时注册；改完需要重启生效。F9–F12 属于框架的启动/停止，不能再绑定。"
+msgstr ""
+"Los atajos se registran al iniciar; reinicia para aplicarlos. F9–F12 "
+"pertenecen al inicio/parada del framework y no se pueden reasignar."
+
+msgid "设置已载入"
+msgstr "Ajustes cargados"
+
+msgid "关闭行为已保存"
+msgstr "Comportamiento al cerrar guardado"
+
+msgid "提醒设置已保存"
+msgstr "Ajustes de recordatorios guardados"
+
+msgid "快捷键校验通过"
+msgstr "Atajos validados"
+
+msgid "快捷键已保存"
+msgstr "Atajos guardados"
+
+msgid "已填入默认快捷键（记得保存）"
+msgstr "Atajos predeterminados rellenados (recuerda guardar)"
+
+msgid "点关闭按钮时"
+msgstr "Al pulsar el botón de cerrar"
+
+msgid "每次都问"
+msgstr "Preguntar siempre"
+
+msgid "直接关闭"
+msgstr "Cerrar directamente"
+
+msgid "最小化到托盘"
+msgstr "Minimizar a la bandeja"
+
+msgid "重置小时"
+msgstr "Hora del reinicio"
+
+msgid "间隔（分钟）"
+msgstr "Intervalo (minutos)"
+
+msgid "如 ctrl+alt+p"
+msgstr "p. ej. ctrl+alt+p"
+
+msgid "快捷键有问题"
+msgstr "Problema con los atajos"
+
+msgid "关闭行为已保存到 {path}"
+msgstr "Comportamiento al cerrar guardado en {path}"
+
+msgid "提醒设置已保存到 {path}（30 秒内生效）"
+msgstr ""
+"Ajustes de recordatorios guardados en {path} (se aplican en 30 segundos)"
+
+msgid "任务栏进度已{state}"
+msgstr "Progreso de la barra de tareas {state}"
+
+msgid "快捷键已保存到 {path}，重启后生效"
+msgstr "Atajos guardados en {path}; reinicia para aplicarlos"
+
+msgid "开启"
+msgstr "activado"
+
+msgid "关闭"
+msgstr "desactivado"
+
+msgid "快捷键有问题：{issues}"
+msgstr "Problemas con los atajos: {issues}"
+
+msgid "关闭 ok-ap"
+msgstr "Cerrar ok-ap"
+
+msgid "要完全关闭程序，还是最小化到系统托盘？"
+msgstr ""
+"¿Cerrar la aplicación por completo o minimizarla a la bandeja del sistema?"
+
+msgid "完全关闭"
+msgstr "Cerrar por completo"
+
+msgid "收到托盘"
+msgstr "Minimizar a la bandeja"
+
+msgid "取消"
+msgstr "Cancelar"
+
+msgid "记住我的选择"
+msgstr "Recordar mi elección"
+
+msgid "实时辅助"
+msgstr "Asistencia en vivo"
+
+msgid "按你设置的按键序列与节奏持续操作，适合需要一直盯着的战斗场景。可选用前置模板限定生效场合。"
+msgstr ""
+"Sigue pulsando las teclas y el ritmo que configures; útil en combates que "
+"requieren atención constante. Opcionalmente se limita a una plantilla."
+
+msgid "按键序列"
+msgstr "Secuencia de teclas"
+
+msgid "动作间隔(秒)"
+msgstr "Intervalo de acción (s)"
+
+msgid "前置模板"
+msgstr "Plantilla previa"
+
+msgid "最大连续次数"
+msgstr "Acciones máximas por ejecución"
+
+msgid "记录日志"
+msgstr "Registrar cada acción"
+
+msgid "_按下时长(秒)"
+msgstr "_Duración de pulsación (s)"
+
+msgid "逗号分隔，按顺序轮转，例如 q,e,r"
+msgstr "Separadas por comas y en orden cíclico, p. ej. q,e,r"
+
+msgid "两次动作之间的最小间隔，避免连点"
+msgstr "Separación mínima entre acciones para evitar pulsaciones seguidas"
+
+msgid "可选：只有该模板出现时才动作（填模板名，如 auto_combat_check）"
+msgstr ""
+"Opcional: actuar solo cuando aparezca esa plantilla (p. ej. "
+"auto_combat_check)"
+
+msgid "单次 run 最多按几次，避免长时间占住触发轮转"
+msgstr ""
+"Cuántas pulsaciones por ejecución, para no acaparar la rotación de "
+"disparadores"
+
+msgid "每次动作写一行日志，方便确认节奏"
+msgstr "Escribe una línea de registro por acción para comprobar el ritmo"
+
+msgid "按键按住时长"
+msgstr "Tiempo que se mantiene pulsada cada tecla"
+
+msgid "暂停"
+msgstr "Pausar"
+
+msgid "继续"
+msgstr "Continuar"
+
+msgid "停止"
+msgstr "Detener"
+
+msgid "显示 HUD 悬浮条"
+msgstr "Mostrar la barra HUD"
+
+msgid "任务栏进度已{state}，HUD 已{hud}"
+msgstr "Progreso de la barra de tareas {state}, HUD {hud}"
+
+msgid "运行中"
+msgstr "En marcha"
+
+msgid "已暂停"
+msgstr "En pausa"
+
+msgid "模板自检"
+msgstr "Auditoría de plantillas"
+
+msgid "开始自检"
+msgstr "Iniciar auditoría"
+
+msgid "还没自检；自检只读 assets/coco_annotations.json，不改任何文件"
+msgstr ""
+"Aún sin auditar; la auditoría solo lee assets/coco_annotations.json y no "
+"cambia nada"
+
+msgid "检查全部模板的纹理与重复（纯色块永远匹配不上）"
+msgstr ""
+"Revisa la textura y los duplicados de todas las plantillas (un bloque sólido"
+" nunca coincide)"
+
+msgid "重复模板："
+msgstr "Plantillas duplicadas:"
+
+msgid "自检完成：{summary}"
+msgstr "Auditoría completada: {summary}"
+
+msgid "方案文件"
+msgstr "Archivo de esquema"
+
+msgid "configs/schemes 下的轮椅方案文件名；单独跑方案时填它"
+msgstr ""
+"Nombre del esquema en configs/schemes; rellénalo para ejecutar un esquema "
+"suelto"
+
+msgid "分享仓库"
+msgstr "Repositorio compartido"
+
+msgid "在线仓库"
+msgstr "Repositorio en línea"
+
+msgid "填入索引地址后点「加载」。索引就是一个返回 JSON 的链接，也可以填本地文件路径"
+msgstr ""
+"Escribe la dirección del índice y pulsa Cargar. El índice es un enlace que "
+"devuelve JSON o una ruta local"
+
+msgid "https://…/index.json 或本地 index.json 路径"
+msgstr "https://…/index.json o una ruta local a index.json"
+
+msgid "加载"
+msgstr "Cargar"
+
+msgid "安装选中"
+msgstr "Instalar seleccionado"
+
+msgid "允许覆盖同名文件"
+msgstr "Permitir sobrescribir archivos con el mismo nombre"
+
+msgid "打开流程目录"
+msgstr "Abrir carpeta de flujos"
+
+msgid "索引已加载"
+msgstr "Índice cargado"
+
+msgid "索引地址"
+msgstr "Dirección del índice"
+
+msgid "类型"
+msgstr "Tipo"
+
+msgid "名称"
+msgstr "Nombre"
+
+msgid "说明"
+msgstr "Descripción"
+
+msgid "标签"
+msgstr "Etiquetas"
+
+msgid "先填索引地址"
+msgstr "Primero escribe la dirección del índice"
+
+msgid "先在列表里选中一项"
+msgstr "Selecciona primero una entrada de la lista"
+
+msgid "已加载「{name}」：共 {count} 项（{detail}）"
+msgstr "Cargado «{name}»: {count} entradas ({detail})"
+
+msgid "没有条目"
+msgstr "sin entradas"
+
+msgid "打不开目录：{error}"
+msgstr "No se puede abrir la carpeta: {error}"
+
+msgid "选择养成数据（JSON 或 CSV）"
+msgstr "Elegir los datos de progresión (JSON o CSV)"
+
+msgid "导入数据"
+msgstr "Importar datos"
+
+msgid "在左边选中一项，这里显示它自己的参数（与默认值不同的部分）"
+msgstr ""
+"Selecciona un elemento a la izquierda para ver sus propios ajustes (solo los"
+" que difieren de los valores por defecto)"
+
+msgid "打开配置文件"
+msgstr "Abrir archivo de configuración"
+
+msgid "刷新参数"
+msgstr "Actualizar ajustes"
+
+msgid "每项自己的参数"
+msgstr "Ajustes por elemento"
+
+msgid "有独立配置文件"
+msgstr "tiene su propio archivo de configuración"
+
+msgid "还没有独立配置文件"
+msgstr "sin archivo de configuración todavía"
+
+msgid "先在左边选中一项"
+msgstr "Selecciona primero un elemento a la izquierda"
+
+msgid "读不到参数：{error}"
+msgstr "No se pueden leer los ajustes: {error}"
+
+msgid "打不开配置文件：{error}"
+msgstr "No se puede abrir el archivo de configuración: {error}"
+
+msgid "{name}（{prefix}）：{line}"
+msgstr "{name} ({prefix}): {line}"
+
+msgid "安装示例流程"
+msgstr "Instalar flujos de ejemplo"
+
+msgid "安装示例流程失败：{error}"
+msgstr "No se pudieron instalar los flujos de ejemplo: {error}"
+
+msgid "{name} 还需要标注：{names}"
+msgstr "{name} todavía necesita marcar estas plantillas: {names}"
+
+msgid "{name} 所需模板都已存在，可以直接跑"
+msgstr ""
+"{name} ya tiene todas las plantillas necesarias y puede ejecutarse "
+"directamente"
+
+msgid "安装自检"
+msgstr "Comprobación de instalación"
+
+msgid "还没自检；自检只读文件，不改任何东西"
+msgstr "Aún sin comprobar; la comprobación solo lee archivos y no cambia nada"
+
+msgid "把流程 / 队列 / 方案 / 路线 / 配置 / i18n 一起体检一遍"
+msgstr ""
+"Comprueba flujos, colas, esquemas, rutas, configuración e i18n de una vez"
+
+msgid "自检失败：{error}"
+msgstr "Falló la comprobación: {error}"
+
+msgid "安装示例"
+msgstr "Instalar ejemplos"
+
+msgid "安装示例失败：{error}"
+msgstr "No se pudieron instalar los ejemplos: {error}"
+
+msgid ""
+"按账号和任务配置独立参数。先选账号，再选任务，下面会自动出现该任务的属性控件。账号页只需要填写账号名，无需填写密码。系统兼容旧格式 `账号,密码` "
+"但不会保存密码。"
+msgstr ""
+"Configura parámetros independientes por cuenta y tarea. Elige una cuenta, "
+"luego una tarea, y abajo aparecerán sus ajustes. La página de cuentas solo "
+"necesita el nombre — sin contraseña. El formato antiguo `cuenta,contraseña` "
+"se acepta pero la contraseña nunca se guarda."
+
+msgid ""
+"账号A\n"
+"账号B"
+msgstr ""
+"CuentaA\n"
+"CuentaB"
+
+msgid "safe_back 超时（{time_out}s），目标未出现"
+msgstr "safe_back agotó el tiempo ({time_out}s): el objetivo no apareció"
+
+msgid "账号格式错误，已跳过: {line}"
+msgstr "Entrada de cuenta con formato incorrecto, omitida: {line}"
+
+msgid "第 {idx}/{total} 个账号为空，已跳过"
+msgstr "La cuenta {idx}/{total} está vacía, omitida"
+
+msgid "开始第 {idx}/{total} 个账号({suffix}){log_suffix}"
+msgstr "Iniciando la cuenta {idx}/{total} ({suffix}){log_suffix}"
+
+msgid "任务返回 False"
+msgstr "La tarea devolvió False"
+
+msgid "开始执行日常任务..."
+msgstr "Iniciando las tareas diarias..."
+
+msgid "开始任务: {key}"
+msgstr "Iniciando tarea: {key}"
+
+msgid "任务失败标记 | {name}: {message}"
+msgstr "Tarea marcada como fallida | {name}: {message}"
+
+msgid "多账户模式已开启，但账号列表为空，日常任务结束"
+msgstr ""
+"El modo multicuenta está activo pero la lista de cuentas está vacía; se "
+"detienen las tareas diarias"
+
+msgid "任务执行"
+msgstr "Ejecución de tareas"
+
+msgid "任务 {key} 执行失败"
+msgstr "La tarea {key} falló"
+
+msgid "日常完成!"
+msgstr "¡Diarias completadas!"
+
+msgid "所有任务均成功完成!"
+msgstr "¡Todas las tareas terminaron con éxito!"
+
+msgid "异常: {err}"
+msgstr "Excepción: {err}"
+
+msgid "开始第 {idx}/{total} 轮任务执行"
+msgstr "Iniciando la ronda {idx}/{total}"
+
+msgid "第 {idx} 轮 | 失败任务: {failed}"
+msgstr "Ronda {idx} | tareas fallidas: {failed}"
+
+msgid "以下任务未完成或失败: {failed}"
+msgstr "Estas tareas no terminaron o fallaron: {failed}"
+
+msgid "第 {idx} 轮 | 日常完成!"
+msgstr "Ronda {idx} | ¡diarias completadas!"
+
+msgid "执行完成，失败统计: {failed}"
+msgstr "Terminado; resumen de fallos: {failed}"
+
+msgid "素材已安装，但模板缓存刷新失败；重启程序后生效"
+msgstr ""
+"Los recursos se instalaron pero no se pudo recargar la caché de plantillas; "
+"reinicia la app para aplicarlo"
+
+msgid "完成"
+msgstr "Completado"
+
+msgid "部分失败"
+msgstr "Falló en parte"
+
+msgid "异常结束"
+msgstr "Terminó con error"
+
+msgid "未开始"
+msgstr "Sin empezar"
+
+msgid "执行状态: {status}"
+msgstr "Estado: {status}"
+
+msgid "执行情况汇总"
+msgstr " resumen de ejecución"
+
+msgid "失败任务统计:"
+msgstr "Recuento de tareas fallidas:"
+
+msgid "所有任务执行成功！"
+msgstr "¡Todas las tareas se completaron con éxito!"
+
+msgid "总任务数: {total} | 成功: {success} | 失败: {failed} | 跳过: {skipped}"
+msgstr ""
+"Total: {total} | Correctas: {success} | Fallidas: {failed} | Omitidas: "
+"{skipped}"
+
+msgid "成功任务:"
+msgstr "Tareas correctas:"
+
+msgid "失败任务:"
+msgstr "Tareas fallidas:"
+
+msgid "跳过任务:"
+msgstr "Tareas omitidas:"
+
+msgid "失败消息:"
+msgstr "Mensajes de error:"
+
+msgid "未设置失败消息"
+msgstr "Sin mensaje de error"
+
+msgid "未知"
+msgstr "Desconocido"
+
+msgid "无"
+msgstr "Ninguna"
+
+msgid "当前正在执行的任务:"
+msgstr "Tarea en ejecución:"
+
+msgid "异常信息:"
+msgstr "Excepción:"
+
+msgid "--- 第 {round} 轮 (账号: {account}) ---"
+msgstr "--- Ronda {round} (cuenta: {account}) ---"
+
+msgid "开始录制动作"
+msgstr "Empezar a grabar acciones"
+
+msgid "停止录制并生成流程"
+msgstr "Detener y crear flujo"
+
+msgid "录制会按当前游戏窗口换算坐标；录制期间请在游戏里正常操作，停止后自动生成流程"
+msgstr ""
+"Las coordenadas se convierten según la ventana del juego; opera con "
+"normalidad mientras grabas — al detener se genera el flujo."
+
+msgid "正在录制：请在游戏里操作，录完点「停止录制并生成流程」"
+msgstr "Grabando: opera en el juego y pulsa «Detener y crear flujo»"
+
+msgid "没有录到任何操作（检查游戏窗口是否已连接）"
+msgstr ""
+"No se grabó ninguna acción (comprueba que la ventana del juego esté "
+"conectada)"
+
+msgid "没有录到任何操作"
+msgstr "No se grabó nada"
+
+msgid "录制功能不可用：{error}"
+msgstr "La grabación no está disponible: {error}"
+
+msgid "开始录制失败：{error}"
+msgstr "No se pudo empezar a grabar: {error}"
+
+msgid "停止录制失败：{error}"
+msgstr "No se pudo detener la grabación: {error}"
+
+msgid "生成流程失败：{error}"
+msgstr "No se pudo crear el flujo: {error}"
+
+msgid "录制结束：{summary}"
+msgstr "Grabación finalizada: {summary}"
+
+msgid "有任务正在运行（{name}），先停止任务再录制"
+msgstr "Hay una tarea en ejecución ({name}); deténla antes de grabar"
+
+msgid "悬浮窗"
+msgstr "Ventana flotante"
+
+msgid "预计剩余"
+msgstr "Tiempo restante"
+
+msgid "空闲"
+msgstr "Inactivo"
+
+msgid "显示悬浮窗（图标可拖动，点一下展开任务队列）"
+msgstr ""
+"Mostrar la ventana flotante (arrastra el icono; pulsa para ver las tareas)"
+
+msgid "悬浮图标大小"
+msgstr "Tamaño del icono"
+
+msgid "面板宽度"
+msgstr "Ancho del panel"
+
+msgid "面板高度"
+msgstr "Alto del panel"
+
+msgid "圆角"
+msgstr "Radio de esquina"
+
+msgid "背景颜色"
+msgstr "Color de fondo"
+
+msgid "选择颜色"
+msgstr "Elegir color"
+
+msgid "选择悬浮窗背景颜色"
+msgstr "Elige el color de fondo de la ventana flotante"
+
+msgid "不透明度"
+msgstr "Opacidad"
+
+msgid "在悬浮窗里显示任务队列"
+msgstr "Mostrar la cola de tareas en la ventana flotante"
+
+msgid "最多显示"
+msgstr "Mostrar como máximo"
+
+msgid "项"
+msgstr "elementos"
+
+msgid "保存并应用"
+msgstr "Guardar y aplicar"
+
+msgid "恢复默认位置与大小"
+msgstr "Restablecer posición y tamaño"
+
+msgid "悬浮窗显示当前任务与队列里每一项的预计用时；数据来自运行记录与队列执行器。"
+msgstr ""
+"La ventana flotante muestra la tarea actual y el tiempo estimado de cada "
+"elemento de la cola, según el historial y el ejecutor de colas."
+
+msgid "当前状态"
+msgstr "Estado actual"
+
+msgid "当前任务"
+msgstr "Tarea actual"
+
+msgid "队列"
+msgstr "Cola"
+
+msgid "无队列"
+msgstr "Sin cola"
+
+msgid "已保存悬浮窗设置"
+msgstr "Ajustes de la ventana flotante guardados"
+
+msgid "已保存；重启程序后生效"
+msgstr "Guardado; se aplicará tras reiniciar"
+
+msgid "已恢复默认位置与大小"
+msgstr "Posición y tamaño restablecidos"

@@ -1,0 +1,52 @@
+{
+  "name": "危机讨伐（骨架）",
+  "description": "骨架流程：需要你先标三个模板 crisis_hunt_entry / crisis_hunt_start / crisis_hunt_settle，标好把名字对上就能跑。",
+  "version": 1,
+  "steps": [
+    {
+      "type": "action",
+      "action": "ensure_main",
+      "comment": "先回到主界面"
+    },
+    {
+      "type": "wait_template",
+      "template": "loading_check",
+      "expect": "disappear",
+      "timeout": 30
+    },
+    {
+      "type": "click",
+      "template": "crisis_hunt_entry",
+      "timeout": 25,
+      "comment": "【需要标注】危机讨伐入口按钮，建议标按钮图标本身"
+    },
+    {
+      "type": "wait",
+      "seconds": 2.0,
+      "comment": "等界面切换"
+    },
+    {
+      "type": "click",
+      "template": "crisis_hunt_start",
+      "timeout": 25,
+      "comment": "【需要标注】开始 / 挑战按钮"
+    },
+    {
+      "type": "wait_template",
+      "template": "crisis_hunt_settle",
+      "timeout": 900,
+      "comment": "【需要标注】结算界面的稳定元素；它出现即视为打完"
+    },
+    {
+      "type": "click",
+      "template": "confirm_button",
+      "timeout": 15,
+      "comment": "结算确认（这个模板仓库里已有）"
+    },
+    {
+      "type": "action",
+      "action": "ensure_main",
+      "comment": "收尾回主界面"
+    }
+  ]
+}

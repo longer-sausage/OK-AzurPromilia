@@ -1,13 +1,19 @@
 import time
 from datetime import datetime
 
-import cv2
-
 # 覆写框架截图时间戳格式：日期_时分秒（无毫秒）
 import ok.gui.debug.Screenshot as _ok_screenshot
-from ok import BaseTask, TaskDisabledException, TriggerTask, WaitFailedException, CannotFindException
+from ok import BaseTask, CannotFindException, TaskDisabledException, TriggerTask, WaitFailedException
 
 from src.config import config as app_config
+from src.core.base_mixin.agent_mixin import (
+    AgentMixin,
+    agent_after_failure,
+    agent_retry_gap,
+    agent_scale_timeout,
+    agent_tick,
+    agent_wait_timeout,
+)
 from src.core.base_mixin.framework_override_mixin import FrameworkOverrideMixin
 from src.core.base_mixin.runtime_mixin import RuntimeMixin
 from src.core.base_mixin.ui_mixin import UIMixin
@@ -15,11 +21,11 @@ from src.core.config_migration import migrate_config_file_keys, migrate_config_v
 from src.core.game_window import find_game_hwnd
 from src.core.global_config_store import get_global_config
 from src.data.feature_list import FeatureList
-from src.data.page import PageNotFoundError, page_main
 from src.data.lang import get_lang_accessor
-from src.image.hsv_config import HSVRange
+from src.data.page import PageNotFoundError, page_main
 from src.image.frame_processes import make_hsv_isolator
-from src.image.stability import perceptual_hash, hamming_distance
+from src.image.hsv_config import HSVRange
+from src.image.stability import hamming_distance, perceptual_hash
 from src.interaction.key_config import KeyConfigManager
 from src.interaction.screen_position import ScreenPosition
 
@@ -33,7 +39,7 @@ def _round_ratio(value):
         return value
 
 
-class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
+class BaseGameTask(AgentMixin, RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
     """游戏自动化任务基类，提供通用的交互和识别功能。
 
     新项目从本类派生一次性任务；触发式任务继承
@@ -112,8 +118,9 @@ class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
         """Framework wait_until variant whose timeout freezes while paused."""
         self.executor.reset_scene()
         start = self.active_time()
-        if time_out == 0:
-            time_out = self.executor.wait_scene_timeout
+        # agent: 超时按全局策略缩放（None/0 取单步超时），重试间隔取配置与全局的较大值
+        time_out = agent_wait_timeout(self, time_out, self.executor.wait_scene_timeout)
+        retry_gap = agent_retry_gap(self, app_config.get("wait_until_check_delay", 0) or 0.0)
         settled = None
 
         while not self.executor.exit_event.is_set():
@@ -136,6 +143,8 @@ class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
             settled = None
             if post_action is not None:
                 post_action()
+            if retry_gap > 0:
+                self.sleep(retry_gap)
             if self.active_time() - start > time_out:
                 break
 
@@ -199,7 +208,7 @@ class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
             return None
         if hasattr(locale_obj, "name"):
             try:
-                name_attr = getattr(locale_obj, "name")
+                name_attr = locale_obj.name
                 value = name_attr() if callable(name_attr) else name_attr
                 if value:
                     return str(value)
@@ -234,10 +243,11 @@ class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
         - 根据配置 `发生异常时终止游戏` 决定是继续（记录日志）还是终止（记录并不抛出）
         - 对于 `TaskDisabledException` 总是重新抛出以便上层处理
         """
-        try:
+        try:  # noqa: SIM105 - 上游原有写法，保持原样
             self.screenshot(prefix)
         except Exception:
             pass
+        agent_after_failure(self, str(e), prefix)
 
         if not self.config.get("发生异常时终止游戏", False):
             self.log_info("发生异常，继续游戏", notify=True)
@@ -252,10 +262,11 @@ class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
     def mark_task_failure(self, message: str, task_name: str | None = None):
         """统一标记任务失败消息，并截图（包含时间和任务名称）。"""
         name = task_name or getattr(self, "current_task", None) or "UnknownTask"
-        try:
+        try:  # noqa: SIM105 - 上游原有写法，保持原样
             self.screenshot(f"fail_{name}")
         except Exception:
             pass
+        agent_after_failure(self, str(message), name)
         self.log_info(str(message))
 
     def _ensure_main(self, esc):
@@ -377,7 +388,7 @@ class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
         # 3. 为所有配置项补充默认值（安全处理）
         for group_items in groups.values():
             for item in group_items:
-                if isinstance(item, str):
+                if isinstance(item, str):  # noqa: SIM108 - 上游原有写法，保持原样
                     key = item
                 else:
                     key = str(item)
@@ -490,7 +501,12 @@ class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
             Exception: 当 raise_if_time_out 传入自定义异常且循环超时未中断时抛出。
         """
         start_time = self.active_time()
-        while self.active_time() - start_time < time_out:
+        limit = agent_scale_timeout(self, time_out)
+        while True:
+            now = self.active_time()
+            if now - start_time >= limit:
+                break
+            agent_tick(self, now)
             if yield_frame:
                 yield self.next_frame()
             else:

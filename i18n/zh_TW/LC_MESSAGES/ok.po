@@ -181,3 +181,1300 @@ msgstr "委託每日"
 msgid "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
 msgstr "執行委託每日：消耗體力刷選定的每日委託（需先解鎖自動戰鬥）"
 
+msgid "工具与诊断"
+msgstr "工具與診斷"
+
+msgid "失败帧复测"
+msgstr "失敗幀複測"
+
+msgid "失败帧列表"
+msgstr "失敗幀列表"
+
+msgid "刷新"
+msgstr "重新整理"
+
+msgid "打开目录"
+msgstr "開啟目錄"
+
+msgid "清空"
+msgstr "清空"
+
+msgid "复测全部模板"
+msgstr "複測全部模板"
+
+msgid "复测中…正在用这一帧跑全部模板"
+msgstr "複測中…正在用這一幀跑全部模板"
+
+msgid "请选择一个失败帧"
+msgstr "請選擇一個失敗幀"
+
+msgid "未识别到可用的模板特征集，请先连接游戏"
+msgstr "未識別到可用的模板特徵集，請先連接遊戲"
+
+msgid "模板"
+msgstr "模板"
+
+msgid "得分"
+msgstr "得分"
+
+msgid "阈值"
+msgstr "閾值"
+
+msgid "判定"
+msgstr "判定"
+
+msgid "位置"
+msgstr "位置"
+
+msgid "素材包安装"
+msgstr "素材包安裝"
+
+msgid "素材包路径或 URL"
+msgstr "素材包路徑或 URL"
+
+msgid "本地 zip 路径，或 http(s) 直链"
+msgstr "本地 zip 路徑，或 http(s) 直鏈"
+
+msgid "浏览…"
+msgstr "瀏覽…"
+
+msgid "安装"
+msgstr "安裝"
+
+msgid "安装前会逐个校验 SHA-256；校验不通过不会改动任何文件，旧素材会带时间戳备份。"
+msgstr "安裝前會逐個校驗 SHA-256；校驗不通過不會改動任何檔案，舊素材會帶時間戳備份。"
+
+msgid "失败帧库为空：任务失败时会自动保存识别帧"
+msgstr "失敗幀庫為空：任務失敗時會自動儲存識別幀"
+
+msgid "复测完成：{summary}"
+msgstr "複測完成：{summary}"
+
+msgid "复测失败：{error}"
+msgstr "複測失敗：{error}"
+
+msgid "已清空 {count} 个失败帧"
+msgstr "已清空 {count} 個失敗幀"
+
+msgid "无法打开目录：{error}"
+msgstr "無法開啟目錄：{error}"
+
+msgid "安装失败：{error}"
+msgstr "安裝失敗：{error}"
+
+msgid "正在校验素材包…"
+msgstr "正在校驗素材包…"
+
+msgid "正在下载素材包…"
+msgstr "正在下載素材包…"
+
+msgid "请填写素材包路径或 URL"
+msgstr "請填寫素材包路徑或 URL"
+
+msgid "{time}　{task}　{width}×{height}　{message}"
+msgstr "{time}　{task}　{width}×{height}　{message}"
+
+msgid "未知任务"
+msgstr "未知任務"
+
+msgid "选择素材包"
+msgstr "選擇素材包"
+
+msgid "素材包文件 (*.zip)"
+msgstr "素材包檔案 (*.zip)"
+
+msgid "自动化策略"
+msgstr "自動化策略"
+
+msgid "超时、重试与失败自恢复策略"
+msgstr "逾時、重試與失敗自恢復策略"
+
+msgid "单步超时(秒)"
+msgstr "單步逾時(秒)"
+
+msgid "重试间隔(秒)"
+msgstr "重試間隔(秒)"
+
+msgid "动作后等待(秒)"
+msgstr "動作後等待(秒)"
+
+msgid "卡死检测阈值(秒)"
+msgstr "卡死偵測閾值(秒)"
+
+msgid "低配模式"
+msgstr "低配模式"
+
+msgid "失败后自动返回主菜单"
+msgstr "失敗後自動返回主選單"
+
+msgid "最大返回次数"
+msgstr "最大返回次數"
+
+msgid "失败帧保留数量"
+msgstr "失敗幀保留數量"
+
+msgid "单个等待/轮询步骤的默认超时；任务里显式传超时的位置不受影响"
+msgstr "單個等待/輪詢步驟的預設逾時；任務裡顯式傳逾時的位置不受影響"
+
+msgid "条件没满足时两次重试之间的间隔（与 wait_until_check_delay 取较大值），0 表示不额外等待"
+msgstr "條件未滿足時兩次重試之間的間隔（與 wait_until_check_delay 取較大值），0 表示不額外等待"
+
+msgid "失败自恢复时每次按返回键后的等待；0 表示用框架的默认间隔"
+msgstr "失敗自恢復時每次按返回鍵後的等待；0 表示用框架預設間隔"
+
+msgid "画面长时间不变（判定为可能卡死）的阈值，只记录警告不中止任务"
+msgstr "畫面長時間不變（判定為可能卡死）的閾值，只記錄警告不中止任務"
+
+msgid "低配机器：所有超时统一放宽 1.5 倍，卡死阈值同步放宽"
+msgstr "低配機器：所有逾時統一放寬 1.5 倍，卡死閾值同步放寬"
+
+msgid "任务失败后自动按返回键退回主菜单，只退菜单不重跑任务"
+msgstr "任務失敗後自動按返回鍵退回主選單，只退選單不重跑任務"
+
+msgid "失败后最多按几次返回键"
+msgstr "失敗後最多按幾次返回鍵"
+
+msgid "失败帧库最多保留多少帧，超出后丢弃最旧的"
+msgstr "失敗幀庫最多保留多少幀，超出後丟棄最舊的"
+
+msgid "流程与队列"
+msgstr "流程與佇列"
+
+msgid "新队列"
+msgstr "新佇列"
+
+msgid "流程"
+msgstr "流程"
+
+msgid "任务队列"
+msgstr "任務佇列"
+
+msgid "配置档"
+msgstr "設定檔"
+
+msgid "还没有流程文件：用「导入 JSON」或「从录制 JSON 生成」创建"
+msgstr "還沒有流程檔案：用「匯入 JSON」或「從錄製 JSON 產生」建立"
+
+msgid "队列在「流程 / 队列」任务里执行：任务类型选「执行队列」并填队列名字"
+msgstr "佇列在「流程 / 佇列」任務裡執行：任務類型選「執行佇列」並填佇列名字"
+
+msgid "新配置档名字"
+msgstr "新設定檔名字"
+
+msgid "保存当前配置"
+msgstr "儲存目前設定"
+
+msgid "应用"
+msgstr "套用"
+
+msgid "删除"
+msgstr "刪除"
+
+msgid "应用配置档前会自动把当前 configs/ 备份到 configs/profiles/.backup_<时间戳>/"
+msgstr "套用設定檔前會自動把目前 configs/ 備份到 configs/profiles/.backup_<時間戳>/"
+
+msgid "（没有流程）"
+msgstr "（沒有流程）"
+
+msgid "（没有队列）"
+msgstr "（沒有佇列）"
+
+msgid "（没有配置档）"
+msgstr "（沒有設定檔）"
+
+msgid "选择流程 JSON"
+msgstr "選擇流程 JSON"
+
+msgid "JSON 文件 (*.json)"
+msgstr "JSON 檔案 (*.json)"
+
+msgid "选择录制 JSON"
+msgstr "選擇錄製 JSON"
+
+msgid "流程文件"
+msgstr "流程檔案"
+
+msgid "校验"
+msgstr "校驗"
+
+msgid "导入 JSON"
+msgstr "匯入 JSON"
+
+msgid "从录制 JSON 生成"
+msgstr "從錄製 JSON 產生"
+
+msgid "队列文件"
+msgstr "佇列檔案"
+
+msgid "新建模板"
+msgstr "新建範本"
+
+msgid "还没有流程文件"
+msgstr "還沒有流程檔案"
+
+msgid "用「导入 JSON」或「从录制 JSON 生成」创建第一份流程"
+msgstr "用「匯入 JSON」或「從錄製 JSON 產生」建立第一份流程"
+
+msgid "断点：无"
+msgstr "斷點：無"
+
+msgid "没有选中流程"
+msgstr "沒有選中流程"
+
+msgid "校验通过，没有发现问题"
+msgstr "校驗通過，沒有發現問題"
+
+msgid "校验完成：{errors} 个错误"
+msgstr "校驗完成：{errors} 個錯誤"
+
+msgid "录制文件里没有 events 数组"
+msgstr "錄製檔案裡沒有 events 陣列"
+
+msgid "还没有队列文件"
+msgstr "還沒有佇列檔案"
+
+msgid "（已禁用）"
+msgstr "（已停用）"
+
+msgid "不限时"
+msgstr "不限時"
+
+msgid "没有选中队列"
+msgstr "沒有選中佇列"
+
+msgid "队列校验通过：{enabled} 项启用"
+msgstr "佇列校驗通過：{enabled} 項啟用"
+
+msgid "示例队列：把一条龙和流程串起来"
+msgstr "範例佇列：把一條龍和流程串起來"
+
+msgid "请填写配置档名字"
+msgstr "請填寫設定檔名字"
+
+msgid "没有选中配置档"
+msgstr "沒有選中設定檔"
+
+msgid "共 {steps} 步，嵌套 {depth} 层，容器 {containers} 个"
+msgstr "共 {steps} 步，巢狀 {depth} 層，容器 {containers} 個"
+
+msgid "已导入流程：{name}"
+msgstr "已匯入流程：{name}"
+
+msgid "已生成流程 {name}：{summary}"
+msgstr "已產生流程 {name}：{summary}"
+
+msgid "已删除流程：{name}"
+msgstr "已刪除流程：{name}"
+
+msgid "失败策略：{policy}"
+msgstr "失敗策略：{policy}"
+
+msgid "启用 {enabled} 项，总预算 {budget} 分钟"
+msgstr "啟用 {enabled} 項，總預算 {budget} 分鐘"
+
+msgid "已创建空队列模板：{name}"
+msgstr "已建立空佇列範本：{name}"
+
+msgid "已删除队列：{name}"
+msgstr "已刪除佇列：{name}"
+
+msgid "已保存配置档：{name}"
+msgstr "已儲存設定檔：{name}"
+
+msgid "断点：已完成 {completed}/{total} 个顶层步骤，任务里勾「从断点继续」即可续跑"
+msgstr "斷點：已完成 {completed}/{total} 個頂層步驟，任務裡勾「從斷點繼續」即可續跑"
+
+msgid "失败即停"
+msgstr "失敗即停"
+
+msgid "失败后继续"
+msgstr "失敗後繼續"
+
+msgid "已删除配置档：{name}"
+msgstr "已刪除設定檔：{name}"
+
+msgid "导入失败：{error}"
+msgstr "匯入失敗：{error}"
+
+msgid "读取录制失败：{error}"
+msgstr "讀取錄製失敗：{error}"
+
+msgid "删除失败：{error}"
+msgstr "刪除失敗：{error}"
+
+msgid "流程 / 队列"
+msgstr "流程 / 佇列"
+
+msgid "按 JSON 流程逐步操作游戏，或按队列依次执行多个流程/任务。流程与队列文件在「流程与队列」页里管理。"
+msgstr "按 JSON 流程逐步操作遊戲，或按佇列依次執行多個流程/任務。流程與佇列檔案在「流程與佇列」頁裡管理。"
+
+msgid "任务类型"
+msgstr "任務類型"
+
+msgid "从断点继续"
+msgstr "從斷點繼續"
+
+msgid "预算(分钟)"
+msgstr "預算(分鐘)"
+
+msgid "执行流程：跑一份 JSON 流程；执行队列：按顺序跑队列里的每一项"
+msgstr "執行流程：跑一份 JSON 流程；執行佇列：按順序跑佇列裡的每一項"
+
+msgid "configs/flows 下的文件名（不带 .json）"
+msgstr "configs/flows 下的檔案名（不帶 .json）"
+
+msgid "configs/queues 下的文件名（不带 .json）"
+msgstr "configs/queues 下的檔案名（不帶 .json）"
+
+msgid "只对流程生效：跳过上次已经跑完的顶层步骤"
+msgstr "只對流程生效：跳過上次已經跑完的頂層步驟"
+
+msgid "流程里某一步失败后是否继续后面的步骤"
+msgstr "流程裡某一步失敗後是否繼續後面的步驟"
+
+msgid "0 表示不限；流程会被预算打断，任务类只能事后标记"
+msgstr "0 表示不限；流程會被預算打斷，任務類只能事後標記"
+
+msgid "离线工具"
+msgstr "離線工具"
+
+msgid "养成计算"
+msgstr "養成計算"
+
+msgid "抽卡分析"
+msgstr "抽卡分析"
+
+msgid "记账与报表"
+msgstr "記帳與報表"
+
+msgid "还没有目标：选好参数后点「添加目标」"
+msgstr "還沒有目標：選好參數後點「新增目標」"
+
+msgid "每行一个：材料=数量，例如 尤尼=20000"
+msgstr "每行一個：材料=數量，例如 尤尼=20000"
+
+msgid "可选：2.8%,28.8%,100% 这样的表，长度需等于硬保底"
+msgstr "選填：2.8%,28.8%,100% 這樣的表，長度需等於硬保底"
+
+msgid "计算"
+msgstr "計算"
+
+msgid "例如：获得的奖励：尤尼 ×1,500 / 12 × 波力果 / 消耗：星脉结晶 ×3"
+msgstr "例如：獲得的獎勵：尤尼 ×1,500 / 12 × 波力果 / 消耗：星脈結晶 ×3"
+
+msgid "计算完成"
+msgstr "計算完成"
+
+msgid "材料清单："
+msgstr "材料清單："
+
+msgid "保存养成材料单"
+msgstr "儲存養成材料單"
+
+msgid "运行报表："
+msgstr "執行報表："
+
+msgid "导出 CSV"
+msgstr "匯出 CSV"
+
+msgid "CSV 文件 (*.csv)"
+msgstr "CSV 檔案 (*.csv)"
+
+msgid "养成目标"
+msgstr "養成目標"
+
+msgid "起始等级"
+msgstr "起始等級"
+
+msgid "目标等级"
+msgstr "目標等級"
+
+msgid "份数"
+msgstr "份數"
+
+msgid "潜能等级"
+msgstr "潛能等級"
+
+msgid "升星"
+msgstr "升星"
+
+msgid "添加目标"
+msgstr "新增目標"
+
+msgid "清空目标"
+msgstr "清空目標"
+
+msgid "导出 PNG"
+msgstr "匯出 PNG"
+
+msgid "重新载入数据"
+msgstr "重新載入資料"
+
+msgid "库存"
+msgstr "庫存"
+
+msgid "目标份数"
+msgstr "目標份數"
+
+msgid "已垫抽数"
+msgstr "已墊抽數"
+
+msgid "预算抽数"
+msgstr "預算抽數"
+
+msgid "出目标概率"
+msgstr "出目標機率"
+
+msgid "自定义概率表"
+msgstr "自訂機率表"
+
+msgid "把结算界面的文字粘进来记账；要直接识别画面，请在任务列表运行「结算记账」。"
+msgstr "把結算介面的文字貼進來記帳；要直接辨識畫面，請在任務列表執行「結算記帳」。"
+
+msgid "记账"
+msgstr "記帳"
+
+msgid "刷新统计"
+msgstr "重新整理統計"
+
+msgid "导出记账 CSV"
+msgstr "匯出記帳 CSV"
+
+msgid "导出报表 CSV"
+msgstr "匯出報表 CSV"
+
+msgid "没有可用的养成目标"
+msgstr "沒有可用的養成目標"
+
+msgid "请先添加至少一个目标"
+msgstr "請先新增至少一個目標"
+
+msgid "请先点「计算」"
+msgstr "請先點「計算」"
+
+msgid "PNG 图片 (*.png)"
+msgstr "PNG 圖片 (*.png)"
+
+msgid "请先粘贴结算文字"
+msgstr "請先貼上結算文字"
+
+msgid "  还没有运行记录"
+msgstr "  還沒有執行記錄"
+
+msgid "今日明细："
+msgstr "今日明細："
+
+msgid "（没有可用数据）"
+msgstr "（沒有可用資料）"
+
+msgid "没有可用的养成数据"
+msgstr "沒有可用的養成資料"
+
+msgid "已选 {count} 个目标：{items}"
+msgstr "已選 {count} 個目標：{items}"
+
+msgid "货币凑法："
+msgstr "貨幣湊法："
+
+msgid "经验道具："
+msgstr "經驗道具："
+
+msgid "已导出：{path}"
+msgstr "已匯出：{path}"
+
+msgid "软保底关键点：71 抽 {p71}、81 抽 {p81}、90 抽必出"
+msgstr "軟保底關鍵點：71 抽 {p71}、81 抽 {p81}、90 抽必出"
+
+msgid "参数：目标 {copies} 份，已垫 {pity} 抽，出目标 {rate}"
+msgstr "參數：目標 {copies} 份，已墊 {pity} 抽，出目標 {rate}"
+
+msgid "手动记账"
+msgstr "手動記帳"
+
+msgid "已记录 {count} 条"
+msgstr "已記錄 {count} 筆"
+
+msgid "今日：收入 {income:g} / 支出 {expense:g}"
+msgstr "今日：收入 {income:g} / 支出 {expense:g}"
+
+msgid "累计：收入 {income:g} / 支出 {expense:g} / 净 {net:g}"
+msgstr "累計：收入 {income:g} / 支出 {expense:g} / 淨 {net:g}"
+
+msgid "  共 {count} 次，成功 {success} 次，成功率 {rate:.1f}%，平均 {avg:.0f} 秒"
+msgstr "  共 {count} 次，成功 {success} 次，成功率 {rate:.1f}%，平均 {avg:.0f} 秒"
+
+msgid "数据载入成功：{summary}（共 {total} 个目标）"
+msgstr "資料載入成功：{summary}（共 {total} 個目標）"
+
+msgid "导出失败：{error}"
+msgstr "匯出失敗：{error}"
+
+msgid "结算记账"
+msgstr "結算記帳"
+
+msgid "识别结算界面（或任意物品列表界面）上的「物品 ×数量」，把收益记进 ledger.jsonl，并给出今日与累计收支。"
+msgstr "辨識結算介面（或任意物品列表介面）上的「物品 ×數量」，把收益記進 ledger.jsonl，並給出今日與累計收支。"
+
+msgid "记录来源"
+msgstr "記錄來源"
+
+msgid "最低置信度"
+msgstr "最低信賴度"
+
+msgid "写进记账本的来源标记，用来区分结算 / 手动 / 商店等场景"
+msgstr "寫進記帳本的來源標記，用來區分結算 / 手動 / 商店等場景"
+
+msgid "OCR 置信度低于该值的文本会被丢弃，0 表示全部保留"
+msgstr "OCR 信賴度低於此值的文字會被丟棄，0 表示全部保留"
+
+msgid "一条龙顺序"
+msgstr "一條龍順序"
+
+msgid "保存顺序与开关"
+msgstr "儲存順序與開關"
+
+msgid "拖动任务调整顺序；勾选框控制该项是否执行。任务运行中不能保存。"
+msgstr "拖曳任務調整順序；勾選框控制該項是否執行。任務執行中不能儲存。"
+
+msgid "一键日常的执行顺序"
+msgstr "一鍵日常的執行順序"
+
+msgid "已载入当前顺序；拖动或勾选后点「保存」"
+msgstr "已載入目前順序；拖曳或勾選後點「儲存」"
+
+msgid "已恢复默认顺序（记得点保存）"
+msgstr "已恢復預設順序（記得點儲存）"
+
+msgid "顺序已保存"
+msgstr "順序已儲存"
+
+msgid "上移"
+msgstr "上移"
+
+msgid "下移"
+msgstr "下移"
+
+msgid "恢复默认"
+msgstr "恢復預設"
+
+msgid "没有找到「一键日常」任务，无法编辑顺序"
+msgstr "沒有找到「一鍵日常」任務，無法編輯順序"
+
+msgid "没有找到「一键日常」任务"
+msgstr "沒有找到「一鍵日常」任務"
+
+msgid "任务正在运行，先停止再改顺序"
+msgstr "任務正在執行，先停止再改順序"
+
+msgid "列表是空的"
+msgstr "清單是空的"
+
+msgid "已保存：{order}"
+msgstr "已儲存：{order}"
+
+msgid "保存失败：{error}"
+msgstr "儲存失敗：{error}"
+
+msgid "导航路线"
+msgstr "導航路線"
+
+msgid "按保存好的路线逐个航点导航/等待/点击，跑通一次就能存下来复用。路线文件在 configs/routes 下。"
+msgstr "按儲存好的路線逐個航點導航/等待/點擊，跑通一次就能存下來重用。路線檔案在 configs/routes 下。"
+
+msgid "路线文件"
+msgstr "路線檔案"
+
+msgid "configs/routes 下的文件名（不带 .json）"
+msgstr "configs/routes 下的檔案名（不帶 .json）"
+
+msgid "跳过上次已经跑完的航点"
+msgstr "跳過上次已經跑完的航點"
+
+msgid "隐私遮挡"
+msgstr "隱私遮擋"
+
+msgid "宽"
+msgstr "寬"
+
+msgid "高"
+msgstr "高"
+
+msgid "标签，如 UID / 昵称"
+msgstr "標籤，如 UID / 暱稱"
+
+msgid "UID / 昵称 / 聊天遮挡"
+msgstr "UID / 暱稱 / 聊天遮擋"
+
+msgid "已添加 1 块，记得点保存"
+msgstr "已新增 1 塊，記得點儲存"
+
+msgid "已删除 1 块，记得点保存"
+msgstr "已刪除 1 塊，記得點儲存"
+
+msgid "已应用修改，记得点保存"
+msgstr "已套用修改，記得點儲存"
+
+msgid "已恢复默认遮挡，记得点保存"
+msgstr "已恢復預設遮擋，記得點儲存"
+
+msgid "遮挡配置已保存"
+msgstr "遮擋設定已儲存"
+
+msgid "1 秒后取当前鼠标位置与颜色，请把鼠标移到目标位置"
+msgstr "1 秒後取目前滑鼠位置與顏色，請把滑鼠移到目標位置"
+
+msgid "纯色"
+msgstr "純色"
+
+msgid "马赛克"
+msgstr "馬賽克"
+
+msgid "启用遮挡"
+msgstr "啟用遮擋"
+
+msgid "关闭遮挡"
+msgstr "關閉遮擋"
+
+msgid "添加"
+msgstr "新增"
+
+msgid "应用修改"
+msgstr "套用修改"
+
+msgid "坐标拾取"
+msgstr "座標拾取"
+
+msgid "保存"
+msgstr "儲存"
+
+msgid "没有选中遮挡块"
+msgstr "沒有選中遮擋塊"
+
+msgid "坐标用 1920×1080 参考空间；最多 {max_blocks} 块。遮挡只作用于落盘截图与失败帧。"
+msgstr "座標用 1920×1080 參考空間；最多 {max_blocks} 塊。遮擋只作用於落盤截圖與失敗幀。"
+
+msgid "已载入 {count} 块遮挡"
+msgstr "已載入 {count} 塊遮擋"
+
+msgid "已保存到 {path}（下次截图生效）"
+msgstr "已儲存到 {path}（下次截圖生效）"
+
+msgid "取到客户区 ({x}, {y}) → 参考 ({rx:g}, {ry:g})，颜色 {color}"
+msgstr "取到客戶區 ({x}, {y}) → 參考 ({rx:g}, {ry:g})，顏色 {color}"
+
+msgid "最多 {max_blocks} 块遮挡"
+msgstr "最多 {max_blocks} 塊遮擋"
+
+msgid "诊断包"
+msgstr "診斷包"
+
+msgid "语言包"
+msgstr "語言包"
+
+msgid "包含截图"
+msgstr "包含截圖"
+
+msgid "生成诊断包"
+msgstr "產生診斷包"
+
+msgid "默认不含截图；记账只放合计，不放明细"
+msgstr "預設不含截圖；記帳只放合計，不放明細"
+
+msgid "扫描程序目录下的「语言包<代码>」文件夹；应用前自动备份 i18n 与 assets/lang"
+msgstr "掃描程式目錄下的「語言包<代碼>」資料夾；套用前自動備份 i18n 與 assets/lang"
+
+msgid "选择保存目录"
+msgstr "選擇儲存目錄"
+
+msgid "把配置、日志、模板清单、失败帧与系统信息打成一个 zip"
+msgstr "把設定、日誌、模板清單、失敗幀與系統資訊打成一個 zip"
+
+msgid "还原最近备份"
+msgstr "還原最近備份"
+
+msgid "（没有找到语言包）"
+msgstr "（沒有找到語言包）"
+
+msgid "把「语言包<代码>」文件夹放到程序目录下再刷新"
+msgstr "把「語言包<代碼>」資料夾放到程式目錄下再重新整理"
+
+msgid "没有选中语言包"
+msgstr "沒有選中語言包"
+
+msgid "没有可用的语言包备份"
+msgstr "沒有可用的語言包備份"
+
+msgid "找到 {count} 个语言包；应用前会自动备份 i18n 与 assets/lang"
+msgstr "找到 {count} 個語言包；套用前會自動備份 i18n 與 assets/lang"
+
+msgid "已还原 {name}"
+msgstr "已還原 {name}"
+
+msgid "界面与提醒"
+msgstr "介面與提醒"
+
+msgid "关闭行为"
+msgstr "關閉行為"
+
+msgid "提醒"
+msgstr "提醒"
+
+msgid "任务栏进度与快捷键"
+msgstr "工作列進度與快速鍵"
+
+msgid "启用提醒"
+msgstr "啟用提醒"
+
+msgid "每日重置提醒"
+msgstr "每日重置提醒"
+
+msgid "体力提醒"
+msgstr "體力提醒"
+
+msgid "保存提醒设置"
+msgstr "儲存提醒設定"
+
+msgid "在任务栏显示进度"
+msgstr "在工作列顯示進度"
+
+msgid "校验快捷键"
+msgstr "校驗快速鍵"
+
+msgid "保存快捷键"
+msgstr "儲存快速鍵"
+
+msgid "快捷键在程序启动时注册；改完需要重启生效。F9–F12 属于框架的启动/停止，不能再绑定。"
+msgstr "快速鍵在程式啟動時註冊；改完需要重新啟動才生效。F9–F12 屬於框架的啟動/停止，不能再綁定。"
+
+msgid "设置已载入"
+msgstr "設定已載入"
+
+msgid "关闭行为已保存"
+msgstr "關閉行為已儲存"
+
+msgid "提醒设置已保存"
+msgstr "提醒設定已儲存"
+
+msgid "快捷键校验通过"
+msgstr "快速鍵校驗通過"
+
+msgid "快捷键已保存"
+msgstr "快速鍵已儲存"
+
+msgid "已填入默认快捷键（记得保存）"
+msgstr "已填入預設快速鍵（記得儲存）"
+
+msgid "点关闭按钮时"
+msgstr "點關閉按鈕時"
+
+msgid "每次都问"
+msgstr "每次都問"
+
+msgid "直接关闭"
+msgstr "直接關閉"
+
+msgid "最小化到托盘"
+msgstr "最小化到系統匣"
+
+msgid "重置小时"
+msgstr "重置小時"
+
+msgid "间隔（分钟）"
+msgstr "間隔（分鐘）"
+
+msgid "如 ctrl+alt+p"
+msgstr "如 ctrl+alt+p"
+
+msgid "快捷键有问题"
+msgstr "快速鍵有問題"
+
+msgid "关闭行为已保存到 {path}"
+msgstr "關閉行為已儲存到 {path}"
+
+msgid "提醒设置已保存到 {path}（30 秒内生效）"
+msgstr "提醒設定已儲存到 {path}（30 秒內生效）"
+
+msgid "任务栏进度已{state}"
+msgstr "工作列進度已{state}"
+
+msgid "快捷键已保存到 {path}，重启后生效"
+msgstr "快速鍵已儲存到 {path}，重新啟動後生效"
+
+msgid "开启"
+msgstr "開啟"
+
+msgid "关闭"
+msgstr "關閉"
+
+msgid "快捷键有问题：{issues}"
+msgstr "快速鍵有問題：{issues}"
+
+msgid "关闭 ok-ap"
+msgstr "關閉 ok-ap"
+
+msgid "要完全关闭程序，还是最小化到系统托盘？"
+msgstr "要完全關閉程式，還是最小化到系統匣？"
+
+msgid "完全关闭"
+msgstr "完全關閉"
+
+msgid "收到托盘"
+msgstr "收到系統匣"
+
+msgid "取消"
+msgstr "取消"
+
+msgid "记住我的选择"
+msgstr "記住我的選擇"
+
+msgid "实时辅助"
+msgstr "即時輔助"
+
+msgid "按你设置的按键序列与节奏持续操作，适合需要一直盯着的战斗场景。可选用前置模板限定生效场合。"
+msgstr "按你設定的按鍵序列與節奏持續操作，適合需要一直盯著的戰鬥場景。可選用前置模板限定生效場合。"
+
+msgid "按键序列"
+msgstr "按鍵序列"
+
+msgid "动作间隔(秒)"
+msgstr "動作間隔(秒)"
+
+msgid "前置模板"
+msgstr "前置模板"
+
+msgid "最大连续次数"
+msgstr "最大連續次數"
+
+msgid "记录日志"
+msgstr "記錄日誌"
+
+msgid "_按下时长(秒)"
+msgstr "_按下時長(秒)"
+
+msgid "逗号分隔，按顺序轮转，例如 q,e,r"
+msgstr "逗號分隔，按順序輪轉，例如 q,e,r"
+
+msgid "两次动作之间的最小间隔，避免连点"
+msgstr "兩次動作之間的最小間隔，避免連點"
+
+msgid "可选：只有该模板出现时才动作（填模板名，如 auto_combat_check）"
+msgstr "選填：只有該模板出現時才動作（填模板名，如 auto_combat_check）"
+
+msgid "单次 run 最多按几次，避免长时间占住触发轮转"
+msgstr "單次 run 最多按幾次，避免長時間占住觸發輪轉"
+
+msgid "每次动作写一行日志，方便确认节奏"
+msgstr "每次動作寫一行日誌，方便確認節奏"
+
+msgid "按键按住时长"
+msgstr "按鍵按住時長"
+
+msgid "暂停"
+msgstr "暫停"
+
+msgid "继续"
+msgstr "繼續"
+
+msgid "停止"
+msgstr "停止"
+
+msgid "显示 HUD 悬浮条"
+msgstr "顯示 HUD 懸浮條"
+
+msgid "任务栏进度已{state}，HUD 已{hud}"
+msgstr "工作列進度已{state}，HUD 已{hud}"
+
+msgid "运行中"
+msgstr "執行中"
+
+msgid "已暂停"
+msgstr "已暫停"
+
+msgid "模板自检"
+msgstr "模板自檢"
+
+msgid "开始自检"
+msgstr "開始自檢"
+
+msgid "还没自检；自检只读 assets/coco_annotations.json，不改任何文件"
+msgstr "還沒自檢；自檢只讀 assets/coco_annotations.json，不改任何檔案"
+
+msgid "检查全部模板的纹理与重复（纯色块永远匹配不上）"
+msgstr "檢查全部模板的紋理與重複（純色塊永遠匹配不上）"
+
+msgid "重复模板："
+msgstr "重複模板："
+
+msgid "自检完成：{summary}"
+msgstr "自檢完成：{summary}"
+
+msgid "方案文件"
+msgstr "方案檔案"
+
+msgid "configs/schemes 下的轮椅方案文件名；单独跑方案时填它"
+msgstr "configs/schemes 下的輪椅方案檔案名；單獨跑方案時填它"
+
+msgid "分享仓库"
+msgstr "分享倉庫"
+
+msgid "在线仓库"
+msgstr "線上倉庫"
+
+msgid "填入索引地址后点「加载」。索引就是一个返回 JSON 的链接，也可以填本地文件路径"
+msgstr "填入索引位址後點「載入」。索引就是一個回傳 JSON 的連結，也可以填本機檔案路徑"
+
+msgid "https://…/index.json 或本地 index.json 路径"
+msgstr "https://…/index.json 或本機 index.json 路徑"
+
+msgid "加载"
+msgstr "載入"
+
+msgid "安装选中"
+msgstr "安裝選取項"
+
+msgid "允许覆盖同名文件"
+msgstr "允許覆蓋同名檔案"
+
+msgid "打开流程目录"
+msgstr "開啟流程目錄"
+
+msgid "索引已加载"
+msgstr "索引已載入"
+
+msgid "索引地址"
+msgstr "索引位址"
+
+msgid "类型"
+msgstr "類型"
+
+msgid "名称"
+msgstr "名稱"
+
+msgid "说明"
+msgstr "說明"
+
+msgid "标签"
+msgstr "標籤"
+
+msgid "先填索引地址"
+msgstr "先填索引位址"
+
+msgid "先在列表里选中一项"
+msgstr "先在清單裡選取一項"
+
+msgid "已加载「{name}」：共 {count} 项（{detail}）"
+msgstr "已載入「{name}」：共 {count} 項（{detail}）"
+
+msgid "没有条目"
+msgstr "沒有項目"
+
+msgid "打不开目录：{error}"
+msgstr "打不開目錄：{error}"
+
+msgid "选择养成数据（JSON 或 CSV）"
+msgstr "選擇養成資料（JSON 或 CSV）"
+
+msgid "导入数据"
+msgstr "匯入資料"
+
+msgid "在左边选中一项，这里显示它自己的参数（与默认值不同的部分）"
+msgstr "在左邊選取一項，這裡顯示它自己的參數（與預設值不同的部分）"
+
+msgid "打开配置文件"
+msgstr "開啟設定檔"
+
+msgid "刷新参数"
+msgstr "重新整理參數"
+
+msgid "每项自己的参数"
+msgstr "每項自己的參數"
+
+msgid "有独立配置文件"
+msgstr "有獨立設定檔"
+
+msgid "还没有独立配置文件"
+msgstr "還沒有獨立設定檔"
+
+msgid "先在左边选中一项"
+msgstr "先在左邊選取一項"
+
+msgid "读不到参数：{error}"
+msgstr "讀不到參數：{error}"
+
+msgid "打不开配置文件：{error}"
+msgstr "打不開設定檔：{error}"
+
+msgid "{name}（{prefix}）：{line}"
+msgstr "{name}（{prefix}）：{line}"
+
+msgid "安装示例流程"
+msgstr "安裝範例流程"
+
+msgid "安装示例流程失败：{error}"
+msgstr "安裝範例流程失敗：{error}"
+
+msgid "{name} 还需要标注：{names}"
+msgstr "{name} 還需要標註：{names}"
+
+msgid "{name} 所需模板都已存在，可以直接跑"
+msgstr "{name} 所需模板都已存在，可以直接執行"
+
+msgid "安装自检"
+msgstr "安裝自檢"
+
+msgid "还没自检；自检只读文件，不改任何东西"
+msgstr "還沒自檢；自檢只讀檔案，不改任何東西"
+
+msgid "把流程 / 队列 / 方案 / 路线 / 配置 / i18n 一起体检一遍"
+msgstr "把流程 / 佇列 / 方案 / 路線 / 設定 / i18n 一起體檢一遍"
+
+msgid "自检失败：{error}"
+msgstr "自檢失敗：{error}"
+
+msgid "安装示例"
+msgstr "安裝範例"
+
+msgid "安装示例失败：{error}"
+msgstr "安裝範例失敗：{error}"
+
+msgid ""
+"按账号和任务配置独立参数。先选账号，再选任务，下面会自动出现该任务的属性控件。账号页只需要填写账号名，无需填写密码。系统兼容旧格式 `账号,密码` "
+"但不会保存密码。"
+msgstr ""
+"按帳號和任務設定獨立參數。先選帳號，再選任務，下面會自動出現該任務的屬性控制項。帳號頁只需要填寫帳號名，無需填寫密碼。系統相容舊格式 `帳號,密碼` "
+"但不會儲存密碼。"
+
+msgid ""
+"账号A\n"
+"账号B"
+msgstr ""
+"帳號A\n"
+"帳號B"
+
+msgid "safe_back 超时（{time_out}s），目标未出现"
+msgstr "safe_back 逾時（{time_out}s），目標未出現"
+
+msgid "账号格式错误，已跳过: {line}"
+msgstr "帳號格式錯誤，已跳過: {line}"
+
+msgid "第 {idx}/{total} 个账号为空，已跳过"
+msgstr "第 {idx}/{total} 個帳號為空，已跳過"
+
+msgid "开始第 {idx}/{total} 个账号({suffix}){log_suffix}"
+msgstr "開始第 {idx}/{total} 個帳號({suffix}){log_suffix}"
+
+msgid "任务返回 False"
+msgstr "任務回傳 False"
+
+msgid "开始执行日常任务..."
+msgstr "開始執行日常任務..."
+
+msgid "开始任务: {key}"
+msgstr "開始任務: {key}"
+
+msgid "任务失败标记 | {name}: {message}"
+msgstr "任務失敗標記 | {name}: {message}"
+
+msgid "多账户模式已开启，但账号列表为空，日常任务结束"
+msgstr "多帳號模式已開啟，但帳號清單為空，日常任務結束"
+
+msgid "任务执行"
+msgstr "任務執行"
+
+msgid "任务 {key} 执行失败"
+msgstr "任務 {key} 執行失敗"
+
+msgid "日常完成!"
+msgstr "日常完成!"
+
+msgid "所有任务均成功完成!"
+msgstr "所有任務均成功完成!"
+
+msgid "异常: {err}"
+msgstr "例外: {err}"
+
+msgid "开始第 {idx}/{total} 轮任务执行"
+msgstr "開始第 {idx}/{total} 輪任務執行"
+
+msgid "第 {idx} 轮 | 失败任务: {failed}"
+msgstr "第 {idx} 輪 | 失敗任務: {failed}"
+
+msgid "以下任务未完成或失败: {failed}"
+msgstr "以下任務未完成或失敗: {failed}"
+
+msgid "第 {idx} 轮 | 日常完成!"
+msgstr "第 {idx} 輪 | 日常完成!"
+
+msgid "执行完成，失败统计: {failed}"
+msgstr "執行完成，失敗統計: {failed}"
+
+msgid "素材已安装，但模板缓存刷新失败；重启程序后生效"
+msgstr "素材已安裝，但模板快取重新整理失敗；重新啟動程式後生效"
+
+msgid "完成"
+msgstr "完成"
+
+msgid "部分失败"
+msgstr "部分失敗"
+
+msgid "异常结束"
+msgstr "異常結束"
+
+msgid "未开始"
+msgstr "未開始"
+
+msgid "执行状态: {status}"
+msgstr "執行狀態: {status}"
+
+msgid "执行情况汇总"
+msgstr "執行情況彙總"
+
+msgid "失败任务统计:"
+msgstr "失敗任務統計:"
+
+msgid "所有任务执行成功！"
+msgstr "所有任務執行成功！"
+
+msgid "总任务数: {total} | 成功: {success} | 失败: {failed} | 跳过: {skipped}"
+msgstr "總任務數: {total} | 成功: {success} | 失敗: {failed} | 跳過: {skipped}"
+
+msgid "成功任务:"
+msgstr "成功任務:"
+
+msgid "失败任务:"
+msgstr "失敗任務:"
+
+msgid "跳过任务:"
+msgstr "跳過任務:"
+
+msgid "失败消息:"
+msgstr "失敗訊息:"
+
+msgid "未设置失败消息"
+msgstr "未設定失敗訊息"
+
+msgid "未知"
+msgstr "未知"
+
+msgid "无"
+msgstr "無"
+
+msgid "当前正在执行的任务:"
+msgstr "當前正在執行的任務:"
+
+msgid "异常信息:"
+msgstr "異常資訊:"
+
+msgid "--- 第 {round} 轮 (账号: {account}) ---"
+msgstr "--- 第 {round} 輪 (帳號: {account}) ---"
+
+msgid "开始录制动作"
+msgstr "開始錄製動作"
+
+msgid "停止录制并生成流程"
+msgstr "停止錄製並產生流程"
+
+msgid "录制会按当前游戏窗口换算坐标；录制期间请在游戏里正常操作，停止后自动生成流程"
+msgstr "錄製會依目前遊戲視窗換算座標；錄製期間請在遊戲裡正常操作，停止後自動產生流程"
+
+msgid "正在录制：请在游戏里操作，录完点「停止录制并生成流程」"
+msgstr "正在錄製：請在遊戲裡操作，錄完點「停止錄製並產生流程」"
+
+msgid "没有录到任何操作（检查游戏窗口是否已连接）"
+msgstr "沒有錄到任何操作（檢查遊戲視窗是否已連線）"
+
+msgid "没有录到任何操作"
+msgstr "沒有錄到任何操作"
+
+msgid "录制功能不可用：{error}"
+msgstr "錄製功能不可用：{error}"
+
+msgid "开始录制失败：{error}"
+msgstr "開始錄製失敗：{error}"
+
+msgid "停止录制失败：{error}"
+msgstr "停止錄製失敗：{error}"
+
+msgid "生成流程失败：{error}"
+msgstr "產生流程失敗：{error}"
+
+msgid "录制结束：{summary}"
+msgstr "錄製結束：{summary}"
+
+msgid "有任务正在运行（{name}），先停止任务再录制"
+msgstr "有任務正在執行（{name}），先停止任務再錄製"
+
+msgid "悬浮窗"
+msgstr "懸浮窗"
+
+msgid "预计剩余"
+msgstr "預計剩餘"
+
+msgid "空闲"
+msgstr "閒置"
+
+msgid "显示悬浮窗（图标可拖动，点一下展开任务队列）"
+msgstr "顯示懸浮窗（圖示可拖動，點一下展開任務佇列）"
+
+msgid "悬浮图标大小"
+msgstr "懸浮圖示大小"
+
+msgid "面板宽度"
+msgstr "面板寬度"
+
+msgid "面板高度"
+msgstr "面板高度"
+
+msgid "圆角"
+msgstr "圓角"
+
+msgid "背景颜色"
+msgstr "背景顏色"
+
+msgid "选择颜色"
+msgstr "選擇顏色"
+
+msgid "选择悬浮窗背景颜色"
+msgstr "選擇懸浮窗背景顏色"
+
+msgid "不透明度"
+msgstr "不透明度"
+
+msgid "在悬浮窗里显示任务队列"
+msgstr "在懸浮窗裡顯示任務佇列"
+
+msgid "最多显示"
+msgstr "最多顯示"
+
+msgid "项"
+msgstr "項"
+
+msgid "保存并应用"
+msgstr "儲存並套用"
+
+msgid "恢复默认位置与大小"
+msgstr "恢復預設位置與大小"
+
+msgid "悬浮窗显示当前任务与队列里每一项的预计用时；数据来自运行记录与队列执行器。"
+msgstr "懸浮窗顯示目前任務與佇列裡每一項的預計用時；資料來自執行記錄與佇列執行器。"
+
+msgid "当前状态"
+msgstr "目前狀態"
+
+msgid "当前任务"
+msgstr "目前任務"
+
+msgid "队列"
+msgstr "佇列"
+
+msgid "无队列"
+msgstr "無佇列"
+
+msgid "已保存悬浮窗设置"
+msgstr "已儲存懸浮窗設定"
+
+msgid "已保存；重启程序后生效"
+msgstr "已儲存；重啟程式後生效"
+
+msgid "已恢复默认位置与大小"
+msgstr "已恢復預設位置與大小"

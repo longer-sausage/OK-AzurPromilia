@@ -270,6 +270,21 @@ ok-lang-hints
 /tests/logs
 label_class
 /screenshots/
+# 失败帧库与素材包安装产物（运行时数据）
+/failure_frames/
+/backups/
+/downloads/
+# 养成数据导入时自动备份的原文件（本地数据，不入库）
+/assets/data/backups/
+# 记账与运行报表
+/ledger.jsonl
+/runs.jsonl
+# 崩溃记录
+/crashes/
+# 单实例互斥锁的 PID 文件（框架启动时写，跑一次 headless 就会留下）
+/ok-script-*.pid
+# tempfile 偶尔会退化到当前目录（临时目录不可写时），_ 这类残留目录不该进库
+/tmp*/
 
 
 ############################

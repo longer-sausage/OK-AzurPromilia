@@ -1,11 +1,11 @@
-import json5
 import re
 from enum import Enum
 from pathlib import Path
 from typing import Any
 
-from ._lang_typed import _LangAccessorTyped
+import json5
 
+from ._lang_typed import _LangAccessorTyped
 
 # ============================================================
 # Locale activation config
@@ -155,7 +155,9 @@ class LangAccessor(_LangAccessorTyped):
             return {}
 
         try:
-            raw_data = json5.load(unified_path.open(encoding="utf-8"))
+            # 用 with：否则每次加载模块都留一个未关闭的句柄（Windows 上会让文件被占用）
+            with unified_path.open(encoding="utf-8") as handle:
+                raw_data = json5.load(handle)
         except Exception:
             return {}
 
@@ -172,7 +174,7 @@ class LangAccessor(_LangAccessorTyped):
             if value is None:
                 value = locale_dict.get(fallback_locale)
             if value is None:
-                for loc, v in locale_dict.items():
+                for v in locale_dict.values():
                     value = v
                     break
             if value is not None:
@@ -283,13 +285,13 @@ def get_lang_module_value(lang_accessor: Any, module_name: str, item: str, fallb
 
 __all__ = [
     "ACTIVE_LOCALES_CONFIG",
+    "SUPPORTED_LOCALES",
     "LangAccessor",
     "LangModule",
     "LangNode",
     "LocaleCode",
-    "SUPPORTED_LOCALES",
     "build_matcher",
-    "get_lang_module_value",
     "get_lang_accessor",
+    "get_lang_module_value",
     "get_supported_locales",
 ]

@@ -41,7 +41,7 @@ target-version = "py312"
 extend-exclude = ["ok_templates"]
 
 [tool.ruff.lint]
-allowed-confusables = ["，", "。", "；", "：", "（", "）", "、"]
+allowed-confusables = ["，", "。", "；", "：", "（", "）", "、", "×", "－", "～", "“", "”"]
 select = ["E", "W", "F", "I", "C4", "B", "UP", "SIM", "RUF"]
 ignore = [
     "E501",
@@ -52,6 +52,8 @@ ignore = [
     "C901",
     "RUF001",
     "RUF002",
+    # 中文注释里出现「×」「—」这类字符是故意的（写的就是游戏里的文案）
+    "RUF003",
     "PT",
     "PLR2004",
 ]
