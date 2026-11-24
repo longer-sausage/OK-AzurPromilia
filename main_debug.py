@@ -1,6 +1,4 @@
-from ok import OK
-
-from src.config import config
+from main import main
 
 if __name__ == '__main__':
-    OK({**config, 'debug': True}).start()
+    main(debug=True)
