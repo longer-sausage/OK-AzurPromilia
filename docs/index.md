@@ -1,4 +1,4 @@
-# OK-AzurPromilia 项目文档
+# ok-ap 项目文档
 
 面向《蓝色星原：旅谣》（Azur Promilia）的游戏自动化项目，基于 [ok-script](https://ok-script.com/) 开发。
 

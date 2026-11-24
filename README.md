@@ -2,7 +2,7 @@
 
   <img src="icons/icon.png" alt="ok-ap logo" width="160" />
 
-  <h1>OK-AzurPromilia</h1>
+  <h1>ok-ap</h1>
 
   <p>QQ群 1121173471</p>
 
@@ -47,7 +47,7 @@
 - [夸克网盘](https://pan.quark.cn/s/5f0cb1150fc4)
 - [百度网盘](https://pan.baidu.com/s/1gz4JZyMtvcXL6lL9xIPEQQ?pwd=okap)
 
-也可前往 [GitHub Releases](https://github.com/longer-sausage/OK-AzurPromilia/releases) 下载最新版本安装包：
+也可前往 [GitHub Releases](https://github.com/longer-sausage/ok-ap/releases) 下载最新版本安装包：
 
 - **中国大陆**：推荐下载 `ok-ap-win32-China-setup-*.exe`（安装包自带运行环境，更新源为国内节点，国内下载与更新更稳定）。
 - **海外地区**：推荐下载 `ok-ap-win32-Global-setup-*.exe`（安装包自带运行环境，更新源为 GitHub）。
@@ -108,8 +108,8 @@ uv run python -m unittest discover -s tests
 
 ### 贡献者
 
-<a href="https://github.com/longer-sausage/OK-AzurPromilia/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=longer-sausage/OK-AzurPromilia" alt="Contributors" />
+<a href="https://github.com/longer-sausage/ok-ap/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=longer-sausage/ok-ap" alt="Contributors" />
 </a>
 
 ### 特别感谢
