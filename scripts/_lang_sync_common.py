@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """sync_*.py 公共工具：JSON 读写、ok.po 同步、lang JSON 官方译名回写。
 
 供 scripts/sync_map_mark_langs.py 与 scripts/sync_wiki_item_langs.py 共用，
@@ -6,11 +5,12 @@
 """
 
 import json
-import json5
 import re
 import sys
 from collections import defaultdict
 from pathlib import Path
+
+import json5
 
 try:
     import polib
@@ -332,10 +332,13 @@ def fill_missing_from_index(data: dict, index: dict,
     """
     touched = []
     for key, node in data.items():
+        if not isinstance(node, dict):
+            # 文件里允许出现 "_note" 这类说明键（或写坏的节点）；跳过它，继续处理别的
+            continue
         zh, style = _node_style(node)
         if not zh:
             continue
-        have = node_have_langs(node, langs + ("zh_CN",))
+        have = node_have_langs(node, (*langs, "zh_CN"))
         missing = [lang for lang in langs if lang not in have]
         if not missing:
             continue
@@ -374,10 +377,12 @@ def fill_missing_cross_files(data_map: dict, langs: tuple = REPO_LANGS
     - 候选对某缺失语言给出唯一值时才补；冲突/无值跳过。
     返回 (每文件统计, 变更列表 [(fname, key, zh, lang, val)])。
     """
-    all_langs = ("zh_CN",) + langs
+    all_langs = ("zh_CN", *langs)
     loaded = []  # (path, key, node, have, style, zh)
     for path, data in data_map.items():
         for key, node in data.items():
+            if not isinstance(node, dict):
+                continue  # 说明键（"_note"）或写坏的节点：跳过
             zh, style = _node_style(node)
             have = node_have_langs(node, all_langs)
             loaded.append((path, key, node, have, style, zh))

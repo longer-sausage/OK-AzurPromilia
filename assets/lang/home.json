@@ -1,4 +1,5 @@
 {
+    "_note": "只确认了简中原文；其它语言的游戏内译名待确认（见 tests/test_lang_json.py 的 KNOWN_GAPS）。缺语种时运行时会回退到中文，非中文客户端上会识别不到。",
     "little_bobo": {
         "zh_CN": {"pattern": "小份波波饼$"}
     }

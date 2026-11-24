@@ -180,7 +180,1313 @@ msgid "委托每日"
 msgstr "의뢰 데일리"
 
 msgid "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
-msgstr ""
-"의뢰 데일리 실행: 체력을 소모하여 선택한 일일 의뢰를 반복 (자동 전투를 먼저 "
-"해제해야 함)"
+msgstr "의뢰 데일리 실행: 체력을 소모하여 선택한 일일 의뢰를 반복 (자동 전투를 먼저 해제해야 함)"
 
+msgid "工具与诊断"
+msgstr "도구 및 진단"
+
+msgid "失败帧复测"
+msgstr "실패 프레임 재검사"
+
+msgid "失败帧列表"
+msgstr "실패 프레임 목록"
+
+msgid "刷新"
+msgstr "새로 고침"
+
+msgid "打开目录"
+msgstr "폴더 열기"
+
+msgid "清空"
+msgstr "비우기"
+
+msgid "复测全部模板"
+msgstr "모든 템플릿 재검사"
+
+msgid "复测中…正在用这一帧跑全部模板"
+msgstr "재검사 중… 이 프레임으로 모든 템플릿을 실행하는 중"
+
+msgid "请选择一个失败帧"
+msgstr "실패 프레임을 선택하세요"
+
+msgid "未识别到可用的模板特征集，请先连接游戏"
+msgstr "사용 가능한 템플릿 세트가 없습니다. 먼저 게임에 연결하세요"
+
+msgid "模板"
+msgstr "템플릿"
+
+msgid "得分"
+msgstr "점수"
+
+msgid "阈值"
+msgstr "임계값"
+
+msgid "判定"
+msgstr "판정"
+
+msgid "位置"
+msgstr "위치"
+
+msgid "素材包安装"
+msgstr "에셋 팩 설치"
+
+msgid "素材包路径或 URL"
+msgstr "팩 경로 또는 URL"
+
+msgid "本地 zip 路径，或 http(s) 直链"
+msgstr "로컬 zip 경로 또는 http(s) 직링크"
+
+msgid "浏览…"
+msgstr "찾아보기…"
+
+msgid "安装"
+msgstr "설치"
+
+msgid "安装前会逐个校验 SHA-256；校验不通过不会改动任何文件，旧素材会带时间戳备份。"
+msgstr ""
+"설치 전에 각 파일의 SHA-256을 검증합니다. 검증에 실패하면 아무 파일도 변경되지 않으며, 기존 에셋은 타임스탬프와 함께 "
+"백업됩니다."
+
+msgid "失败帧库为空：任务失败时会自动保存识别帧"
+msgstr "저장된 실패 프레임이 없습니다. 작업 실패 시 인식 프레임이 자동으로 저장됩니다"
+
+msgid "复测完成：{summary}"
+msgstr "재검사 완료: {summary}"
+
+msgid "复测失败：{error}"
+msgstr "재검사 실패: {error}"
+
+msgid "已清空 {count} 个失败帧"
+msgstr "실패 프레임 {count}개를 비웠습니다"
+
+msgid "无法打开目录：{error}"
+msgstr "폴더를 열 수 없습니다: {error}"
+
+msgid "安装失败：{error}"
+msgstr "설치 실패: {error}"
+
+msgid "正在校验素材包…"
+msgstr "에셋 팩 검증 중…"
+
+msgid "正在下载素材包…"
+msgstr "에셋 팩 다운로드 중…"
+
+msgid "请填写素材包路径或 URL"
+msgstr "에셋 팩 경로 또는 URL을 입력하세요"
+
+msgid "{time}　{task}　{width}×{height}　{message}"
+msgstr "{time}　{task}　{width}×{height}　{message}"
+
+msgid "未知任务"
+msgstr "알 수 없는 작업"
+
+msgid "选择素材包"
+msgstr "에셋 팩 선택"
+
+msgid "素材包文件 (*.zip)"
+msgstr "에셋 팩 (*.zip)"
+
+msgid "自动化策略"
+msgstr "자동화 정책"
+
+msgid "超时、重试与失败自恢复策略"
+msgstr "타임아웃, 재시도 및 실패 자동 복구"
+
+msgid "单步超时(秒)"
+msgstr "단계 타임아웃(초)"
+
+msgid "重试间隔(秒)"
+msgstr "재시도 간격(초)"
+
+msgid "动作后等待(秒)"
+msgstr "동작 후 대기(초)"
+
+msgid "卡死检测阈值(秒)"
+msgstr "멈춤 감지 임계값(초)"
+
+msgid "低配模式"
+msgstr "저사양 모드"
+
+msgid "失败后自动返回主菜单"
+msgstr "실패 후 자동으로 메인 메뉴로 돌아가기"
+
+msgid "最大返回次数"
+msgstr "최대 돌아가기 횟수"
+
+msgid "失败帧保留数量"
+msgstr "보관할 실패 프레임 수"
+
+msgid "单个等待/轮询步骤的默认超时；任务里显式传超时的位置不受影响"
+msgstr "단일 대기/폴링 단계의 기본 타임아웃입니다. 명시적으로 지정한 곳에는 영향을 주지 않습니다"
+
+msgid "条件没满足时两次重试之间的间隔（与 wait_until_check_delay 取较大值），0 表示不额外等待"
+msgstr "조건이 충족되지 않을 때 재시도 간격입니다(wait_until_check_delay와 큰 값 사용). 0은 추가 대기 없음"
+
+msgid "失败自恢复时每次按返回键后的等待；0 表示用框架的默认间隔"
+msgstr "실패 복구 시 뒤로 가기 키를 누른 뒤의 대기 시간입니다. 0은 프레임워크 기본값"
+
+msgid "画面长时间不变（判定为可能卡死）的阈值，只记录警告不中止任务"
+msgstr "화면이 오랫동안 그대로일 때(멈춤 의심) 경고를 기록하는 임계값입니다. 경고만 남기고 작업은 중단하지 않습니다"
+
+msgid "低配机器：所有超时统一放宽 1.5 倍，卡死阈值同步放宽"
+msgstr "저사양 환경: 모든 타임아웃을 1.5배로 늘리고 멈춤 임계값도 함께 늘립니다"
+
+msgid "任务失败后自动按返回键退回主菜单，只退菜单不重跑任务"
+msgstr "작업 실패 후 뒤로 가기로 메인 메뉴로 돌아갑니다. 작업을 다시 실행하지는 않습니다"
+
+msgid "失败后最多按几次返回键"
+msgstr "실패 후 뒤로 가기를 누르는 최대 횟수"
+
+msgid "失败帧库最多保留多少帧，超出后丢弃最旧的"
+msgstr "보관할 실패 프레임의 최대 개수입니다. 초과하면 오래된 것부터 삭제됩니다"
+
+msgid "流程与队列"
+msgstr "플로우 및 대기열"
+
+msgid "新队列"
+msgstr "새 대기열"
+
+msgid "流程"
+msgstr "플로우"
+
+msgid "任务队列"
+msgstr "작업 대기열"
+
+msgid "配置档"
+msgstr "프로필"
+
+msgid "还没有流程文件：用「导入 JSON」或「从录制 JSON 生成」创建"
+msgstr "아직 플로우가 없습니다. 'JSON 가져오기' 또는 '녹화 JSON에서 생성'으로 만드세요"
+
+msgid "队列在「流程 / 队列」任务里执行：任务类型选「执行队列」并填队列名字"
+msgstr "대기열은 '플로우 / 대기열' 작업에서 실행합니다. 작업 유형에서 '대기열 실행'을 선택하고 대기열 이름을 입력하세요"
+
+msgid "新配置档名字"
+msgstr "새 프로필 이름"
+
+msgid "保存当前配置"
+msgstr "현재 설정 저장"
+
+msgid "应用"
+msgstr "적용"
+
+msgid "删除"
+msgstr "삭제"
+
+msgid "应用配置档前会自动把当前 configs/ 备份到 configs/profiles/.backup_<时间戳>/"
+msgstr "프로필을 적용하기 전에 현재 configs/를 configs/profiles/.backup_<타임스탬프>/로 자동 백업합니다"
+
+msgid "（没有流程）"
+msgstr "(플로우 없음)"
+
+msgid "（没有队列）"
+msgstr "(대기열 없음)"
+
+msgid "（没有配置档）"
+msgstr "(프로필 없음)"
+
+msgid "选择流程 JSON"
+msgstr "플로우 JSON 선택"
+
+msgid "JSON 文件 (*.json)"
+msgstr "JSON 파일 (*.json)"
+
+msgid "选择录制 JSON"
+msgstr "녹화 JSON 선택"
+
+msgid "流程文件"
+msgstr "플로우 파일"
+
+msgid "校验"
+msgstr "검증"
+
+msgid "导入 JSON"
+msgstr "JSON 가져오기"
+
+msgid "从录制 JSON 生成"
+msgstr "녹화 JSON에서 생성"
+
+msgid "队列文件"
+msgstr "대기열 파일"
+
+msgid "新建模板"
+msgstr "템플릿 만들기"
+
+msgid "还没有流程文件"
+msgstr "아직 플로우가 없습니다"
+
+msgid "用「导入 JSON」或「从录制 JSON 生成」创建第一份流程"
+msgstr "'JSON 가져오기' 또는 '녹화 JSON에서 생성'으로 첫 플로우를 만드세요"
+
+msgid "断点：无"
+msgstr "체크포인트: 없음"
+
+msgid "没有选中流程"
+msgstr "선택된 플로우가 없습니다"
+
+msgid "校验通过，没有发现问题"
+msgstr "검증을 통과했습니다. 문제가 없습니다"
+
+msgid "校验完成：{errors} 个错误"
+msgstr "검증 완료: 오류 {errors}개"
+
+msgid "录制文件里没有 events 数组"
+msgstr "녹화 파일에 events 배열이 없습니다"
+
+msgid "还没有队列文件"
+msgstr "아직 대기열이 없습니다"
+
+msgid "（已禁用）"
+msgstr "(비활성)"
+
+msgid "不限时"
+msgstr "시간 제한 없음"
+
+msgid "没有选中队列"
+msgstr "선택된 대기열이 없습니다"
+
+msgid "队列校验通过：{enabled} 项启用"
+msgstr "대기열 검증 통과: {enabled}개 활성"
+
+msgid "示例队列：把一条龙和流程串起来"
+msgstr "예시 대기열: 일일 자동화와 플로우를 연결합니다"
+
+msgid "请填写配置档名字"
+msgstr "프로필 이름을 입력하세요"
+
+msgid "没有选中配置档"
+msgstr "선택된 프로필이 없습니다"
+
+msgid "共 {steps} 步，嵌套 {depth} 层，容器 {containers} 个"
+msgstr "{steps}단계, 중첩 {depth}층, 컨테이너 {containers}개"
+
+msgid "已导入流程：{name}"
+msgstr "플로우를 가져왔습니다: {name}"
+
+msgid "已生成流程 {name}：{summary}"
+msgstr "플로우를 생성했습니다: {name} — {summary}"
+
+msgid "已删除流程：{name}"
+msgstr "플로우를 삭제했습니다: {name}"
+
+msgid "失败策略：{policy}"
+msgstr "실패 정책: {policy}"
+
+msgid "启用 {enabled} 项，总预算 {budget} 分钟"
+msgstr "{enabled}개 활성, 총 예산 {budget}분"
+
+msgid "已创建空队列模板：{name}"
+msgstr "빈 대기열 템플릿을 만들었습니다: {name}"
+
+msgid "已删除队列：{name}"
+msgstr "대기열을 삭제했습니다: {name}"
+
+msgid "已保存配置档：{name}"
+msgstr "프로필을 저장했습니다: {name}"
+
+msgid "断点：已完成 {completed}/{total} 个顶层步骤，任务里勾「从断点继续」即可续跑"
+msgstr "체크포인트: 최상위 단계 {completed}/{total} 완료. 작업에서 '체크포인트에서 계속'을 켜면 이어서 실행합니다"
+
+msgid "失败即停"
+msgstr "실패 시 중지"
+
+msgid "失败后继续"
+msgstr "실패해도 계속"
+
+msgid "已删除配置档：{name}"
+msgstr "프로필을 삭제했습니다: {name}"
+
+msgid "导入失败：{error}"
+msgstr "가져오기 실패: {error}"
+
+msgid "读取录制失败：{error}"
+msgstr "녹화를 읽지 못했습니다: {error}"
+
+msgid "删除失败：{error}"
+msgstr "삭제 실패: {error}"
+
+msgid "流程 / 队列"
+msgstr "플로우 / 대기열"
+
+msgid "按 JSON 流程逐步操作游戏，或按队列依次执行多个流程/任务。流程与队列文件在「流程与队列」页里管理。"
+msgstr ""
+"JSON 플로우로 게임을 단계별로 조작하거나, 대기열로 여러 플로우/작업을 순서대로 실행합니다. 플로우와 대기열 파일은 '플로우 및 "
+"대기열' 페이지에서 관리합니다."
+
+msgid "任务类型"
+msgstr "작업 유형"
+
+msgid "从断点继续"
+msgstr "체크포인트에서 계속"
+
+msgid "预算(分钟)"
+msgstr "예산(분)"
+
+msgid "执行流程：跑一份 JSON 流程；执行队列：按顺序跑队列里的每一项"
+msgstr "플로우 실행: JSON 플로우 하나를 실행합니다. 대기열 실행: 대기열의 각 항목을 순서대로 실행합니다"
+
+msgid "configs/flows 下的文件名（不带 .json）"
+msgstr "configs/flows 아래의 파일 이름(.json 제외)"
+
+msgid "configs/queues 下的文件名（不带 .json）"
+msgstr "configs/queues 아래의 파일 이름(.json 제외)"
+
+msgid "只对流程生效：跳过上次已经跑完的顶层步骤"
+msgstr "플로우에만 적용: 지난번에 끝난 최상위 단계를 건너뜁니다"
+
+msgid "流程里某一步失败后是否继续后面的步骤"
+msgstr "단계가 실패한 뒤 다음 단계를 계속할지 여부"
+
+msgid "0 表示不限；流程会被预算打断，任务类只能事后标记"
+msgstr "0은 무제한입니다. 플로우는 예산에 따라 중단되지만 작업은 사후에 표시만 됩니다"
+
+msgid "离线工具"
+msgstr "오프라인 도구"
+
+msgid "养成计算"
+msgstr "육성 계산"
+
+msgid "抽卡分析"
+msgstr "가챠 분석"
+
+msgid "记账与报表"
+msgstr "기록 및 리포트"
+
+msgid "还没有目标：选好参数后点「添加目标」"
+msgstr "목표가 없습니다. 매개변수를 설정하고 '목표 추가'를 누르세요"
+
+msgid "每行一个：材料=数量，例如 尤尼=20000"
+msgstr "한 줄에 하나: 재료=수량, 예: 유니=20000"
+
+msgid "可选：2.8%,28.8%,100% 这样的表，长度需等于硬保底"
+msgstr "선택: 2.8%,28.8%,100% 같은 표. 길이는 천장 횟수와 같아야 합니다"
+
+msgid "计算"
+msgstr "계산"
+
+msgid "例如：获得的奖励：尤尼 ×1,500 / 12 × 波力果 / 消耗：星脉结晶 ×3"
+msgstr "예: 획득 보상: 유니 ×1,500 / 12 × 폴리열매 / 소모: 성맥결정 ×3"
+
+msgid "计算完成"
+msgstr "계산 완료"
+
+msgid "材料清单："
+msgstr "재료 목록:"
+
+msgid "保存养成材料单"
+msgstr "육성 재료 목록 저장"
+
+msgid "运行报表："
+msgstr "실행 리포트:"
+
+msgid "导出 CSV"
+msgstr "CSV 내보내기"
+
+msgid "CSV 文件 (*.csv)"
+msgstr "CSV 파일 (*.csv)"
+
+msgid "养成目标"
+msgstr "육성 목표"
+
+msgid "起始等级"
+msgstr "시작 레벨"
+
+msgid "目标等级"
+msgstr "목표 레벨"
+
+msgid "份数"
+msgstr "개수"
+
+msgid "潜能等级"
+msgstr "잠재력 레벨"
+
+msgid "升星"
+msgstr "성급 상승"
+
+msgid "添加目标"
+msgstr "목표 추가"
+
+msgid "清空目标"
+msgstr "목표 비우기"
+
+msgid "导出 PNG"
+msgstr "PNG 내보내기"
+
+msgid "重新载入数据"
+msgstr "데이터 다시 불러오기"
+
+msgid "库存"
+msgstr "보유량"
+
+msgid "目标份数"
+msgstr "목표 개수"
+
+msgid "已垫抽数"
+msgstr "누적 천장 횟수"
+
+msgid "预算抽数"
+msgstr "예산 횟수"
+
+msgid "出目标概率"
+msgstr "목표 획득 확률"
+
+msgid "自定义概率表"
+msgstr "사용자 확률표"
+
+msgid "把结算界面的文字粘进来记账；要直接识别画面，请在任务列表运行「结算记账」。"
+msgstr "정산 화면 텍스트를 붙여넣어 기록합니다. 화면을 직접 인식하려면 작업 목록에서 '정산 기록'을 실행하세요."
+
+msgid "记账"
+msgstr "기록"
+
+msgid "刷新统计"
+msgstr "통계 새로 고침"
+
+msgid "导出记账 CSV"
+msgstr "기록 CSV 내보내기"
+
+msgid "导出报表 CSV"
+msgstr "리포트 CSV 내보내기"
+
+msgid "没有可用的养成目标"
+msgstr "사용 가능한 육성 목표가 없습니다"
+
+msgid "请先添加至少一个目标"
+msgstr "먼저 목표를 하나 이상 추가하세요"
+
+msgid "请先点「计算」"
+msgstr "먼저 '계산'을 누르세요"
+
+msgid "PNG 图片 (*.png)"
+msgstr "PNG 이미지 (*.png)"
+
+msgid "请先粘贴结算文字"
+msgstr "먼저 정산 텍스트를 붙여넣으세요"
+
+msgid "  还没有运行记录"
+msgstr "  아직 실행 기록이 없습니다"
+
+msgid "今日明细："
+msgstr "오늘 내역:"
+
+msgid "（没有可用数据）"
+msgstr "(사용 가능한 데이터 없음)"
+
+msgid "没有可用的养成数据"
+msgstr "사용 가능한 육성 데이터가 없습니다"
+
+msgid "已选 {count} 个目标：{items}"
+msgstr "{count}개 목표 선택: {items}"
+
+msgid "货币凑法："
+msgstr "재화 구성:"
+
+msgid "经验道具："
+msgstr "경험치 아이템:"
+
+msgid "已导出：{path}"
+msgstr "내보냈습니다: {path}"
+
+msgid "软保底关键点：71 抽 {p71}、81 抽 {p81}、90 抽必出"
+msgstr "소프트 천장 요점: 71회 {p71}, 81회 {p81}, 90회 확정"
+
+msgid "参数：目标 {copies} 份，已垫 {pity} 抽，出目标 {rate}"
+msgstr "매개변수: 목표 {copies}개, 누적 {pity}회, 목표 확률 {rate}"
+
+msgid "手动记账"
+msgstr "수동 기록"
+
+msgid "已记录 {count} 条"
+msgstr "{count}건을 기록했습니다"
+
+msgid "今日：收入 {income:g} / 支出 {expense:g}"
+msgstr "오늘: 수입 {income:g} / 지출 {expense:g}"
+
+msgid "累计：收入 {income:g} / 支出 {expense:g} / 净 {net:g}"
+msgstr "누계: 수입 {income:g} / 지출 {expense:g} / 순액 {net:g}"
+
+msgid "  共 {count} 次，成功 {success} 次，成功率 {rate:.1f}%，平均 {avg:.0f} 秒"
+msgstr "  총 {count}회, 성공 {success}회, 성공률 {rate:.1f}%, 평균 {avg:.0f}초"
+
+msgid "数据载入成功：{summary}（共 {total} 个目标）"
+msgstr "데이터를 불러왔습니다: {summary} (총 {total}개)"
+
+msgid "导出失败：{error}"
+msgstr "내보내기 실패: {error}"
+
+msgid "结算记账"
+msgstr "정산 기록"
+
+msgid "识别结算界面（或任意物品列表界面）上的「物品 ×数量」，把收益记进 ledger.jsonl，并给出今日与累计收支。"
+msgstr ""
+"정산 화면(또는 임의의 아이템 목록)의 '아이템 ×수량'을 인식해 ledger.jsonl에 기록하고, 오늘과 누적 수지를 보여줍니다."
+
+msgid "记录来源"
+msgstr "기록 출처"
+
+msgid "最低置信度"
+msgstr "최소 신뢰도"
+
+msgid "写进记账本的来源标记，用来区分结算 / 手动 / 商店等场景"
+msgstr "기록장에 쓰는 출처 태그입니다. 정산/수동/상점 등을 구분합니다"
+
+msgid "OCR 置信度低于该值的文本会被丢弃，0 表示全部保留"
+msgstr "이 신뢰도보다 낮은 OCR 텍스트는 버립니다. 0이면 모두 유지"
+
+msgid "一条龙顺序"
+msgstr "일일 실행 순서"
+
+msgid "保存顺序与开关"
+msgstr "순서와 스위치 저장"
+
+msgid "拖动任务调整顺序；勾选框控制该项是否执行。任务运行中不能保存。"
+msgstr "작업을 끌어 순서를 바꾸고, 체크박스로 실행 여부를 정합니다. 작업 실행 중에는 저장할 수 없습니다."
+
+msgid "一键日常的执行顺序"
+msgstr "원클릭 일일 실행 순서"
+
+msgid "已载入当前顺序；拖动或勾选后点「保存」"
+msgstr "현재 순서를 불러왔습니다. 끌거나 체크한 뒤 '저장'을 누르세요"
+
+msgid "已恢复默认顺序（记得点保存）"
+msgstr "기본 순서로 되돌렸습니다(저장을 잊지 마세요)"
+
+msgid "顺序已保存"
+msgstr "순서를 저장했습니다"
+
+msgid "上移"
+msgstr "위로"
+
+msgid "下移"
+msgstr "아래로"
+
+msgid "恢复默认"
+msgstr "기본값 복원"
+
+msgid "没有找到「一键日常」任务，无法编辑顺序"
+msgstr "'원클릭 일일' 작업을 찾을 수 없어 순서를 편집할 수 없습니다"
+
+msgid "没有找到「一键日常」任务"
+msgstr "'원클릭 일일' 작업을 찾을 수 없습니다"
+
+msgid "任务正在运行，先停止再改顺序"
+msgstr "작업이 실행 중입니다. 중지한 뒤 순서를 바꾸세요"
+
+msgid "列表是空的"
+msgstr "목록이 비어 있습니다"
+
+msgid "已保存：{order}"
+msgstr "저장했습니다: {order}"
+
+msgid "保存失败：{error}"
+msgstr "저장 실패: {error}"
+
+msgid "导航路线"
+msgstr "내비게이션 경로"
+
+msgid "按保存好的路线逐个航点导航/等待/点击，跑通一次就能存下来复用。路线文件在 configs/routes 下。"
+msgstr ""
+"저장한 경로를 경유지마다 이동/대기/클릭합니다. 한 번 성공하면 저장해 다시 쓸 수 있습니다. 경로 파일은 configs/routes에 "
+"있습니다."
+
+msgid "路线文件"
+msgstr "경로 파일"
+
+msgid "configs/routes 下的文件名（不带 .json）"
+msgstr "configs/routes 아래의 파일 이름(.json 제외)"
+
+msgid "跳过上次已经跑完的航点"
+msgstr "지난번에 끝난 경유지를 건너뜁니다"
+
+msgid "隐私遮挡"
+msgstr "개인정보 가리기"
+
+msgid "宽"
+msgstr "너비"
+
+msgid "高"
+msgstr "높이"
+
+msgid "标签，如 UID / 昵称"
+msgstr "라벨 (예: UID / 닉네임)"
+
+msgid "UID / 昵称 / 聊天遮挡"
+msgstr "UID / 닉네임 / 채팅 가리기"
+
+msgid "已添加 1 块，记得点保存"
+msgstr "1개 추가했습니다(저장을 잊지 마세요)"
+
+msgid "已删除 1 块，记得点保存"
+msgstr "1개 삭제했습니다(저장을 잊지 마세요)"
+
+msgid "已应用修改，记得点保存"
+msgstr "변경 사항을 적용했습니다(저장을 잊지 마세요)"
+
+msgid "已恢复默认遮挡，记得点保存"
+msgstr "기본 가리기로 되돌렸습니다(저장을 잊지 마세요)"
+
+msgid "遮挡配置已保存"
+msgstr "가리기 설정을 저장했습니다"
+
+msgid "1 秒后取当前鼠标位置与颜色，请把鼠标移到目标位置"
+msgstr "1초 뒤 마우스 위치와 색을 가져옵니다. 먼저 마우스를 대상으로 옮기세요"
+
+msgid "纯色"
+msgstr "단색"
+
+msgid "马赛克"
+msgstr "모자이크"
+
+msgid "启用遮挡"
+msgstr "가리기 사용"
+
+msgid "关闭遮挡"
+msgstr "가리기 끄기"
+
+msgid "添加"
+msgstr "추가"
+
+msgid "应用修改"
+msgstr "변경 적용"
+
+msgid "坐标拾取"
+msgstr "좌표 추출"
+
+msgid "保存"
+msgstr "저장"
+
+msgid "没有选中遮挡块"
+msgstr "선택된 가리기 블록이 없습니다"
+
+msgid "坐标用 1920×1080 参考空间；最多 {max_blocks} 块。遮挡只作用于落盘截图与失败帧。"
+msgstr ""
+"좌표는 1920×1080 기준 공간을 사용합니다. 최대 {max_blocks}개. 가리기는 저장되는 스크린샷과 실패 프레임에만 "
+"적용됩니다."
+
+msgid "已载入 {count} 块遮挡"
+msgstr "가리기 {count}개를 불러왔습니다"
+
+msgid "已保存到 {path}（下次截图生效）"
+msgstr "{path}에 저장했습니다(다음 스크린샷부터 적용)"
+
+msgid "取到客户区 ({x}, {y}) → 参考 ({rx:g}, {ry:g})，颜色 {color}"
+msgstr "클라이언트 ({x}, {y}) → 기준 ({rx:g}, {ry:g}), 색 {color}"
+
+msgid "最多 {max_blocks} 块遮挡"
+msgstr "가리기는 최대 {max_blocks}개"
+
+msgid "诊断包"
+msgstr "진단 패키지"
+
+msgid "语言包"
+msgstr "언어 팩"
+
+msgid "包含截图"
+msgstr "스크린샷 포함"
+
+msgid "生成诊断包"
+msgstr "진단 패키지 생성"
+
+msgid "默认不含截图；记账只放合计，不放明细"
+msgstr "기본적으로 스크린샷은 포함하지 않습니다. 기록은 합계만 넣고 내역은 넣지 않습니다"
+
+msgid "扫描程序目录下的「语言包<代码>」文件夹；应用前自动备份 i18n 与 assets/lang"
+msgstr "앱 폴더의 '語言包<코드>' 폴더를 찾습니다. 적용 전에 i18n과 assets/lang를 자동 백업합니다"
+
+msgid "选择保存目录"
+msgstr "저장 폴더 선택"
+
+msgid "把配置、日志、模板清单、失败帧与系统信息打成一个 zip"
+msgstr "설정, 로그, 템플릿 목록, 실패 프레임, 시스템 정보를 하나의 zip으로 묶습니다"
+
+msgid "还原最近备份"
+msgstr "최근 백업 복원"
+
+msgid "（没有找到语言包）"
+msgstr "(언어 팩을 찾지 못했습니다)"
+
+msgid "把「语言包<代码>」文件夹放到程序目录下再刷新"
+msgstr "'語言包<코드>' 폴더를 앱 폴더에 두고 새로 고침하세요"
+
+msgid "没有选中语言包"
+msgstr "선택된 언어 팩이 없습니다"
+
+msgid "没有可用的语言包备份"
+msgstr "사용 가능한 언어 팩 백업이 없습니다"
+
+msgid "找到 {count} 个语言包；应用前会自动备份 i18n 与 assets/lang"
+msgstr "언어 팩 {count}개를 찾았습니다. 적용 전에 i18n과 assets/lang를 자동 백업합니다"
+
+msgid "已还原 {name}"
+msgstr "{name}을(를) 복원했습니다"
+
+msgid "界面与提醒"
+msgstr "인터페이스 및 알림"
+
+msgid "关闭行为"
+msgstr "닫기 동작"
+
+msgid "提醒"
+msgstr "알림"
+
+msgid "任务栏进度与快捷键"
+msgstr "작업 표시줄 진행률 및 단축키"
+
+msgid "启用提醒"
+msgstr "알림 사용"
+
+msgid "每日重置提醒"
+msgstr "일일 초기화 알림"
+
+msgid "体力提醒"
+msgstr "스태미나 알림"
+
+msgid "保存提醒设置"
+msgstr "알림 설정 저장"
+
+msgid "在任务栏显示进度"
+msgstr "작업 표시줄에 진행률 표시"
+
+msgid "校验快捷键"
+msgstr "단축키 검증"
+
+msgid "保存快捷键"
+msgstr "단축키 저장"
+
+msgid "快捷键在程序启动时注册；改完需要重启生效。F9–F12 属于框架的启动/停止，不能再绑定。"
+msgstr ""
+"단축키는 시작할 때 등록됩니다. 변경 사항은 재시작 후 적용됩니다. F9–F12는 프레임워크의 시작/중지용이라 다시 지정할 수 없습니다."
+
+msgid "设置已载入"
+msgstr "설정을 불러왔습니다"
+
+msgid "关闭行为已保存"
+msgstr "닫기 동작을 저장했습니다"
+
+msgid "提醒设置已保存"
+msgstr "알림 설정을 저장했습니다"
+
+msgid "快捷键校验通过"
+msgstr "단축키 검증 통과"
+
+msgid "快捷键已保存"
+msgstr "단축키를 저장했습니다"
+
+msgid "已填入默认快捷键（记得保存）"
+msgstr "기본 단축키를 채웠습니다(저장을 잊지 마세요)"
+
+msgid "点关闭按钮时"
+msgstr "닫기 버튼을 누를 때"
+
+msgid "每次都问"
+msgstr "매번 묻기"
+
+msgid "直接关闭"
+msgstr "바로 닫기"
+
+msgid "最小化到托盘"
+msgstr "트레이로 최소화"
+
+msgid "重置小时"
+msgstr "초기화 시각"
+
+msgid "间隔（分钟）"
+msgstr "간격(분)"
+
+msgid "如 ctrl+alt+p"
+msgstr "예: ctrl+alt+p"
+
+msgid "快捷键有问题"
+msgstr "단축키에 문제가 있습니다"
+
+msgid "关闭行为已保存到 {path}"
+msgstr "닫기 동작을 {path}에 저장했습니다"
+
+msgid "提醒设置已保存到 {path}（30 秒内生效）"
+msgstr "알림 설정을 {path}에 저장했습니다(30초 이내 적용)"
+
+msgid "任务栏进度已{state}"
+msgstr "작업 표시줄 진행률 {state}"
+
+msgid "快捷键已保存到 {path}，重启后生效"
+msgstr "단축키를 {path}에 저장했습니다. 재시작 후 적용됩니다"
+
+msgid "开启"
+msgstr "켜짐"
+
+msgid "关闭"
+msgstr "꺼짐"
+
+msgid "快捷键有问题：{issues}"
+msgstr "단축키 문제: {issues}"
+
+msgid "关闭 ok-ap"
+msgstr "ok-ap 닫기"
+
+msgid "要完全关闭程序，还是最小化到系统托盘？"
+msgstr "앱을 완전히 종료할까요, 아니면 시스템 트레이로 최소화할까요?"
+
+msgid "完全关闭"
+msgstr "완전히 종료"
+
+msgid "收到托盘"
+msgstr "트레이로 보내기"
+
+msgid "取消"
+msgstr "취소"
+
+msgid "记住我的选择"
+msgstr "내 선택 기억"
+
+msgid "实时辅助"
+msgstr "실시간 보조"
+
+msgid "按你设置的按键序列与节奏持续操作，适合需要一直盯着的战斗场景。可选用前置模板限定生效场合。"
+msgstr ""
+"설정한 키 순서와 주기로 계속 조작합니다. 계속 지켜봐야 하는 전투에 적합하며, 선택적으로 사전 템플릿을 지정할 수 있습니다."
+
+msgid "按键序列"
+msgstr "키 순서"
+
+msgid "动作间隔(秒)"
+msgstr "동작 간격(초)"
+
+msgid "前置模板"
+msgstr "사전 템플릿"
+
+msgid "最大连续次数"
+msgstr "실행당 최대 횟수"
+
+msgid "记录日志"
+msgstr "동작 로그 기록"
+
+msgid "_按下时长(秒)"
+msgstr "_누름 시간(초)"
+
+msgid "逗号分隔，按顺序轮转，例如 q,e,r"
+msgstr "쉼표로 구분해 순서대로 순환합니다(예: q,e,r)"
+
+msgid "两次动作之间的最小间隔，避免连点"
+msgstr "동작 사이 최소 간격입니다. 연타를 막습니다"
+
+msgid "可选：只有该模板出现时才动作（填模板名，如 auto_combat_check）"
+msgstr "선택: 이 템플릿이 보일 때만 동작합니다(예: auto_combat_check)"
+
+msgid "单次 run 最多按几次，避免长时间占住触发轮转"
+msgstr "한 번 실행에서 누르는 최대 횟수입니다. 트리거 순환을 오래 차지하지 않게 합니다"
+
+msgid "每次动作写一行日志，方便确认节奏"
+msgstr "동작마다 로그를 한 줄 남겨 리듬을 확인하기 쉽게 합니다"
+
+msgid "按键按住时长"
+msgstr "키를 누르고 있는 시간"
+
+msgid "暂停"
+msgstr "일시정지"
+
+msgid "继续"
+msgstr "계속"
+
+msgid "停止"
+msgstr "중지"
+
+msgid "显示 HUD 悬浮条"
+msgstr "HUD 표시줄 표시"
+
+msgid "任务栏进度已{state}，HUD 已{hud}"
+msgstr "작업 표시줄 진행률 {state}, HUD {hud}"
+
+msgid "运行中"
+msgstr "실행 중"
+
+msgid "已暂停"
+msgstr "일시정지됨"
+
+msgid "模板自检"
+msgstr "템플릿 자체 점검"
+
+msgid "开始自检"
+msgstr "점검 시작"
+
+msgid "还没自检；自检只读 assets/coco_annotations.json，不改任何文件"
+msgstr "아직 점검하지 않았습니다. 점검은 assets/coco_annotations.json만 읽고 아무것도 바꾸지 않습니다"
+
+msgid "检查全部模板的纹理与重复（纯色块永远匹配不上）"
+msgstr "모든 템플릿의 텍스처와 중복을 점검합니다(단색 블록은 절대 매칭되지 않습니다)"
+
+msgid "重复模板："
+msgstr "중복 템플릿:"
+
+msgid "自检完成：{summary}"
+msgstr "점검 완료: {summary}"
+
+msgid "方案文件"
+msgstr "스킴 파일"
+
+msgid "configs/schemes 下的轮椅方案文件名；单独跑方案时填它"
+msgstr "configs/schemes 아래의 스킴 파일 이름입니다. 스킴만 단독 실행할 때 채웁니다"
+
+msgid "分享仓库"
+msgstr "공유 저장소"
+
+msgid "在线仓库"
+msgstr "온라인 저장소"
+
+msgid "填入索引地址后点「加载」。索引就是一个返回 JSON 的链接，也可以填本地文件路径"
+msgstr "인덱스 주소를 입력하고 '불러오기'를 누르세요. 인덱스는 JSON을 반환하는 링크이거나 로컬 파일 경로입니다"
+
+msgid "https://…/index.json 或本地 index.json 路径"
+msgstr "https://…/index.json 또는 로컬 index.json 경로"
+
+msgid "加载"
+msgstr "불러오기"
+
+msgid "安装选中"
+msgstr "선택 항목 설치"
+
+msgid "允许覆盖同名文件"
+msgstr "같은 이름 파일 덮어쓰기 허용"
+
+msgid "打开流程目录"
+msgstr "플로 폴더 열기"
+
+msgid "索引已加载"
+msgstr "인덱스를 불러왔습니다"
+
+msgid "索引地址"
+msgstr "인덱스 주소"
+
+msgid "类型"
+msgstr "종류"
+
+msgid "名称"
+msgstr "이름"
+
+msgid "说明"
+msgstr "설명"
+
+msgid "标签"
+msgstr "태그"
+
+msgid "先填索引地址"
+msgstr "먼저 인덱스 주소를 입력하세요"
+
+msgid "先在列表里选中一项"
+msgstr "먼저 목록에서 항목을 선택하세요"
+
+msgid "已加载「{name}」：共 {count} 项（{detail}）"
+msgstr "\"{name}\"을 불러왔습니다: 총 {count}개({detail})"
+
+msgid "没有条目"
+msgstr "항목 없음"
+
+msgid "打不开目录：{error}"
+msgstr "폴더를 열 수 없습니다: {error}"
+
+msgid "选择养成数据（JSON 或 CSV）"
+msgstr "육성 데이터 선택 (JSON 또는 CSV)"
+
+msgid "导入数据"
+msgstr "데이터 가져오기"
+
+msgid "在左边选中一项，这里显示它自己的参数（与默认值不同的部分）"
+msgstr "왼쪽에서 항목을 선택하면 해당 항목의 자체 설정(기본값과 다른 부분)을 표시합니다"
+
+msgid "打开配置文件"
+msgstr "설정 파일 열기"
+
+msgid "刷新参数"
+msgstr "설정 새로 고침"
+
+msgid "每项自己的参数"
+msgstr "항목별 설정"
+
+msgid "有独立配置文件"
+msgstr "전용 설정 파일 있음"
+
+msgid "还没有独立配置文件"
+msgstr "전용 설정 파일 없음"
+
+msgid "先在左边选中一项"
+msgstr "먼저 왼쪽에서 항목을 선택하세요"
+
+msgid "读不到参数：{error}"
+msgstr "설정을 읽을 수 없습니다: {error}"
+
+msgid "打不开配置文件：{error}"
+msgstr "설정 파일을 열 수 없습니다: {error}"
+
+msgid "{name}（{prefix}）：{line}"
+msgstr "{name} ({prefix}): {line}"
+
+msgid "安装示例流程"
+msgstr "예제 플로 설치"
+
+msgid "安装示例流程失败：{error}"
+msgstr "예제 플로 설치 실패: {error}"
+
+msgid "{name} 还需要标注：{names}"
+msgstr "{name}에는 다음 템플릿을 아직 표시해야 합니다: {names}"
+
+msgid "{name} 所需模板都已存在，可以直接跑"
+msgstr "{name}은(는) 필요한 템플릿이 모두 있어 바로 실행할 수 있습니다"
+
+msgid "安装自检"
+msgstr "설치 자체 점검"
+
+msgid "还没自检；自检只读文件，不改任何东西"
+msgstr "아직 점검하지 않았습니다. 점검은 파일만 읽고 아무것도 바꾸지 않습니다"
+
+msgid "把流程 / 队列 / 方案 / 路线 / 配置 / i18n 一起体检一遍"
+msgstr "플로 / 큐 / 스킴 / 루트 / 설정 / i18n을 한 번에 점검합니다"
+
+msgid "自检失败：{error}"
+msgstr "점검 실패: {error}"
+
+msgid "安装示例"
+msgstr "예제 설치"
+
+msgid "安装示例失败：{error}"
+msgstr "예제 설치 실패: {error}"
+
+msgid ""
+"按账号和任务配置独立参数。先选账号，再选任务，下面会自动出现该任务的属性控件。账号页只需要填写账号名，无需填写密码。系统兼容旧格式 `账号,密码` "
+"但不会保存密码。"
+msgstr ""
+"계정과 작업별로 개별 파라미터를 설정합니다. 먼저 계정을 고르고 작업을 고르면 해당 작업의 설정 항목이 아래에 나타납니다. 계정 "
+"페이지에는 계정 이름만 입력하면 되고 비밀번호는 필요 없습니다. 예전 형식 `계정,비밀번호`도 읽지만 비밀번호는 저장하지 않습니다."
+
+msgid ""
+"账号A\n"
+"账号B"
+msgstr ""
+"계정A\n"
+"계정B"
+
+msgid "safe_back 超时（{time_out}s），目标未出现"
+msgstr "safe_back 시간 초과({time_out}초), 대상이 나타나지 않았습니다"
+
+msgid "账号格式错误，已跳过: {line}"
+msgstr "계정 형식이 잘못되어 건너뛰었습니다: {line}"
+
+msgid "第 {idx}/{total} 个账号为空，已跳过"
+msgstr "{idx}/{total}번째 계정이 비어 있어 건너뛰었습니다"
+
+msgid "开始第 {idx}/{total} 个账号({suffix}){log_suffix}"
+msgstr "{idx}/{total}번째 계정 시작({suffix}){log_suffix}"
+
+msgid "任务返回 False"
+msgstr "작업이 False를 반환했습니다"
+
+msgid "开始执行日常任务..."
+msgstr "일일 작업을 시작합니다..."
+
+msgid "开始任务: {key}"
+msgstr "작업 시작: {key}"
+
+msgid "任务失败标记 | {name}: {message}"
+msgstr "작업 실패 표시 | {name}: {message}"
+
+msgid "多账户模式已开启，但账号列表为空，日常任务结束"
+msgstr "다중 계정 모드가 켜져 있지만 계정 목록이 비어 있어 일일 작업을 종료합니다"
+
+msgid "任务执行"
+msgstr "작업 실행"
+
+msgid "任务 {key} 执行失败"
+msgstr "작업 {key} 실행 실패"
+
+msgid "日常完成!"
+msgstr "일일 완료!"
+
+msgid "所有任务均成功完成!"
+msgstr "모든 작업이 성공했습니다!"
+
+msgid "异常: {err}"
+msgstr "예외: {err}"
+
+msgid "开始第 {idx}/{total} 轮任务执行"
+msgstr "{idx}/{total}번째 실행 시작"
+
+msgid "第 {idx} 轮 | 失败任务: {failed}"
+msgstr "{idx}번째 | 실패 작업: {failed}"
+
+msgid "以下任务未完成或失败: {failed}"
+msgstr "다음 작업이 완료되지 않았거나 실패했습니다: {failed}"
+
+msgid "第 {idx} 轮 | 日常完成!"
+msgstr "{idx}번째 | 일일 완료!"
+
+msgid "执行完成，失败统计: {failed}"
+msgstr "실행 완료, 실패 집계: {failed}"
+
+msgid "素材已安装，但模板缓存刷新失败；重启程序后生效"
+msgstr "에셋은 설치되었지만 템플릿 캐시를 다시 불러오지 못했습니다. 앱을 재시작하면 적용됩니다"
+
+msgid "完成"
+msgstr "완료"
+
+msgid "部分失败"
+msgstr "일부 실패"
+
+msgid "异常结束"
+msgstr "비정상 종료"
+
+msgid "未开始"
+msgstr "시작 안 함"
+
+msgid "执行状态: {status}"
+msgstr "실행 상태: {status}"
+
+msgid "执行情况汇总"
+msgstr " 실행 결과 요약"
+
+msgid "失败任务统计:"
+msgstr "실패 작업 집계:"
+
+msgid "所有任务执行成功！"
+msgstr "모든 작업 성공!"
+
+msgid "总任务数: {total} | 成功: {success} | 失败: {failed} | 跳过: {skipped}"
+msgstr "전체: {total} | 성공: {success} | 실패: {failed} | 건너뜀: {skipped}"
+
+msgid "成功任务:"
+msgstr "성공 작업:"
+
+msgid "失败任务:"
+msgstr "실패 작업:"
+
+msgid "跳过任务:"
+msgstr "건너뛴 작업:"
+
+msgid "失败消息:"
+msgstr "실패 메시지:"
+
+msgid "未设置失败消息"
+msgstr "실패 메시지 없음"
+
+msgid "未知"
+msgstr "알 수 없음"
+
+msgid "无"
+msgstr "없음"
+
+msgid "当前正在执行的任务:"
+msgstr "현재 실행 중인 작업:"
+
+msgid "异常信息:"
+msgstr "예외 정보:"
+
+msgid "--- 第 {round} 轮 (账号: {account}) ---"
+msgstr "--- {round}회차 (계정: {account}) ---"
+
+msgid "开始录制动作"
+msgstr "동작 녹화 시작"
+
+msgid "停止录制并生成流程"
+msgstr "중지하고 흐름 생성"
+
+msgid "录制会按当前游戏窗口换算坐标；录制期间请在游戏里正常操作，停止后自动生成流程"
+msgstr "좌표는 현재 게임 창 기준으로 변환됩니다. 녹화 중에는 게임에서 평소처럼 조작하세요. 중지하면 흐름이 자동으로 생성됩니다."
+
+msgid "正在录制：请在游戏里操作，录完点「停止录制并生成流程」"
+msgstr "녹화 중: 게임에서 조작한 뒤 「중지하고 흐름 생성」을 누르세요"
+
+msgid "没有录到任何操作（检查游戏窗口是否已连接）"
+msgstr "기록된 동작이 없습니다 (게임 창이 연결되었는지 확인하세요)"
+
+msgid "没有录到任何操作"
+msgstr "기록된 동작이 없습니다"
+
+msgid "录制功能不可用：{error}"
+msgstr "녹화 기능을 사용할 수 없습니다: {error}"
+
+msgid "开始录制失败：{error}"
+msgstr "녹화 시작 실패: {error}"
+
+msgid "停止录制失败：{error}"
+msgstr "녹화 중지 실패: {error}"
+
+msgid "生成流程失败：{error}"
+msgstr "흐름 생성 실패: {error}"
+
+msgid "录制结束：{summary}"
+msgstr "녹화 종료: {summary}"
+
+msgid "有任务正在运行（{name}），先停止任务再录制"
+msgstr "작업이 실행 중입니다({name}). 먼저 중지한 뒤 녹화하세요"
+
+msgid "悬浮窗"
+msgstr "플로팅 창"
+
+msgid "预计剩余"
+msgstr "남은 시간"
+
+msgid "空闲"
+msgstr "대기 중"
+
+msgid "显示悬浮窗（图标可拖动，点一下展开任务队列）"
+msgstr "플로팅 창 표시 (아이콘을 끌어 이동, 클릭하면 작업 목록)"
+
+msgid "悬浮图标大小"
+msgstr "아이콘 크기"
+
+msgid "面板宽度"
+msgstr "패널 너비"
+
+msgid "面板高度"
+msgstr "패널 높이"
+
+msgid "圆角"
+msgstr "모서리 반경"
+
+msgid "背景颜色"
+msgstr "배경색"
+
+msgid "选择颜色"
+msgstr "색 선택"
+
+msgid "选择悬浮窗背景颜色"
+msgstr "플로팅 창 배경색 선택"
+
+msgid "不透明度"
+msgstr "불투명도"
+
+msgid "在悬浮窗里显示任务队列"
+msgstr "플로팅 창에 작업 목록 표시"
+
+msgid "最多显示"
+msgstr "최대 표시"
+
+msgid "项"
+msgstr "개"
+
+msgid "保存并应用"
+msgstr "저장 및 적용"
+
+msgid "恢复默认位置与大小"
+msgstr "위치와 크기 초기화"
+
+msgid "悬浮窗显示当前任务与队列里每一项的预计用时；数据来自运行记录与队列执行器。"
+msgstr "플로팅 창은 현재 작업과 대기열 각 항목의 예상 소요 시간을 표시합니다(실행 기록과 대기열 실행기 기반)."
+
+msgid "当前状态"
+msgstr "현재 상태"
+
+msgid "当前任务"
+msgstr "현재 작업"
+
+msgid "队列"
+msgstr "대기열"
+
+msgid "无队列"
+msgstr "대기열 없음"
+
+msgid "已保存悬浮窗设置"
+msgstr "플로팅 창 설정을 저장했습니다"
+
+msgid "已保存；重启程序后生效"
+msgstr "저장했습니다. 재시작 후 적용됩니다"
+
+msgid "已恢复默认位置与大小"
+msgstr "위치와 크기를 초기화했습니다"

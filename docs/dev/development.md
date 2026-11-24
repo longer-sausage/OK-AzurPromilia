@@ -14,12 +14,19 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
 |------|------|
 | `main.py` / `main_debug.py` | 入口（Release / Debug）。启动前先装 `src/patches/` |
 | `src/config.py` | ok-script 应用配置：窗口、OCR、模板匹配、任务与 Tab 注册 |
-| `src/core/base_game_task.py` | **任务基类**：暂停感知计时、配置迁移、异常处理、配置分组 |
+| `src/core/base_game_task.py` | **任务基类**：暂停感知计时、配置迁移、异常处理、配置分组（运行期策略/卡死/失败帧/自恢复都在 `src/core/base_mixin/agent_mixin.py`，基类只调 4 处一行钩子） |
 | `src/core/base_mixin/runtime_mixin.py` | 通用能力库：分辨率映射、点击验证、YOLO 检测、画面稳定判定、键鼠 |
 | `src/core/base_mixin/framework_override_mixin.py` | 用"同名覆写 + `super()`"扩展框架方法（不复制框架代码） |
 | `src/core/detector/` | **识别层**：把四类识别源（模板 / YOLO / OCR / 按钮）归一成统一判据 `Hit` / `Detector`，供 Action 生命周期编排使用 |
 | `src/core/config_migration.py` | 配置键迁移工具（改键名时使用，防丢用户配置） |
 | `src/core/global_config_store.py` | 本项目自建的全局配置（**不走框架的 `config['global_configs']`**） |
+| `src/core/runtime_config.py` | 全局运行策略：超时 / 重试 / 卡死检测 / 失败自恢复 / 低配模式（见 [识别诊断与运行策略](diagnostics_and_policy.md)） |
+| `src/core/failure_frame_store.py` | 失败帧库：任务失败时的**识别原始帧**落到 `failure_frames/` + `index.json` 索引 |
+| `src/core/template_rescorer.py` | 全模板打分：一帧跑全部模板并按得分排序（失败帧复测） |
+| `src/core/asset_pack.py` | 素材包热更新：逐文件 SHA-256 校验 → 临时目录 → 原子替换 → 时间戳备份 / 回滚 |
+| `src/core/flow/` | JSON 流程：模型与校验（`model.py`）、执行器与断点（`executor.py`）、录制转流程（`recording.py`）；详见 [流程、队列与配置档](flows_and_queues.md) |
+| `src/core/queue/` | 任务队列：模型与存取（`model.py`）、执行器（`runner.py`，预算与失败策略） |
+| `src/core/profile_store.py` | 配置档：`configs/` 快照，应用前自动备份，不删档外文件 |
 | `src/interaction/` | 窗口与键鼠：`GameInteraction`（自定义后台输入）、`Mouse`、`ScreenPosition`、`KeyConfig` |
 | `src/image/` | 图像算法：`rotated_template`（旋转模板匹配）、`stability`（图像指纹）、`frame_processes`、`hsv_config`、`button_detector`（固定 Box 按钮检测，无 OCR）、`glow_target_detector`（可射击光圈，HSV+圆弧拟合）、`treasure_band_detector`（开锁颜色带，HSV+连通域）、`rhythm_detector`（音游音符及长条头尾）、`jenga_detector`（祖赞卡之梯的悬挂图腾与塔顶） |
 | `src/yolo/` | YOLO 模型注册（`models.py`）与 OpenVINO 推理 |
@@ -28,7 +35,7 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
 | `src/tasks/test/` | 调试/测试任务 |
 | `src/tasks/daily/` | 多步骤任务的编排（四态统计、失败标记、分账号轮次、汇总报告） |
 | `src/tasks/account/` | 账号作用域配置存储 |
-| `src/gui/` | 自定义 Tab（全局配置页、账号配置页） |
+| `src/gui/` | 自定义 Tab（全局配置页、账号配置页、流程与队列页、工具与诊断页） |
 | `src/patches/` | 启动补丁。**是对框架内部实现的猴子补丁，升级 ok-script 前必须逐个复核** |
 | `src/data/feature_list.py` | 模板名枚举（**由标注自动生成**，代码里不要写裸字符串模板名） |
 | `src/data/lang/` | `assets/lang/*.json` 的读取器 |
@@ -554,6 +561,13 @@ class MyTask(BaseGameTask):
 - **OCR 匹配文本**：放进 `assets/lang/<模块>.json`，每 key 下 6 种语言节点，
   代码用 `self.lang.<模块>.<key>` 读取。
 
+  ⚠️ **缺语种不会报错**：`LangAccessor` 的回退链是「当前语言 → `zh_CN`/`zh_TW` → 第一个可用语言」，
+  所以少一个日语节点时，日服客户端上拿到的是**中文原文**，OCR 匹配不到但日志干净、测试全绿。
+  `tests/test_lang_json.py` 因此强制「每个 key 6 语种都非空」，只允许**显式登记**的例外
+  （`KNOWN_GAPS`，要写原因；补上翻译后必须删条目，否则那条测试会红）。
+  目前唯一例外是 `home.json:little_bobo`（只确认了简中「小份波波饼」，其它语言译名待确认）。
+  文件里可以写 `_note` 之类的说明键，读取器与同步脚本都会跳过。
+
 其它相关工具：
 
 ```bash
@@ -561,6 +575,9 @@ python tools/gen_lang_stubs.py          # 重新生成 src/data/lang/_lang_typed
 python scripts/lang_fill_missing.py     # 补全 assets/lang/*.json 缺失语言（--dry-run 可预览）
 python tools/repair_po_locales.py --apply   # 修复 .po 中语言写错的条目
 ```
+
+`lang_fill_missing.py` 只补「索引里能唯一确定」的译文（同一原文对应多个译文就跳过，不猜），
+并且容忍文件里的说明键/坏节点（`tests/test_lang_fill_missing_script.py` 守着）。
 
 ## 测试
 
@@ -570,6 +587,39 @@ python tools/repair_po_locales.py --apply   # 修复 .po 中语言写错的条�
 
 > ⚠️ 不要用 `python -m ok.test.RunTests` —— 它在跑完测试后会在 `ok.quit()` 处抛
 > `AttributeError`，退出码非 0。
+
+除了功能测试，还有两类**体检**：
+
+```bash
+uv run python -m unittest tests.test_imports tests.test_gui_tabs   # 静态引用 + 离屏构建所有页
+uv run python -m unittest tests.test_patch_install                 # 16 个启动补丁装得上、装两次也安全
+uv run python tools/health_check.py             # 流程/队列/方案/路线/配置/i18n 全查
+```
+
+- `tests/test_patch_install.py` 在**子进程**里把 16 个 `install_*` 各调两次（离屏 Qt）：
+  补丁会改框架类行为，同进程里装会影响其它测试，所以隔离跑。它能抓到「补丁函数名改了
+  但启动顺序没改（静默跳过）」「新框架版本里属性没了导致安装抛异常」「不幂等（套两层包装）」；
+  另有一条静态检查确认 `install_startup_patches()` 真的调用了每一个；
+
+- `tests/test_gui_tabs.py` 用 Qt 的 **offscreen** 平台把 9 个自定义页真实构造 + build 一遍
+  （不弹窗、CI 也能跑），并检查每页的 name/icon 能取到——静态检查只能确认名字存在，
+  确认不了这一段构造代码跑不跑得通；另有一组用例验证**按扩展名分流**的按钮真的分流了
+  （养成「导入数据」：`.csv/.tsv` 走表格解析、`.json` 走直投校验、取消时不做事）——
+  这类「过滤器加了但处理函数没改」的漏法，只有把按钮真的点一次才会露出来；
+- `tests/test_repo_hygiene.py` 静态扫 `tests/` 里 `FailureFrameStore()` / `CheckpointStore()` /
+  `Ledger()` / `RunLog()` 这种**一个路径都不给**的构造（不给路径就会写进仓库根）；
+  CI 还有一条 `git status --porcelain` 门禁兜住没想到的写法——真实事故是养成导入的备份
+  默认落仓库，8 个 `growth_*.json` 被 `git add -A` 一起提交了；
+- 「导入体检」能抓到 GUI 页/补丁里拼错的名字——这类错误否则要等用户点开那一页才炸；
+  它顺带还查这几类「只有跑到那一步才会炸」的引用：
+  - 流程 `ACTION_ALLOWLIST` 里每个动作在 `BaseGameTask` 上真的存在（`dodge` 就曾经只有名字）；
+  - 代码里每个 `FeatureList.xxx` 都能取到（docstring 里的例子不算）；
+  - 全局配置项 key 不重名（重名会互相覆盖，改了没生效又查不出来）；
+  - 图标名 `FluentIcon.xxx` / `Icons.xxx` 都存在（`CALCULATOR`、`HEALTH` 都踩过）；
+  - 代码里每条字面量 `tr()` 文案在 6 个语种都有翻译，且译文的 `{占位符}` 与 msgid 一致
+    （对不上会在 `.format()` 时 `KeyError`）；
+- 「安装自检」见 [识别诊断与运行策略](diagnostics_and_policy.md) §9，也可以在
+  「工具与诊断 → 安装自检」里点按钮跑。
 
 写视觉/任务逻辑的测试时用框架的 `TaskTestCase` + `set_image()`（静态图驱动），
 它可以断言"识别结果"与"决策方向"，但不能断言真实输入效果。
@@ -584,6 +634,18 @@ uv run python main_debug.py    # Debug（更多日志、overlay、热重载）
 
 命令行参数只有三个：`-t <1 起的序号>`、`-e`（跑完退出）、`-h`（headless）。
 注意 `-t` **只接受序号**，不接受任务名。
+
+### 启动时这两行日志是正常的
+
+实际 headless 跑一次 `main_debug.py` 会看到：
+
+| 日志 | 含义 | 要不要处理 |
+|------|------|-----------|
+| `TaskExecutor:install ocr translations error for <lang>` | 框架在找 `i18n/<lang>/LC_MESSAGES/ocr.mo`（OCR 文本纠错目录），本项目**故意不提供**——识别文本按 `assets/lang/*.json` 的多语言 pattern 匹配，不用这层 gettext 纠错 | 不用，功能不受影响 |
+| `setHighDpiScaleFactorRoundingPolicy must be called before creating the QGuiApplication instance` | 框架自己在 `QApplication()` 之后才设 DPI 取整策略，被 Qt 忽略。本项目在入口（`main.py` / `main_debug.py`）最前面调用 `apply_high_dpi_policy()`，**真正生效的是我们这次**（`tests/test_dpi_policy.py` 断言了策略确实是 `PassThrough`） | 不用，只是框架那行警告消不掉 |
+
+顺带：`app_dpi 1.0 / devicePixelRatio 1.0` 在离屏与无缩放环境下是 1.0，150% 缩放的机器上
+会变成 1.5——HUD 与坐标拾取都用逻辑像素换算，不受影响。
 
 ## 发布
 

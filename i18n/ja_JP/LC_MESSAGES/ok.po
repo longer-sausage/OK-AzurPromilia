@@ -174,15 +174,1318 @@ msgid "每日收菜"
 msgstr "デイリー報酬受け取り"
 
 msgid "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡"
-msgstr ""
-"デイリー報酬受け取りを実行：メール、サプライズボックス、デイリー/ウィークリー"
-"活躍度、月間カード"
+msgstr "デイリー報酬受け取りを実行：メール、サプライズボックス、デイリー/ウィークリー活躍度、月間カード"
 
 msgid "委托每日"
 msgstr "依頼デイリー"
 
 msgid "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
-msgstr ""
-"依頼デイリーを実行：体力を消費して選択したデイリー依頼を周回（先にオートバトル"
-"の解放が必要）"
+msgstr "依頼デイリーを実行：体力を消費して選択したデイリー依頼を周回（先にオートバトルの解放が必要）"
 
+msgid "工具与诊断"
+msgstr "ツールと診断"
+
+msgid "失败帧复测"
+msgstr "失敗フレームの再テスト"
+
+msgid "失败帧列表"
+msgstr "失敗フレーム一覧"
+
+msgid "刷新"
+msgstr "更新"
+
+msgid "打开目录"
+msgstr "フォルダーを開く"
+
+msgid "清空"
+msgstr "クリア"
+
+msgid "复测全部模板"
+msgstr "すべてのテンプレートを再テスト"
+
+msgid "复测中…正在用这一帧跑全部模板"
+msgstr "再テスト中…このフレームで全テンプレートを実行しています"
+
+msgid "请选择一个失败帧"
+msgstr "失敗フレームを選択してください"
+
+msgid "未识别到可用的模板特征集，请先连接游戏"
+msgstr "利用可能なテンプレートセットがありません。先にゲームに接続してください"
+
+msgid "模板"
+msgstr "テンプレート"
+
+msgid "得分"
+msgstr "スコア"
+
+msgid "阈值"
+msgstr "しきい値"
+
+msgid "判定"
+msgstr "判定"
+
+msgid "位置"
+msgstr "位置"
+
+msgid "素材包安装"
+msgstr "素材パックのインストール"
+
+msgid "素材包路径或 URL"
+msgstr "パックのパスまたは URL"
+
+msgid "本地 zip 路径，或 http(s) 直链"
+msgstr "ローカル zip パスまたは http(s) 直リンク"
+
+msgid "浏览…"
+msgstr "参照…"
+
+msgid "安装"
+msgstr "インストール"
+
+msgid "安装前会逐个校验 SHA-256；校验不通过不会改动任何文件，旧素材会带时间戳备份。"
+msgstr ""
+"インストール前に各ファイルの SHA-256 を検証します。検証に失敗した場合は何も変更せず、旧素材はタイムスタンプ付きでバックアップされます。"
+
+msgid "失败帧库为空：任务失败时会自动保存识别帧"
+msgstr "失敗フレームはまだありません。タスク失敗時に認識フレームが自動保存されます"
+
+msgid "复测完成：{summary}"
+msgstr "再テスト完了：{summary}"
+
+msgid "复测失败：{error}"
+msgstr "再テスト失敗：{error}"
+
+msgid "已清空 {count} 个失败帧"
+msgstr "失敗フレームを {count} 件削除しました"
+
+msgid "无法打开目录：{error}"
+msgstr "フォルダーを開けません：{error}"
+
+msgid "安装失败：{error}"
+msgstr "インストール失敗：{error}"
+
+msgid "正在校验素材包…"
+msgstr "素材パックを検証中…"
+
+msgid "正在下载素材包…"
+msgstr "素材パックをダウンロード中…"
+
+msgid "请填写素材包路径或 URL"
+msgstr "素材パックのパスまたは URL を入力してください"
+
+msgid "{time}　{task}　{width}×{height}　{message}"
+msgstr "{time}　{task}　{width}×{height}　{message}"
+
+msgid "未知任务"
+msgstr "不明なタスク"
+
+msgid "选择素材包"
+msgstr "素材パックを選択"
+
+msgid "素材包文件 (*.zip)"
+msgstr "素材パック (*.zip)"
+
+msgid "自动化策略"
+msgstr "自動化ポリシー"
+
+msgid "超时、重试与失败自恢复策略"
+msgstr "タイムアウト・再試行・失敗時の自動復帰"
+
+msgid "单步超时(秒)"
+msgstr "ステップのタイムアウト (秒)"
+
+msgid "重试间隔(秒)"
+msgstr "再試行の間隔 (秒)"
+
+msgid "动作后等待(秒)"
+msgstr "動作後の待機 (秒)"
+
+msgid "卡死检测阈值(秒)"
+msgstr "フリーズ検出のしきい値 (秒)"
+
+msgid "低配模式"
+msgstr "低スペックモード"
+
+msgid "失败后自动返回主菜单"
+msgstr "失敗後にメインメニューへ自動で戻る"
+
+msgid "最大返回次数"
+msgstr "戻るキーの最大回数"
+
+msgid "失败帧保留数量"
+msgstr "失敗フレームの保存件数"
+
+msgid "单个等待/轮询步骤的默认超时；任务里显式传超时的位置不受影响"
+msgstr "1 つの待機・ポーリング処理の既定タイムアウト。明示的に指定している箇所には影響しません"
+
+msgid "条件没满足时两次重试之间的间隔（与 wait_until_check_delay 取较大值），0 表示不额外等待"
+msgstr "条件を満たさないときの再試行間隔（wait_until_check_delay との大きい方）。0 は追加待機なし"
+
+msgid "失败自恢复时每次按返回键后的等待；0 表示用框架的默认间隔"
+msgstr "失敗復帰時に戻るキーを押した後の待機。0 はフレームワーク既定値"
+
+msgid "画面长时间不变（判定为可能卡死）的阈值，只记录警告不中止任务"
+msgstr "画面が長時間変化しない（フリーズの可能性）と判断するしきい値。警告を記録するだけでタスクは中止しません"
+
+msgid "低配机器：所有超时统一放宽 1.5 倍，卡死阈值同步放宽"
+msgstr "低スペック環境向け：すべてのタイムアウトを 1.5 倍に、フリーズ判定もしきい値も同様に緩めます"
+
+msgid "任务失败后自动按返回键退回主菜单，只退菜单不重跑任务"
+msgstr "タスク失敗後に戻るキーでメインメニューへ戻します。タスクの再実行はしません"
+
+msgid "失败后最多按几次返回键"
+msgstr "失敗後に戻るキーを押す最大回数"
+
+msgid "失败帧库最多保留多少帧，超出后丢弃最旧的"
+msgstr "失敗フレームを保存する最大件数。超えた分は古い順に削除されます"
+
+msgid "流程与队列"
+msgstr "フローとキュー"
+
+msgid "新队列"
+msgstr "新しいキュー"
+
+msgid "流程"
+msgstr "フロー"
+
+msgid "任务队列"
+msgstr "タスクキュー"
+
+msgid "配置档"
+msgstr "プロファイル"
+
+msgid "还没有流程文件：用「导入 JSON」或「从录制 JSON 生成」创建"
+msgstr "フローがまだありません。「JSON をインポート」か「録画 JSON から生成」で作成してください"
+
+msgid "队列在「流程 / 队列」任务里执行：任务类型选「执行队列」并填队列名字"
+msgstr "キューは「フロー / キュー」タスクで実行します。タスク種別で「キューを実行」を選び、キュー名を入力してください"
+
+msgid "新配置档名字"
+msgstr "新しいプロファイル名"
+
+msgid "保存当前配置"
+msgstr "現在の設定を保存"
+
+msgid "应用"
+msgstr "適用"
+
+msgid "删除"
+msgstr "削除"
+
+msgid "应用配置档前会自动把当前 configs/ 备份到 configs/profiles/.backup_<时间戳>/"
+msgstr ""
+"プロファイルを適用する前に、現在の configs/ を configs/profiles/.backup_<タイムスタンプ>/ "
+"に自動でバックアップします"
+
+msgid "（没有流程）"
+msgstr "（フローなし）"
+
+msgid "（没有队列）"
+msgstr "（キューなし）"
+
+msgid "（没有配置档）"
+msgstr "（プロファイルなし）"
+
+msgid "选择流程 JSON"
+msgstr "フロー JSON を選択"
+
+msgid "JSON 文件 (*.json)"
+msgstr "JSON ファイル (*.json)"
+
+msgid "选择录制 JSON"
+msgstr "録画 JSON を選択"
+
+msgid "流程文件"
+msgstr "フローファイル"
+
+msgid "校验"
+msgstr "検証"
+
+msgid "导入 JSON"
+msgstr "JSON をインポート"
+
+msgid "从录制 JSON 生成"
+msgstr "録画 JSON から生成"
+
+msgid "队列文件"
+msgstr "キューファイル"
+
+msgid "新建模板"
+msgstr "テンプレートを作成"
+
+msgid "还没有流程文件"
+msgstr "フローがまだありません"
+
+msgid "用「导入 JSON」或「从录制 JSON 生成」创建第一份流程"
+msgstr "「JSON をインポート」か「録画 JSON から生成」で最初のフローを作成してください"
+
+msgid "断点：无"
+msgstr "チェックポイント：なし"
+
+msgid "没有选中流程"
+msgstr "フローが選択されていません"
+
+msgid "校验通过，没有发现问题"
+msgstr "検証に合格しました。問題はありません"
+
+msgid "校验完成：{errors} 个错误"
+msgstr "検証完了：{errors} 件のエラー"
+
+msgid "录制文件里没有 events 数组"
+msgstr "録画ファイルに events 配列がありません"
+
+msgid "还没有队列文件"
+msgstr "キューがまだありません"
+
+msgid "（已禁用）"
+msgstr "（無効）"
+
+msgid "不限时"
+msgstr "時間制限なし"
+
+msgid "没有选中队列"
+msgstr "キューが選択されていません"
+
+msgid "队列校验通过：{enabled} 项启用"
+msgstr "キューの検証に合格しました：{enabled} 件有効"
+
+msgid "示例队列：把一条龙和流程串起来"
+msgstr "サンプルキュー：デイリー一式とフローをつなげます"
+
+msgid "请填写配置档名字"
+msgstr "プロファイル名を入力してください"
+
+msgid "没有选中配置档"
+msgstr "プロファイルが選択されていません"
+
+msgid "共 {steps} 步，嵌套 {depth} 层，容器 {containers} 个"
+msgstr "{steps} ステップ、ネスト {depth} 階層、コンテナ {containers} 個"
+
+msgid "已导入流程：{name}"
+msgstr "フローをインポートしました：{name}"
+
+msgid "已生成流程 {name}：{summary}"
+msgstr "フローを作成しました：{name} — {summary}"
+
+msgid "已删除流程：{name}"
+msgstr "フローを削除しました：{name}"
+
+msgid "失败策略：{policy}"
+msgstr "失敗時の方針：{policy}"
+
+msgid "启用 {enabled} 项，总预算 {budget} 分钟"
+msgstr "{enabled} 件有効、合計予算 {budget} 分"
+
+msgid "已创建空队列模板：{name}"
+msgstr "空のキューテンプレートを作成しました：{name}"
+
+msgid "已删除队列：{name}"
+msgstr "キューを削除しました：{name}"
+
+msgid "已保存配置档：{name}"
+msgstr "プロファイルを保存しました：{name}"
+
+msgid "断点：已完成 {completed}/{total} 个顶层步骤，任务里勾「从断点继续」即可续跑"
+msgstr ""
+"チェックポイント：{completed}/{total} 個の最上位ステップが完了。タスクで「チェックポイントから再開」をオンにすると続行できます"
+
+msgid "失败即停"
+msgstr "失敗で停止"
+
+msgid "失败后继续"
+msgstr "失敗しても続行"
+
+msgid "已删除配置档：{name}"
+msgstr "プロファイルを削除しました：{name}"
+
+msgid "导入失败：{error}"
+msgstr "インポート失敗：{error}"
+
+msgid "读取录制失败：{error}"
+msgstr "録画の読み込みに失敗：{error}"
+
+msgid "删除失败：{error}"
+msgstr "削除失敗：{error}"
+
+msgid "流程 / 队列"
+msgstr "フロー / キュー"
+
+msgid "按 JSON 流程逐步操作游戏，或按队列依次执行多个流程/任务。流程与队列文件在「流程与队列」页里管理。"
+msgstr ""
+"JSON "
+"フローでゲームを段階的に操作するか、キューで複数のフロー／タスクを順に実行します。フローとキューのファイルは「フローとキュー」ページで管理します。"
+
+msgid "任务类型"
+msgstr "タスク種別"
+
+msgid "从断点继续"
+msgstr "チェックポイントから再開"
+
+msgid "预算(分钟)"
+msgstr "予算 (分)"
+
+msgid "执行流程：跑一份 JSON 流程；执行队列：按顺序跑队列里的每一项"
+msgstr "フローを実行：1 つの JSON フローを実行します。キューを実行：キューの各項目を順に実行します"
+
+msgid "configs/flows 下的文件名（不带 .json）"
+msgstr "configs/flows 下のファイル名（.json を除く）"
+
+msgid "configs/queues 下的文件名（不带 .json）"
+msgstr "configs/queues 下のファイル名（.json を除く）"
+
+msgid "只对流程生效：跳过上次已经跑完的顶层步骤"
+msgstr "フローのみ有効：前回完了した最上位ステップを飛ばします"
+
+msgid "流程里某一步失败后是否继续后面的步骤"
+msgstr "ステップが失敗した後、続きのステップを実行するか"
+
+msgid "0 表示不限；流程会被预算打断，任务类只能事后标记"
+msgstr "0 は無制限。フローは予算で打ち切られ、タスクは事後に記録されるだけです"
+
+msgid "离线工具"
+msgstr "オフラインツール"
+
+msgid "养成计算"
+msgstr "育成計算"
+
+msgid "抽卡分析"
+msgstr "ガチャ分析"
+
+msgid "记账与报表"
+msgstr "記帳とレポート"
+
+msgid "还没有目标：选好参数后点「添加目标」"
+msgstr "目標がありません。パラメータを設定して「目標を追加」を押してください"
+
+msgid "每行一个：材料=数量，例如 尤尼=20000"
+msgstr "1 行に 1 つ：素材=数量（例：ユニ=20000）"
+
+msgid "可选：2.8%,28.8%,100% 这样的表，长度需等于硬保底"
+msgstr "任意：2.8%,28.8%,100% のような表。長さは天井回数と同じにしてください"
+
+msgid "计算"
+msgstr "計算"
+
+msgid "例如：获得的奖励：尤尼 ×1,500 / 12 × 波力果 / 消耗：星脉结晶 ×3"
+msgstr "例：獲得報酬：ユニ ×1,500 / 12 × ポリの実 / 消費：星脈結晶 ×3"
+
+msgid "计算完成"
+msgstr "計算完了"
+
+msgid "材料清单："
+msgstr "素材一覧："
+
+msgid "保存养成材料单"
+msgstr "育成素材リストを保存"
+
+msgid "运行报表："
+msgstr "実行レポート："
+
+msgid "导出 CSV"
+msgstr "CSV を書き出す"
+
+msgid "CSV 文件 (*.csv)"
+msgstr "CSV ファイル (*.csv)"
+
+msgid "养成目标"
+msgstr "育成目標"
+
+msgid "起始等级"
+msgstr "開始レベル"
+
+msgid "目标等级"
+msgstr "目標レベル"
+
+msgid "份数"
+msgstr "個数"
+
+msgid "潜能等级"
+msgstr "潜在能力レベル"
+
+msgid "升星"
+msgstr "星上げ"
+
+msgid "添加目标"
+msgstr "目標を追加"
+
+msgid "清空目标"
+msgstr "目標をクリア"
+
+msgid "导出 PNG"
+msgstr "PNG を書き出す"
+
+msgid "重新载入数据"
+msgstr "データを再読み込み"
+
+msgid "库存"
+msgstr "所持数"
+
+msgid "目标份数"
+msgstr "目標個数"
+
+msgid "已垫抽数"
+msgstr "既存の天井カウント"
+
+msgid "预算抽数"
+msgstr "予算の回数"
+
+msgid "出目标概率"
+msgstr "目標が出る確率"
+
+msgid "自定义概率表"
+msgstr "カスタム確率表"
+
+msgid "把结算界面的文字粘进来记账；要直接识别画面，请在任务列表运行「结算记账」。"
+msgstr "精算画面のテキストを貼り付けて記帳します。画面を直接読み取るにはタスク一覧で「精算記帳」を実行してください。"
+
+msgid "记账"
+msgstr "記帳"
+
+msgid "刷新统计"
+msgstr "統計を更新"
+
+msgid "导出记账 CSV"
+msgstr "記帳 CSV を書き出す"
+
+msgid "导出报表 CSV"
+msgstr "レポート CSV を書き出す"
+
+msgid "没有可用的养成目标"
+msgstr "利用できる育成目標がありません"
+
+msgid "请先添加至少一个目标"
+msgstr "先に目標を 1 つ以上追加してください"
+
+msgid "请先点「计算」"
+msgstr "先に「計算」を押してください"
+
+msgid "PNG 图片 (*.png)"
+msgstr "PNG 画像 (*.png)"
+
+msgid "请先粘贴结算文字"
+msgstr "先に精算テキストを貼り付けてください"
+
+msgid "  还没有运行记录"
+msgstr "  実行記録はまだありません"
+
+msgid "今日明细："
+msgstr "本日の内訳："
+
+msgid "（没有可用数据）"
+msgstr "（利用できるデータなし）"
+
+msgid "没有可用的养成数据"
+msgstr "利用できる育成データがありません"
+
+msgid "已选 {count} 个目标：{items}"
+msgstr "{count} 個の目標を選択：{items}"
+
+msgid "货币凑法："
+msgstr "通貨の組み方："
+
+msgid "经验道具："
+msgstr "経験値アイテム："
+
+msgid "已导出：{path}"
+msgstr "書き出しました：{path}"
+
+msgid "软保底关键点：71 抽 {p71}、81 抽 {p81}、90 抽必出"
+msgstr "ソフト天井の要点：71 回 {p71}、81 回 {p81}、90 回は確定"
+
+msgid "参数：目标 {copies} 份，已垫 {pity} 抽，出目标 {rate}"
+msgstr "パラメータ：目標 {copies} 個、既存 {pity} 回、目標確率 {rate}"
+
+msgid "手动记账"
+msgstr "手動記帳"
+
+msgid "已记录 {count} 条"
+msgstr "{count} 件を記録しました"
+
+msgid "今日：收入 {income:g} / 支出 {expense:g}"
+msgstr "本日：収入 {income:g} / 支出 {expense:g}"
+
+msgid "累计：收入 {income:g} / 支出 {expense:g} / 净 {net:g}"
+msgstr "累計：収入 {income:g} / 支出 {expense:g} / 純計 {net:g}"
+
+msgid "  共 {count} 次，成功 {success} 次，成功率 {rate:.1f}%，平均 {avg:.0f} 秒"
+msgstr "  計 {count} 回、成功 {success} 回、成功率 {rate:.1f}%、平均 {avg:.0f} 秒"
+
+msgid "数据载入成功：{summary}（共 {total} 个目标）"
+msgstr "データを読み込みました：{summary}（全 {total} 件）"
+
+msgid "导出失败：{error}"
+msgstr "書き出し失敗：{error}"
+
+msgid "结算记账"
+msgstr "精算記帳"
+
+msgid "识别结算界面（或任意物品列表界面）上的「物品 ×数量」，把收益记进 ledger.jsonl，并给出今日与累计收支。"
+msgstr "精算画面（または任意のアイテム一覧）の「アイテム ×数量」を読み取り、ledger.jsonl に記録して、本日と累計の収支を表示します。"
+
+msgid "记录来源"
+msgstr "記録元"
+
+msgid "最低置信度"
+msgstr "最低信頼度"
+
+msgid "写进记账本的来源标记，用来区分结算 / 手动 / 商店等场景"
+msgstr "記帳帳簿に書き込む出所タグ。精算・手動・ショップなどを区別します"
+
+msgid "OCR 置信度低于该值的文本会被丢弃，0 表示全部保留"
+msgstr "この信頼度を下回る OCR テキストは破棄されます。0 はすべて保持"
+
+msgid "一条龙顺序"
+msgstr "デイリーの実行順"
+
+msgid "保存顺序与开关"
+msgstr "順序とスイッチを保存"
+
+msgid "拖动任务调整顺序；勾选框控制该项是否执行。任务运行中不能保存。"
+msgstr "タスクをドラッグして順序を変更します。チェックで実行可否を切り替えます。タスク実行中は保存できません。"
+
+msgid "一键日常的执行顺序"
+msgstr "一括デイリーの実行順"
+
+msgid "已载入当前顺序；拖动或勾选后点「保存」"
+msgstr "現在の順序を読み込みました。ドラッグまたはチェックの後に「保存」を押してください"
+
+msgid "已恢复默认顺序（记得点保存）"
+msgstr "既定の順序に戻しました（保存を忘れずに）"
+
+msgid "顺序已保存"
+msgstr "順序を保存しました"
+
+msgid "上移"
+msgstr "上へ"
+
+msgid "下移"
+msgstr "下へ"
+
+msgid "恢复默认"
+msgstr "既定に戻す"
+
+msgid "没有找到「一键日常」任务，无法编辑顺序"
+msgstr "「一括デイリー」タスクが見つからないため、順序を編集できません"
+
+msgid "没有找到「一键日常」任务"
+msgstr "「一括デイリー」タスクが見つかりません"
+
+msgid "任务正在运行，先停止再改顺序"
+msgstr "タスクが実行中です。停止してから順序を変更してください"
+
+msgid "列表是空的"
+msgstr "リストが空です"
+
+msgid "已保存：{order}"
+msgstr "保存しました：{order}"
+
+msgid "保存失败：{error}"
+msgstr "保存失敗：{error}"
+
+msgid "导航路线"
+msgstr "ナビルート"
+
+msgid "按保存好的路线逐个航点导航/等待/点击，跑通一次就能存下来复用。路线文件在 configs/routes 下。"
+msgstr ""
+"保存したルートを航点ごとにナビゲート／待機／クリックします。一度通れば保存して再利用できます。ルートファイルは configs/routes "
+"にあります。"
+
+msgid "路线文件"
+msgstr "ルートファイル"
+
+msgid "configs/routes 下的文件名（不带 .json）"
+msgstr "configs/routes 下のファイル名（.json を除く）"
+
+msgid "跳过上次已经跑完的航点"
+msgstr "前回完了した航点を飛ばします"
+
+msgid "隐私遮挡"
+msgstr "プライバシー保護"
+
+msgid "宽"
+msgstr "幅"
+
+msgid "高"
+msgstr "高さ"
+
+msgid "标签，如 UID / 昵称"
+msgstr "ラベル（例：UID / ニックネーム）"
+
+msgid "UID / 昵称 / 聊天遮挡"
+msgstr "UID / ニックネーム / チャットのマスク"
+
+msgid "已添加 1 块，记得点保存"
+msgstr "1 件追加しました（保存を忘れずに）"
+
+msgid "已删除 1 块，记得点保存"
+msgstr "1 件削除しました（保存を忘れずに）"
+
+msgid "已应用修改，记得点保存"
+msgstr "変更を適用しました（保存を忘れずに）"
+
+msgid "已恢复默认遮挡，记得点保存"
+msgstr "既定のマスクに戻しました（保存を忘れずに）"
+
+msgid "遮挡配置已保存"
+msgstr "マスク設定を保存しました"
+
+msgid "1 秒后取当前鼠标位置与颜色，请把鼠标移到目标位置"
+msgstr "1 秒後にマウス位置と色を取得します。先にマウスを対象へ移動してください"
+
+msgid "纯色"
+msgstr "単色"
+
+msgid "马赛克"
+msgstr "モザイク"
+
+msgid "启用遮挡"
+msgstr "マスク有効"
+
+msgid "关闭遮挡"
+msgstr "マスク無効"
+
+msgid "添加"
+msgstr "追加"
+
+msgid "应用修改"
+msgstr "変更を適用"
+
+msgid "坐标拾取"
+msgstr "座標の取得"
+
+msgid "保存"
+msgstr "保存"
+
+msgid "没有选中遮挡块"
+msgstr "マスクが選択されていません"
+
+msgid "坐标用 1920×1080 参考空间；最多 {max_blocks} 块。遮挡只作用于落盘截图与失败帧。"
+msgstr ""
+"座標は 1920×1080 の基準空間で指定します。最大 {max_blocks} "
+"件。マスクは保存されるスクリーンショットと失敗フレームにのみ適用されます。"
+
+msgid "已载入 {count} 块遮挡"
+msgstr "{count} 件のマスクを読み込みました"
+
+msgid "已保存到 {path}（下次截图生效）"
+msgstr "{path} に保存しました（次回のスクリーンショットから有効）"
+
+msgid "取到客户区 ({x}, {y}) → 参考 ({rx:g}, {ry:g})，颜色 {color}"
+msgstr "クライアント ({x}, {y}) → 基準 ({rx:g}, {ry:g})、色 {color}"
+
+msgid "最多 {max_blocks} 块遮挡"
+msgstr "マスクは最大 {max_blocks} 件"
+
+msgid "诊断包"
+msgstr "診断パッケージ"
+
+msgid "语言包"
+msgstr "言語パック"
+
+msgid "包含截图"
+msgstr "スクリーンショットを含む"
+
+msgid "生成诊断包"
+msgstr "診断パッケージを作成"
+
+msgid "默认不含截图；记账只放合计，不放明细"
+msgstr "既定ではスクリーンショットを含みません。記帳は合計のみで明細は含みません"
+
+msgid "扫描程序目录下的「语言包<代码>」文件夹；应用前自动备份 i18n 与 assets/lang"
+msgstr "アプリのフォルダー内の「語言包<コード>」を走査します。適用前に i18n と assets/lang を自動バックアップします"
+
+msgid "选择保存目录"
+msgstr "保存先フォルダーを選択"
+
+msgid "把配置、日志、模板清单、失败帧与系统信息打成一个 zip"
+msgstr "設定・ログ・テンプレート一覧・失敗フレーム・システム情報を 1 つの zip にまとめます"
+
+msgid "还原最近备份"
+msgstr "最新のバックアップに戻す"
+
+msgid "（没有找到语言包）"
+msgstr "（言語パックが見つかりません）"
+
+msgid "把「语言包<代码>」文件夹放到程序目录下再刷新"
+msgstr "「語言包<コード>」フォルダーをアプリのフォルダーに置いて再読み込みしてください"
+
+msgid "没有选中语言包"
+msgstr "言語パックが選択されていません"
+
+msgid "没有可用的语言包备份"
+msgstr "利用できる言語パックのバックアップがありません"
+
+msgid "找到 {count} 个语言包；应用前会自动备份 i18n 与 assets/lang"
+msgstr "{count} 個の言語パックを検出しました。適用前に i18n と assets/lang を自動バックアップします"
+
+msgid "已还原 {name}"
+msgstr "{name} に戻しました"
+
+msgid "界面与提醒"
+msgstr "画面とリマインダー"
+
+msgid "关闭行为"
+msgstr "閉じる動作"
+
+msgid "提醒"
+msgstr "リマインダー"
+
+msgid "任务栏进度与快捷键"
+msgstr "タスクバーの進捗とホットキー"
+
+msgid "启用提醒"
+msgstr "リマインダーを有効化"
+
+msgid "每日重置提醒"
+msgstr "毎日のリセット通知"
+
+msgid "体力提醒"
+msgstr "スタミナ通知"
+
+msgid "保存提醒设置"
+msgstr "リマインダー設定を保存"
+
+msgid "在任务栏显示进度"
+msgstr "タスクバーに進捗を表示"
+
+msgid "校验快捷键"
+msgstr "ホットキーを検証"
+
+msgid "保存快捷键"
+msgstr "ホットキーを保存"
+
+msgid "快捷键在程序启动时注册；改完需要重启生效。F9–F12 属于框架的启动/停止，不能再绑定。"
+msgstr "ホットキーは起動時に登録されます。変更後は再起動が必要です。F9–F12 はフレームワークの開始/停止用のため登録できません。"
+
+msgid "设置已载入"
+msgstr "設定を読み込みました"
+
+msgid "关闭行为已保存"
+msgstr "閉じる動作を保存しました"
+
+msgid "提醒设置已保存"
+msgstr "リマインダー設定を保存しました"
+
+msgid "快捷键校验通过"
+msgstr "ホットキーの検証に合格しました"
+
+msgid "快捷键已保存"
+msgstr "ホットキーを保存しました"
+
+msgid "已填入默认快捷键（记得保存）"
+msgstr "既定のホットキーを入力しました（保存を忘れずに）"
+
+msgid "点关闭按钮时"
+msgstr "閉じるボタンを押したとき"
+
+msgid "每次都问"
+msgstr "毎回確認する"
+
+msgid "直接关闭"
+msgstr "すぐ閉じる"
+
+msgid "最小化到托盘"
+msgstr "トレイに最小化"
+
+msgid "重置小时"
+msgstr "リセット時刻"
+
+msgid "间隔（分钟）"
+msgstr "間隔（分）"
+
+msgid "如 ctrl+alt+p"
+msgstr "例：ctrl+alt+p"
+
+msgid "快捷键有问题"
+msgstr "ホットキーに問題があります"
+
+msgid "关闭行为已保存到 {path}"
+msgstr "閉じる動作を {path} に保存しました"
+
+msgid "提醒设置已保存到 {path}（30 秒内生效）"
+msgstr "リマインダー設定を {path} に保存しました（30 秒以内に反映）"
+
+msgid "任务栏进度已{state}"
+msgstr "タスクバーの進捗を{state}"
+
+msgid "快捷键已保存到 {path}，重启后生效"
+msgstr "ホットキーを {path} に保存しました。再起動後に有効になります"
+
+msgid "开启"
+msgstr "有効"
+
+msgid "关闭"
+msgstr "無効"
+
+msgid "快捷键有问题：{issues}"
+msgstr "ホットキーに問題があります：{issues}"
+
+msgid "关闭 ok-ap"
+msgstr "ok-ap を閉じる"
+
+msgid "要完全关闭程序，还是最小化到系统托盘？"
+msgstr "アプリを完全に終了しますか、それともシステムトレイに最小化しますか？"
+
+msgid "完全关闭"
+msgstr "完全に終了"
+
+msgid "收到托盘"
+msgstr "トレイに格納"
+
+msgid "取消"
+msgstr "キャンセル"
+
+msgid "记住我的选择"
+msgstr "選択を記憶する"
+
+msgid "实时辅助"
+msgstr "リアルタイム補助"
+
+msgid "按你设置的按键序列与节奏持续操作，适合需要一直盯着的战斗场景。可选用前置模板限定生效场合。"
+msgstr "設定したキー順とテンポで操作し続けます。常に目を配る必要がある戦闘向け。任意で前提テンプレートを指定できます。"
+
+msgid "按键序列"
+msgstr "キー順"
+
+msgid "动作间隔(秒)"
+msgstr "動作間隔 (秒)"
+
+msgid "前置模板"
+msgstr "前提テンプレート"
+
+msgid "最大连续次数"
+msgstr "1 回あたりの最大回数"
+
+msgid "记录日志"
+msgstr "動作をログに記録"
+
+msgid "_按下时长(秒)"
+msgstr "_押下時間 (秒)"
+
+msgid "逗号分隔，按顺序轮转，例如 q,e,r"
+msgstr "カンマ区切りで順に巡回します（例：q,e,r）"
+
+msgid "两次动作之间的最小间隔，避免连点"
+msgstr "動作間の最小間隔。連打を防ぎます"
+
+msgid "可选：只有该模板出现时才动作（填模板名，如 auto_combat_check）"
+msgstr "任意：このテンプレートが表示されているときだけ動作します（例：auto_combat_check）"
+
+msgid "单次 run 最多按几次，避免长时间占住触发轮转"
+msgstr "1 回の実行での最大押下回数。トリガー巡回を占有し続けないようにします"
+
+msgid "每次动作写一行日志，方便确认节奏"
+msgstr "動作ごとにログを 1 行書き、テンポを確認しやすくします"
+
+msgid "按键按住时长"
+msgstr "キーを押している時間"
+
+msgid "暂停"
+msgstr "一時停止"
+
+msgid "继续"
+msgstr "再開"
+
+msgid "停止"
+msgstr "停止"
+
+msgid "显示 HUD 悬浮条"
+msgstr "HUD バーを表示"
+
+msgid "任务栏进度已{state}，HUD 已{hud}"
+msgstr "タスクバーの進捗は{state}、HUD は{hud}"
+
+msgid "运行中"
+msgstr "実行中"
+
+msgid "已暂停"
+msgstr "一時停止中"
+
+msgid "模板自检"
+msgstr "テンプレート点検"
+
+msgid "开始自检"
+msgstr "点検を開始"
+
+msgid "还没自检；自检只读 assets/coco_annotations.json，不改任何文件"
+msgstr "まだ点検していません。点検は assets/coco_annotations.json を読むだけで、何も変更しません"
+
+msgid "检查全部模板的纹理与重复（纯色块永远匹配不上）"
+msgstr "全テンプレートのテクスチャと重複を点検します（単色ブロックは絶対に一致しません）"
+
+msgid "重复模板："
+msgstr "重複テンプレート："
+
+msgid "自检完成：{summary}"
+msgstr "点検完了：{summary}"
+
+msgid "方案文件"
+msgstr "スキームファイル"
+
+msgid "configs/schemes 下的轮椅方案文件名；单独跑方案时填它"
+msgstr "configs/schemes 下のスキーム名。スキームを単体で実行するときに指定します"
+
+msgid "分享仓库"
+msgstr "共有リポジトリ"
+
+msgid "在线仓库"
+msgstr "オンラインリポジトリ"
+
+msgid "填入索引地址后点「加载」。索引就是一个返回 JSON 的链接，也可以填本地文件路径"
+msgstr "索引のアドレスを入れて「読み込む」を押してください。索引は JSON を返すリンク、またはローカルファイルのパスです"
+
+msgid "https://…/index.json 或本地 index.json 路径"
+msgstr "https://…/index.json またはローカルの index.json パス"
+
+msgid "加载"
+msgstr "読み込む"
+
+msgid "安装选中"
+msgstr "選択項目をインストール"
+
+msgid "允许覆盖同名文件"
+msgstr "同名ファイルの上書きを許可"
+
+msgid "打开流程目录"
+msgstr "フローフォルダーを開く"
+
+msgid "索引已加载"
+msgstr "インデックスを読み込みました"
+
+msgid "索引地址"
+msgstr "インデックスのアドレス"
+
+msgid "类型"
+msgstr "種類"
+
+msgid "名称"
+msgstr "名前"
+
+msgid "说明"
+msgstr "説明"
+
+msgid "标签"
+msgstr "タグ"
+
+msgid "先填索引地址"
+msgstr "先に索引のアドレスを入力してください"
+
+msgid "先在列表里选中一项"
+msgstr "先に一覧から項目を選んでください"
+
+msgid "已加载「{name}」：共 {count} 项（{detail}）"
+msgstr "「{name}」を読み込みました：全 {count} 件（{detail}）"
+
+msgid "没有条目"
+msgstr "項目なし"
+
+msgid "打不开目录：{error}"
+msgstr "フォルダーを開けません：{error}"
+
+msgid "选择养成数据（JSON 或 CSV）"
+msgstr "育成データを選択（JSON または CSV）"
+
+msgid "导入数据"
+msgstr "データをインポート"
+
+msgid "在左边选中一项，这里显示它自己的参数（与默认值不同的部分）"
+msgstr "左で項目を選ぶと、その項目自身の設定（既定値と異なる部分）を表示します"
+
+msgid "打开配置文件"
+msgstr "設定ファイルを開く"
+
+msgid "刷新参数"
+msgstr "設定を更新"
+
+msgid "每项自己的参数"
+msgstr "項目ごとの設定"
+
+msgid "有独立配置文件"
+msgstr "専用の設定ファイルあり"
+
+msgid "还没有独立配置文件"
+msgstr "専用の設定ファイルなし"
+
+msgid "先在左边选中一项"
+msgstr "先に左で項目を選んでください"
+
+msgid "读不到参数：{error}"
+msgstr "設定を読み込めません：{error}"
+
+msgid "打不开配置文件：{error}"
+msgstr "設定ファイルを開けません：{error}"
+
+msgid "{name}（{prefix}）：{line}"
+msgstr "{name}（{prefix}）：{line}"
+
+msgid "安装示例流程"
+msgstr "サンプルフローをインストール"
+
+msgid "安装示例流程失败：{error}"
+msgstr "サンプルフローのインストールに失敗しました：{error}"
+
+msgid "{name} 还需要标注：{names}"
+msgstr "{name} は次のテンプレートの登録が必要です：{names}"
+
+msgid "{name} 所需模板都已存在，可以直接跑"
+msgstr "{name} は必要なテンプレートが揃っているので、そのまま実行できます"
+
+msgid "安装自检"
+msgstr "インストール点検"
+
+msgid "还没自检；自检只读文件，不改任何东西"
+msgstr "まだ点検していません。点検はファイルを読むだけで、何も変更しません"
+
+msgid "把流程 / 队列 / 方案 / 路线 / 配置 / i18n 一起体检一遍"
+msgstr "フロー / キュー / スキーム / ルート / 設定 / i18n をまとめて点検します"
+
+msgid "自检失败：{error}"
+msgstr "点検に失敗しました：{error}"
+
+msgid "安装示例"
+msgstr "サンプルをインストール"
+
+msgid "安装示例失败：{error}"
+msgstr "サンプルのインストールに失敗しました：{error}"
+
+msgid ""
+"按账号和任务配置独立参数。先选账号，再选任务，下面会自动出现该任务的属性控件。账号页只需要填写账号名，无需填写密码。系统兼容旧格式 `账号,密码` "
+"但不会保存密码。"
+msgstr ""
+"アカウントとタスクごとに個別のパラメーターを設定します。先にアカウント、次にタスクを選ぶと、そのタスクの設定項目が下に表示されます。アカウント欄はアカウント名だけでよく、パスワードは不要です。旧形式"
+" `アカウント,パスワード` も読み込めますが、パスワードは保存しません。"
+
+msgid ""
+"账号A\n"
+"账号B"
+msgstr ""
+"アカウントA\n"
+"アカウントB"
+
+msgid "safe_back 超时（{time_out}s），目标未出现"
+msgstr "safe_back がタイムアウト（{time_out}s）、対象が現れませんでした"
+
+msgid "账号格式错误，已跳过: {line}"
+msgstr "アカウントの形式が不正のためスキップしました: {line}"
+
+msgid "第 {idx}/{total} 个账号为空，已跳过"
+msgstr "{idx}/{total} 番目のアカウントが空のためスキップしました"
+
+msgid "开始第 {idx}/{total} 个账号({suffix}){log_suffix}"
+msgstr "{idx}/{total} 番目のアカウントを開始({suffix}){log_suffix}"
+
+msgid "任务返回 False"
+msgstr "タスクが False を返しました"
+
+msgid "开始执行日常任务..."
+msgstr "デイリータスクを開始します..."
+
+msgid "开始任务: {key}"
+msgstr "タスク開始: {key}"
+
+msgid "任务失败标记 | {name}: {message}"
+msgstr "タスク失敗を記録 | {name}: {message}"
+
+msgid "多账户模式已开启，但账号列表为空，日常任务结束"
+msgstr "マルチアカウントモードが有効ですがアカウント一覧が空のため、デイリータスクを終了します"
+
+msgid "任务执行"
+msgstr "タスク実行"
+
+msgid "任务 {key} 执行失败"
+msgstr "タスク {key} が失敗しました"
+
+msgid "日常完成!"
+msgstr "デイリー完了！"
+
+msgid "所有任务均成功完成!"
+msgstr "すべてのタスクが成功しました!"
+
+msgid "异常: {err}"
+msgstr "例外: {err}"
+
+msgid "开始第 {idx}/{total} 轮任务执行"
+msgstr "{idx}/{total} 回目の実行を開始"
+
+msgid "第 {idx} 轮 | 失败任务: {failed}"
+msgstr "{idx} 回目 | 失敗タスク: {failed}"
+
+msgid "以下任务未完成或失败: {failed}"
+msgstr "次のタスクが未完了または失敗しました: {failed}"
+
+msgid "第 {idx} 轮 | 日常完成!"
+msgstr "{idx} 回目 | デイリー完了！"
+
+msgid "执行完成，失败统计: {failed}"
+msgstr "実行完了、失敗集計: {failed}"
+
+msgid "素材已安装，但模板缓存刷新失败；重启程序后生效"
+msgstr "素材はインストールされましたが、テンプレートキャッシュの再読み込みに失敗しました。アプリを再起動すると反映されます"
+
+msgid "完成"
+msgstr "完了"
+
+msgid "部分失败"
+msgstr "一部失敗"
+
+msgid "异常结束"
+msgstr "異常終了"
+
+msgid "未开始"
+msgstr "未開始"
+
+msgid "执行状态: {status}"
+msgstr "実行状態: {status}"
+
+msgid "执行情况汇总"
+msgstr " 実行結果まとめ"
+
+msgid "失败任务统计:"
+msgstr "失敗タスク集計:"
+
+msgid "所有任务执行成功！"
+msgstr "すべてのタスクが成功しました！"
+
+msgid "总任务数: {total} | 成功: {success} | 失败: {failed} | 跳过: {skipped}"
+msgstr "合計: {total} | 成功: {success} | 失敗: {failed} | スキップ: {skipped}"
+
+msgid "成功任务:"
+msgstr "成功タスク:"
+
+msgid "失败任务:"
+msgstr "失敗タスク:"
+
+msgid "跳过任务:"
+msgstr "スキップしたタスク:"
+
+msgid "失败消息:"
+msgstr "失敗メッセージ:"
+
+msgid "未设置失败消息"
+msgstr "失敗メッセージ未設定"
+
+msgid "未知"
+msgstr "不明"
+
+msgid "无"
+msgstr "なし"
+
+msgid "当前正在执行的任务:"
+msgstr "実行中のタスク:"
+
+msgid "异常信息:"
+msgstr "例外情報:"
+
+msgid "--- 第 {round} 轮 (账号: {account}) ---"
+msgstr "--- 第 {round} ラウンド (アカウント: {account}) ---"
+
+msgid "开始录制动作"
+msgstr "操作の記録を開始"
+
+msgid "停止录制并生成流程"
+msgstr "停止してフローを作成"
+
+msgid "录制会按当前游戏窗口换算坐标；录制期间请在游戏里正常操作，停止后自动生成流程"
+msgstr "座標は現在のゲームウィンドウ基準で換算されます。記録中はゲーム内で普通に操作してください。停止するとフローが自動生成されます。"
+
+msgid "正在录制：请在游戏里操作，录完点「停止录制并生成流程」"
+msgstr "記録中: ゲーム内で操作し、終わったら「停止してフローを作成」を押してください"
+
+msgid "没有录到任何操作（检查游戏窗口是否已连接）"
+msgstr "操作が記録されませんでした（ゲームウィンドウが接続されているか確認してください）"
+
+msgid "没有录到任何操作"
+msgstr "操作が記録されませんでした"
+
+msgid "录制功能不可用：{error}"
+msgstr "記録機能を利用できません: {error}"
+
+msgid "开始录制失败：{error}"
+msgstr "記録の開始に失敗しました: {error}"
+
+msgid "停止录制失败：{error}"
+msgstr "記録の停止に失敗しました: {error}"
+
+msgid "生成流程失败：{error}"
+msgstr "フローの作成に失敗しました: {error}"
+
+msgid "录制结束：{summary}"
+msgstr "記録終了: {summary}"
+
+msgid "有任务正在运行（{name}），先停止任务再录制"
+msgstr "タスク実行中（{name}）です。停止してから記録してください"
+
+msgid "悬浮窗"
+msgstr "フローティングウィンドウ"
+
+msgid "预计剩余"
+msgstr "残り時間"
+
+msgid "空闲"
+msgstr "待機中"
+
+msgid "显示悬浮窗（图标可拖动，点一下展开任务队列）"
+msgstr "フローティングウィンドウを表示（アイコンはドラッグ可、クリックでタスク一覧）"
+
+msgid "悬浮图标大小"
+msgstr "アイコンの大きさ"
+
+msgid "面板宽度"
+msgstr "パネル幅"
+
+msgid "面板高度"
+msgstr "パネル高さ"
+
+msgid "圆角"
+msgstr "角の丸み"
+
+msgid "背景颜色"
+msgstr "背景色"
+
+msgid "选择颜色"
+msgstr "色を選ぶ"
+
+msgid "选择悬浮窗背景颜色"
+msgstr "フローティングウィンドウの背景色を選択"
+
+msgid "不透明度"
+msgstr "不透明度"
+
+msgid "在悬浮窗里显示任务队列"
+msgstr "フローティングウィンドウにタスク一覧を表示"
+
+msgid "最多显示"
+msgstr "最大表示数"
+
+msgid "项"
+msgstr "件"
+
+msgid "保存并应用"
+msgstr "保存して適用"
+
+msgid "恢复默认位置与大小"
+msgstr "位置とサイズを初期化"
+
+msgid "悬浮窗显示当前任务与队列里每一项的预计用时；数据来自运行记录与队列执行器。"
+msgstr "フローティングウィンドウには現在のタスクと、キュー各項目の予想所要時間が表示されます（実行履歴とキュー実行器のデータ）。"
+
+msgid "当前状态"
+msgstr "現在の状態"
+
+msgid "当前任务"
+msgstr "現在のタスク"
+
+msgid "队列"
+msgstr "キュー"
+
+msgid "无队列"
+msgstr "キューなし"
+
+msgid "已保存悬浮窗设置"
+msgstr "フローティングウィンドウ設定を保存しました"
+
+msgid "已保存；重启程序后生效"
+msgstr "保存しました。再起動後に反映されます"
+
+msgid "已恢复默认位置与大小"
+msgstr "位置とサイズを初期化しました"

@@ -87,7 +87,46 @@ jobs:
           pip install -r requirements.txt
           pip install polib
 
+      - name: Lint changed Python files
+        # 只检查这次 PR 改动的 .py：存量文件里还有历史告警，全量检查会挡住所有 PR。
+        # 新代码要求干净；确实需要保留的告警用 `# noqa: 规则名` 显式豁免。
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $base = "${{ github.event.pull_request.base.sha }}"
+          $files = @(git diff --name-only --diff-filter=ACMR "$base...HEAD" -- "*.py")
+          if ($files.Count -eq 0) {
+            Write-Host "没有改动的 .py 文件，跳过 lint"
+            exit 0
+          }
+          Write-Host "将检查 $($files.Count) 个文件："
+          $files | ForEach-Object { Write-Host "  $_" }
+          pip install "ruff>=0.16,<1"
+          ruff check @files
+
       - name: Run tests
         timeout-minutes: 5
         run: |
           python -u -m unittest discover -s tests -p "test_*.py" -v
+
+      # i18n 与安装自检以前只在本地手动跑，CI 不拦；这两步都很便宜（几秒），
+      # 却能在 PR 阶段挡住「加了 tab 没翻译」「示例流程装了打不开」这类问题。
+      - name: Validate i18n (6 locales, no empty msgstr)
+        run: python scripts/validate_all.py
+
+      - name: Install health check (flows / queues / routes / schemes / configs / i18n)
+        run: python tools/health_check.py --strict
+
+      # 测试不许往仓库里写文件：真实事故是 import_dataset 的备份默认落到仓库，
+      # 几轮下来 8 个 growth_*.json 被 git add -A 一起提交了。测试自己不报错，
+      # 只有跑完看一眼工作区才发现。这里在 CI 里强制看一眼。
+      - name: Working tree must stay clean after tests
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $dirty = @(git status --porcelain)
+          if ($dirty.Count -gt 0) {
+            Write-Host "::error::测试跑完后工作区不干净（有测试往仓库里写了文件）"
+            $dirty | ForEach-Object { Write-Host "  $_" }
+            exit 1
+          }
+          Write-Host "工作区干净"

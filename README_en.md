@@ -43,6 +43,42 @@ into any process, and does not alter any game data**.
 built around “screenshot → image recognition → simulated keyboard and mouse input”. On top of it, `ok-ap`
 provides the application configuration, tasks, and game-specific implementation that this particular game requires.
 
+## ✨ What's inside
+
+Full traceability (requirement → code / tests / docs) lives in the
+[feature map](docs/dev/feature_map.md) (Chinese; the tables are readable without it).
+
+**Daily automation**
+
+- **One-click dailies**: home / commissions / claiming run in the order you drag them into; multi-account, summary report, recorded failure reasons.
+- **Live assist**: keeps pressing the key sequence you configure at the pace you set, optionally gated by a template.
+- **Nav routes / replay schemes**: write “how to walk to this screen” as waypoints; stitch several recordings into one fixed flow.
+
+**Flow orchestration**
+
+- **JSON flows**: move / click / key / wait / wait-template / loop / if, with limits of 500 steps, 1000 iterations and 4 nesting levels.
+- **Resume from checkpoint / task queues / config profiles / scheduled runs**: queues carry a per-item minute budget and stop on failure.
+- **Samples**: one button installs sample flows, queues and routes (including a ready-to-run “weekly activity rewards”).
+
+**Offline tools** (no game required)
+
+- **Growth planner**: materials, stamina conversion, CSV/PNG export; import real data exported from promilia.wiki.
+- **Gacha analysis**: 0.8% base / rate-up from pull 71 / hard pity at 90 — probability within budget and expected pulls.
+- **Ledger & reports**: paste settlement text to book it; run reports include success rate, per-task breakdown and failure reasons.
+
+**Privacy & support**
+
+- **UID masking**: up to 8 blocks, solid or mosaic, in 1920×1080 reference coordinates, applied to every saved screenshot (failure frames included).
+- **Diagnostic bundle / crash diagnostics / language packs / online repo / install health check**; bundles are redacted (bot tokens, webhooks, account names) before packaging.
+- **UI behaviour**: always-on-top HUD bar, three-way close prompt, taskbar progress, four rebindable global hotkeys, daily-reset and stamina reminders.
+
+**Not done yet (needs in-game input — see the [feature map](docs/dev/feature_map.md))**
+
+- Crisis Hunt / Story Commission: skeleton flows are ready, but 3 in-game button templates still need to be marked (or send screenshots).
+- Growth data: the bundled numbers are examples; import a promilia.wiki export for real material tables.
+- Window transparency / background image: ok-script 2.0.6 exposes no transparency API.
+- Full-screen crosshair picker: currently a 1-second delayed pick; a real overlay needs on-device validation (multi-monitor, DPI).
+
 ## 📥 Download & Install
 
 Download the latest installer from [GitHub Releases](https://github.com/longer-sausage/OK-AzurPromilia/releases):
@@ -98,9 +134,15 @@ ok-ap.exe -t 1 -e
 # Run every test under tests/ (PowerShell, invokes uv run per file)
 ./run_tests.ps1
 
-# Or run the whole test directory directly
+# Or run the whole test directory directly (1100+ tests, fully offline, no game needed)
 uv run python -m unittest discover -s tests
+
+# Install health check: flows / queues / schemes / routes / configs / i18n in one go
+uv run python tools/health_check.py
 ```
+
+Docs live in [`docs/`](docs/index.md) (Chinese): recognition diagnostics, flow orchestration,
+offline tools, privacy masking and UI behaviour each have their own page.
 
 ## ❤️ Acknowledgements
 
