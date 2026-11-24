@@ -1,0 +1,74 @@
+{
+  "name": "周常活跃奖励",
+  "description": "在活跃度界面把周常奖励领完。只用到仓库里已有的模板，装好就能跑。",
+  "version": 1,
+  "steps": [
+    {
+      "type": "action",
+      "action": "ensure_main",
+      "comment": "先回到主界面"
+    },
+    {
+      "type": "wait_template",
+      "template": "loading_check",
+      "expect": "disappear",
+      "timeout": 30,
+      "comment": "等加载转圈消失"
+    },
+    {
+      "type": "click",
+      "template": "active_weekly_check",
+      "timeout": 20,
+      "comment": "点开周常页签"
+    },
+    {
+      "type": "wait",
+      "seconds": 1.5,
+      "comment": "给界面一点时间刷出领取按钮"
+    },
+    {
+      "type": "loop",
+      "until_not_template": "active_weekly_claim_task",
+      "max": 10,
+      "timeout": 30,
+      "steps": [
+        {
+          "type": "if",
+          "template": "active_weekly_claim_task",
+          "steps": [
+            {
+              "type": "click",
+              "template": "active_weekly_claim_task",
+              "timeout": 5,
+              "comment": "领取一个"
+            },
+            {
+              "type": "if",
+              "template": "confirm_button",
+              "steps": [
+                {
+                  "type": "click",
+                  "template": "confirm_button",
+                  "timeout": 5,
+                  "comment": "有些奖励要确认"
+                }
+              ],
+              "else": []
+            }
+          ],
+          "else": []
+        },
+        {
+          "type": "wait",
+          "seconds": 1.0
+        }
+      ],
+      "comment": "一直领到「领取」按钮消失"
+    },
+    {
+      "type": "action",
+      "action": "ensure_main",
+      "comment": "收尾回主界面"
+    }
+  ]
+}
