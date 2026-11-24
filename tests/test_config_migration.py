@@ -1,4 +1,5 @@
 import json
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
@@ -12,6 +13,7 @@ class TestConfigMigration(unittest.TestCase):
         from unittest import mock
 
         configs_dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, configs_dir, ignore_errors=True)
         config_dir = Path(configs_dir) / "configs"
         config_dir.mkdir()
         config_file = config_dir / "TestTask.json"
