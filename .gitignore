@@ -261,6 +261,7 @@ ok-lang-hints
 /tmp/
 /data2/
 /logs/
+/cache/
 /working/
 /working_images/
 /click_screenshots/

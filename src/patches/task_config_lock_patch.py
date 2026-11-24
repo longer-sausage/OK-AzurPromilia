@@ -1,26 +1,25 @@
-from __future__ import annotations
+from functools import wraps
 
 _PATCH_INSTALLED = False
 
 
 def install_task_config_lock_patch():
-    """Disable a task card's configuration inputs while it is running."""
+    """Lock the task detail form and Reset button while its task runs."""
     global _PATCH_INSTALLED
     if _PATCH_INSTALLED:
         return
 
-    from ok.gui.tasks.TaskCard import TaskCard
+    from ok.ui.qt.tasks.tasks_page import TaskDetail
 
-    original_update_buttons = TaskCard.update_buttons
+    original_refresh = TaskDetail.refresh
 
-    def update_buttons(self, task):
-        original_update_buttons(self, task)
-        editable = not bool(getattr(self.task, "running", False))
-        for widget in getattr(self, "config_widgets", ()):
-            widget.setEnabled(editable)
-        reset_config = getattr(self, "reset_config", None)
-        if reset_config is not None:
-            reset_config.setEnabled(editable)
+    @wraps(original_refresh)
+    def refresh(self):
+        original_refresh(self)
+        if self.task is not None and self.form is not None:
+            editable = not self.task.running
+            self.form.setEnabled(editable)
+            self.reset_button.setEnabled(editable)
 
-    TaskCard.update_buttons = update_buttons
+    TaskDetail.refresh = refresh
     _PATCH_INSTALLED = True

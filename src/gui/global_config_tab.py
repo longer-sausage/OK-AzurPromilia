@@ -1,8 +1,7 @@
 from PySide6.QtCore import QTimer
-from qfluentwidgets import FluentIcon, NavigationItemPosition
 
-from ok.gui.tasks.ConfigCard import ConfigCard
-from ok.gui.widget.CustomTab import CustomTab
+from ok.ui.qt.settings.config_section import ConfigSection
+from ok.ui.qt.widget.CustomTab import CustomTab
 
 from src.core.global_config_store import get_all_visible_configs
 
@@ -26,16 +25,12 @@ class GlobalConfigTab(CustomTab):
         return "全局配置"
 
     @property
-    def position(self):
-        return NavigationItemPosition.TOP
-
-    @property
     def add_after_default_tabs(self):
         return False
 
     @property
     def icon(self):
-        return FluentIcon.SETTING
+        return "gear"
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -74,16 +69,7 @@ class GlobalConfigTab(CustomTab):
         if not self._pending_cards:
             return
         group_name, config, option = self._pending_cards.pop(0)
-        card = ConfigCard(
-            None,
-            group_name,
-            config,
-            option.description,
-            option.default_config,
-            option.config_description,
-            option.config_type,
-            option.icon,
-        )
+        card = ConfigSection(config, option, group=group_name)
         self.add_widget(card)
         if self._pending_cards:
             QTimer.singleShot(0, self, self._build_next_card)

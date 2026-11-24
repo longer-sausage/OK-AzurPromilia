@@ -6,13 +6,13 @@
 
 Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `test_*.py`；类名保持 `PascalCase`。
 
-**框架版本锁定 `ok-script==2.0.6`**（`pyproject.toml` + `uv.lock` 为唯一来源）。
+**框架版本锁定 `ok-script==3.0.13`**（`pyproject.toml` + `uv.lock` 为唯一来源）。
 
 ### 目录职责
 
 | 目录 | 职责 |
 |------|------|
-| `main.py` / `main_debug.py` | 入口（Release / Debug）。启动前先装 `src/patches/` |
+| `main.py` / `main_debug.py` | 正式和调试入口。框架通过 `src/globals.py` 的 `my_app` 钩子安装项目补丁，CLI 共用此入口 |
 | `src/config.py` | ok-script 应用配置：窗口、OCR、模板匹配、任务与 Tab 注册 |
 | `src/core/base_game_task.py` | **任务基类**：暂停感知计时、配置迁移、异常处理、配置分组 |
 | `src/core/base_mixin/runtime_mixin.py` | 通用能力库：分辨率映射、点击验证、YOLO 检测、画面稳定判定、键鼠 |
@@ -72,7 +72,7 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
 - `src/patches/capture_timestamp_patch.py`：为 WGC 保留 `SystemRelativeTime`，100 ns 单位转为
   与 `perf_counter` 一致的 QPC 秒数。时间戳在取帧锁内与返回画面配对，按调用线程保存，
   避免截图预览覆盖任务正在使用的观测时间；取帧失败时清除旧时间戳。
-  补丁针对锁定的 ok-script 2.0.6，升级时复核截图生命周期；
+  补丁针对锁定的 ok-script 3.0.13，升级时复核截图生命周期；
   其它截图方式使用截图耗时的中点估计，无法保证相同的时序精度。
 - 停用、暂停、失焦、退出、截图中断和异常均清理持键；清理直接调用交互层，避免框架
   `check_enabled()` 在停用后阻止 key-up。看门线程只负责终止输入，不截图也不按新键。
@@ -493,7 +493,7 @@ star_link_icon 存在? ──否──> 返回（不在星结界面，不干预�
 
 ### 用 `_` 前缀隐藏调优项
 
-框架的渲染逻辑是 `if not key.startswith('_')`（`ok/ui/qt/tasks/ConfigCard.py`），
+框架的渲染逻辑是 `if not key.startswith('_')`（`ok/ui/qt/tasks/config_form.py`），
 所以**键名以 `_` 开头就不会出现在 UI 上**，但：
 
 - 键仍在 `default_config` 里 → 默认值保留，`configs/*.json` 里仍会写入，仍可从日志恢复
@@ -508,7 +508,7 @@ star_link_icon 存在? ──否──> 返回（不在星结界面，不干预�
 
 ### 调试任务只在 debug 模式露面
 
-框架的三个任务列表（`OneTimeTaskTab` / `TriggerTaskTab` / `ScheduleTaskTab`）都会用
+框架的任务列表和计划任务页（`TasksPage` / `ScheduleTaskTab`）都会用
 `getattr(task, 'visible', True)` 过滤，所以纯调试任务在 `__init__` 里写：
 
 ```python

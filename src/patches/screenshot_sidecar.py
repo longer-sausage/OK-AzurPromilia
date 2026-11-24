@@ -21,8 +21,8 @@ SIDECAR_SUFFIX = "_boxes.json"
 def serialize_boxes(ui_dict: dict, x_offset: float = 0, y_offset: float = 0) -> list:
     """把 ok-script 的 ui_dict 画框快照序列化为可 JSON 化的列表。
 
-    ui_dict 结构：``{key: [boxes, timestamp, QColor]}``，与
-    ok.gui.debug.Screenshot 里绘制 _boxed.png 时的数据一致。
+    ui_dict 结构：``{key: [boxes, timestamp, RGBA]}``，与
+    ok.core.screenshot 里绘制 _boxed.png 时的数据一致。
 
     Args:
         ui_dict: 画框快照。
@@ -34,7 +34,7 @@ def serialize_boxes(ui_dict: dict, x_offset: float = 0, y_offset: float = 0) -> 
     """
     boxes = []
     for key, value in ui_dict.items():
-        color = tuple([int(x) for x in value[2].getRgb()])
+        color = value[2]
         for box in value[0]:
             width = box.width
             height = box.height
@@ -83,7 +83,7 @@ def find_box_font():
 def render_boxed_image(sidecar: dict, original_path: str | Path, output_path: str | Path) -> None:
     """按侧车信息在原图上重绘画框，输出与 ok-script 的 _boxed.png 一致的图片。
 
-    绘制参数与 ok.gui.debug.Screenshot.generate_screen_shot 保持一致：
+    绘制参数与 ok.core.screenshot.generate_screen_shot 保持一致：
     矩形 outline 颜色、线宽 2、框下方 8px 处写文本（stroke_width=1、
     stroke_fill=black）。
     """
@@ -105,7 +105,7 @@ def render_boxed_image(sidecar: dict, original_path: str | Path, output_path: st
 def sidecar_path_of(original_name: str | Path) -> Path:
     """由 _original.png 文件名推导对应的 _boxes.json 路径。"""
     original_name = Path(original_name)
-    return original_name.with_name(original_name.stem[:-len("_original")] + SIDECAR_SUFFIX)
+    return original_name.with_name(original_name.stem.removesuffix("_original") + SIDECAR_SUFFIX)
 
 
 def rebuild_boxed_images(output_dir: str | Path) -> list[str]:
@@ -120,12 +120,14 @@ def rebuild_boxed_images(output_dir: str | Path) -> list[str]:
     output_dir = Path(output_dir)
     rebuilt = []
     for sidecar_path in sorted(output_dir.rglob(f"*{SIDECAR_SUFFIX}")):
-        original_path = sidecar_path.with_name(
-            sidecar_path.name[:-len(SIDECAR_SUFFIX)] + "_original.png")
+        stem = sidecar_path.name.removesuffix(SIDECAR_SUFFIX)
+        original_path = sidecar_path.with_name(stem + "_original.png")
+        if not original_path.is_file():
+            # ok-script falls back to a timestamp-only filename on a save error.
+            original_path = sidecar_path.with_name(stem + ".png")
         if not original_path.is_file():
             continue
-        output_path = sidecar_path.with_name(
-            sidecar_path.name[:-len(SIDECAR_SUFFIX)] + "_boxed.png")
+        output_path = sidecar_path.with_name(stem + "_boxed.png")
         try:
             with open(sidecar_path, encoding="utf-8") as sidecar_file:
                 sidecar = json.load(sidecar_file)

@@ -1,9 +1,6 @@
+from ok import OK
+
 from src.config import config
-from src.patches.startup_patches import install_startup_patches
 
 if __name__ == '__main__':
-    config = config
-    install_startup_patches()
-    import ok
-    ok = ok.OK(config)
-    ok.start()
+    OK(config).start()

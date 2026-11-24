@@ -11,7 +11,7 @@ import time
 import win32api
 import win32con
 import win32gui
-from ok.device.intercation import PostMessageInteraction
+from ok.device.interaction import PostMessageInteraction
 from ok.util.logger import Logger
 from pynput.keyboard import Controller, Key
 
@@ -36,7 +36,6 @@ class GameInteraction(PostMessageInteraction):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.cursor_position = None
-        self.activated = False
         self._pressed_keys = {}  # 已成功按下的按键计数映射（规范化身份 -> 次数）
         self.keyboard = Controller()
         self.click_pos = None
@@ -146,17 +145,14 @@ class GameInteraction(PostMessageInteraction):
         win32gui.SendMessage(self.hwnd, msg, wparam, lparam)
 
     def activate(self, hwnd=None):
+        self.cursor_position = win32api.GetCursorPos()
         win32gui.SendMessage(hwnd or self.hwnd_window.hwnd, win32con.WM_ACTIVATE, win32con.WA_ACTIVE, 0)
+        time.sleep(0.01)
 
-    def try_activate(self):
+    def try_activate(self, force=False):
         hwnd = self.hwnd_window.hwnd
-        if win32gui.GetForegroundWindow() == hwnd:
-            self.activated = False
-        elif not self.activated:
-            self.activated = True
-            self.cursor_position = win32api.GetCursorPos()
-            self.activate(hwnd)
-            time.sleep(0.01)
+        if force or win32gui.GetForegroundWindow() != hwnd:
+            super().try_activate(force=force)
         self.try_unclip(hwnd)
 
     def try_unclip(self, hwnd=None):

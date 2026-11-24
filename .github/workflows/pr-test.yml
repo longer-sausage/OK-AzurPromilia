@@ -60,21 +60,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install uv
+      - name: Install locked build dependencies
         run: |
-          pip install uv==0.10.9
-          uv venv .venv
-          uv pip install --python .venv packaging==26.3
+          pip install uv==0.11.32
+          uv sync --locked
 
       - name: Verify requirements.txt reproducible
         run: |
           uv run --locked --no-sync python scripts/release/gen_release_requirements.py --check
-
-      - name: Install uv
-        run: |
-          pip install uv==0.10.9
-          uv venv .venv
-          uv pip install --python .venv --no-deps ok-script==2.0.6 pyappify==1.0.13
 
       - name: inline_ok_requirements
         env:
@@ -84,7 +77,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          pip install --no-deps -r requirements.txt
           pip install polib
 
       - name: Run tests

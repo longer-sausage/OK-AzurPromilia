@@ -44,7 +44,9 @@ def make_bottom_left_black(frame):  # 可选. 某些游戏截图时遮挡UID使�
 config = {
     "custom_tasks": True,
     "debug": False,  # Optional, default: False
-    "use_gui": True,  # 目前只支持True
+    "gui": {"type": "qt"},
+    # The CLI supplies its own gui mapping and also reads this shared window size.
+    "window_size": {"width": 1200, "height": 800, "min_width": 600, "min_height": 450},
     "config_folder": "configs",  # 最好不要修改
     "screenshot_processor": make_bottom_left_black,  # 在截图的时候对frame进行修改, 可选
     "gui_icon": "icons/icon.png",  # 窗口图标, 最好不需要修改文件名
@@ -52,18 +54,10 @@ config = {
     "wait_until_check_delay": 0,
     "wait_until_settle_time": 0,  # 调用 wait_until时候, 在第一次满足条件的时候, 会等待再次检测, 以避免某些滑动动画没到预定位置就在动画路径中被检测到
     'ocr': {
-        'lib': 'onnxocr',
-        'params': {
-            'use_openvino': True,
-            'use_npu': True,
-        }
-    },
-    'template_tab': {
-        # 是否生成标签枚举
-        'generate_label_enum': True,
-
-        # 标签枚举的相对路径
-        'label_enum_relative_path': 'src/data/feature_list',
+        'default': {
+            'lib': 'onnxocr',
+            'params': {'use_openvino': True, 'use_npu': True},
+        },
     },
     'item_map': {
         # 物品地图数据的相对路径（如有）
@@ -72,7 +66,8 @@ config = {
     },
     "windows": {  # Windows游戏请填写此设置
         "exe": ["AzurPromilia.exe"],  # 蓝色星原：旅谣 (Azur Promilia)
-        "args": ["-start=azurpromilia_launcher"],  # 启动参数，支持多个
+        "launch_arguments": "-start=azurpromilia_launcher",
+        "start_method": "os.startfile",
         'hwnd_class': 'UnityWndClass',  # 增加重名检查准确度
         # GUI 需要可迭代配置；设备管理器需要类对象，使用包装器同时满足两者。
         "interaction": [GameInteraction],
@@ -84,7 +79,6 @@ config = {
         "require_bg": True,  # 要求使用后台截图
     },
     "start_timeout": 60,  # default 60
-    "window_size": {"width": 1200, "height": 800, "min_width": 600, "min_height": 450},  # ok-script窗口大小
     "supported_resolution": {
         "ratio": "16:9",  # 支持的游戏分辨率
         "min_size": (1920, 1080),  # 支持的最低游戏分辨率（1080P）
@@ -94,7 +88,7 @@ config = {
     "gui_title": "ok-ap",  # 窗口名
     "template_matching": {  # 可选, 如使用OpenCV的模板匹配
         "coco_feature_json": os.path.join("assets", "coco_annotations.json"),
-        # coco格式标记, 需要png图片, 在debug模式运行后, 会对进行切图仅保留被标记部分以减少图片大小
+        # 已发布的 COCO 模板和调试工具导出的 assets/templates 裁图均由框架加载。
         "default_horizontal_variance": 0.002,  # 默认x偏移, 查找不传box的时候, 会根据coco坐标, match偏移box内的
         "default_vertical_variance": 0.002,  # 默认y偏移
         "default_threshold": 0.8,  # 默认threshold

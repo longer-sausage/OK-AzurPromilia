@@ -5,7 +5,6 @@ import threading
 from ok import ConfigOption
 from ok.util.config import Config
 from ok.util.file import get_relative_path, read_json_file, write_json_file
-from qfluentwidgets import FluentIcon
 
 from src.icons import Icons
 from src.interaction.key_config import DEFAULT_COMMON_KEYS
@@ -24,7 +23,7 @@ ensure_main_once_action_sleep_option = ConfigOption(
     ENSURE_MAIN_ONCE_ACTION_SLEEP_NAME,
     {"SingleActionWithDelay": 1.5},
     description="主界面单次动作后延迟",
-    icon=FluentIcon.DATE_TIME
+    icon="timer"
 )
 
 GLOBAL_CONFIG_OPTIONS = [

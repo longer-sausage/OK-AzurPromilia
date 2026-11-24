@@ -32,7 +32,7 @@
 ├── src/
 │   ├── config.py               ok-script 应用配置与任务/Tab 注册
 │   ├── globals.py              全局单例
-│   ├── icons.py                图标（复用 FluentIcon）
+│   ├── icons.py                图标（使用 ok-script 内置图标）
 │   ├── core/
 │   │   ├── base_game_task.py   任务通用基类（self.loop、暂停感知、配置迁移）
 │   │   ├── base_mixin/         通用能力 mixin（RuntimeMixin、FrameworkOverrideMixin）

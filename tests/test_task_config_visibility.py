@@ -2,11 +2,10 @@
 
 固化两条 ok-script 机制在本项目里的用法，避免以后改动把它们悄悄破坏：
 
-1. **配置键以 ``_`` 开头时不渲染**（``ok/ui/qt/tasks/ConfigCard.py`` 里
+1. **配置键以 ``_`` 开头时不渲染**（``ok/ui/qt/tasks/config_form.py`` 里
    ``if not key.startswith('_')``）。用来把「数值调优项」留在 ``default_config``
    里（保留默认值、仍可读、仍可写进 configs/*.json），但不占用 UI。
-2. **任务 ``self.visible`` 为假时不进任务列表**（``OneTimeTaskTab`` /
-   ``TriggerTaskTab`` / ``ScheduleTaskTab`` 都读 ``getattr(task, 'visible', True)``）。
+2. **任务 ``self.visible`` 为假时不进任务列表**（``TasksPage`` / ``ScheduleTaskTab`` 都读 ``getattr(task, 'visible', True)``）。
    纯调试任务用 ``self.visible = self.debug`` 只在 debug 模式露面。
 """
 
@@ -51,7 +50,7 @@ def build_task(task_class, debug=False):
 
 
 def visible_keys(task):
-    """复刻 ConfigCard 的渲染过滤规则，返回 UI 上会出现的配置键。"""
+    """复刻 ConfigForm 的渲染过滤规则，返回 UI 上会出现的配置键。"""
     return [key for key in task.default_config if not key.startswith("_")]
 
 
