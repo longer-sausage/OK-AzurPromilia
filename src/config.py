@@ -126,6 +126,9 @@ config = {
         ["src.tasks.onetime.home_daily_task", "HomeDailyTask"],
         ["src.tasks.onetime.commission_daily_task", "CommissionDailyTask"],
         ["src.tasks.onetime.claim_daily_task", "ClaimDailyTask"],
+        ["src.tasks.onetime.flow_task", "FlowTask"],
+        ["src.tasks.onetime.route_task", "RouteTask"],
+        ["src.tasks.onetime.settlement_task", "SettlementTask"],
         ["src.tasks.test.test_screenshot_task", "TestScreenshotTask"],
         ["src.tasks.test.test_interaction_task", "TestInteractionTask"],
         ["src.tasks.test.test_treasure_band_task", "TestTreasureBandTask"],
@@ -134,6 +137,7 @@ config = {
     "custom_tabs": [
         ["src.gui.global_config_tab", "GlobalConfigTab"],
         ["src.gui.account_config_tab", "AccountConfigTab"],
+        ["src.gui.daily_order_tab", "DailyOrderTab"],
         ["src.gui.flow_tab", "FlowTab"],
     ],
     "trigger_tasks": [  # 不断执行的触发式任务
@@ -142,5 +146,6 @@ config = {
         ["src.tasks.trigger.skip_dialog_task", "SkipDialogTask"],
         ["src.tasks.trigger.star_link_assist_task", "StarLinkAssistTask"],
         ["src.tasks.trigger.treasure_unlock_task", "TreasureUnlockTask"],
+        ["src.tasks.trigger.auto_combat_assist_task", "AutoCombatAssistTask"],
     ],
 }

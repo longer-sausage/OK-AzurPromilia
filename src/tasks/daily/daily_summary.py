@@ -117,8 +117,11 @@ def build_summary_lines(task, summary_info: dict) -> list[str]:
     if all_fail_tasks:
         lines.append("❌ " + _tr("失败任务统计:"))
         for entry in all_fail_tasks:
-            # 多轮时元素为 (轮次, [任务名])，兼容旧的纯列表形式
+            # 多轮时元素为 (轮次, [任务名])；兼容旧的纯列表形式（元素就是任务名）。
+            # 注意旧形式里元素是**字符串**，直接 join 会把「每日委托」拆成单个汉字。
             round_no, failed_tasks = entry if isinstance(entry, tuple) else (None, entry)
+            if isinstance(failed_tasks, str):
+                failed_tasks = [failed_tasks]
             prefix = f"  第{round_no}轮: " if round_no is not None else "  "
             lines.append(prefix + ", ".join(_tr(t) for t in failed_tasks))
         lines.append("")
@@ -220,7 +223,7 @@ def open_local_path_with_default_app(path: Path):
     normalized = Path(path).resolve()
     if os.name == "nt":
         try:
-            os.startfile(str(normalized))  # noqa: S606
+            os.startfile(str(normalized))
             return
         except OSError:
             pass

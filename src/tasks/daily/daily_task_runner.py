@@ -20,7 +20,11 @@
 
 from __future__ import annotations
 
+import contextlib
+import time
 from collections.abc import Callable, Iterable
+
+from src.core.ledger import RunLog
 
 TaskItem = tuple[str, Callable[[], object]]
 # 可选的第三元素：开关谓词。提供时替代默认的 config.get(key) 判断（例如多开关 OR 逻辑）。
@@ -51,6 +55,7 @@ class DailyTaskRunner:
         task_items: Iterable[TaskItem | TaskItemWithSwitch],
         ensure_main_kwargs: dict | None = None,
         publish_info: bool = False,
+        run_log: RunLog | None = None,
     ):
         """
         Args:
@@ -58,11 +63,13 @@ class DailyTaskRunner:
             task_items: 任务清单，元素为 (任务名, 执行函数) 或 (任务名, 执行函数, 开关谓词)。
             ensure_main_kwargs: 传给 task.ensure_main 的参数，默认沿用 ``recheck_time=2, time_out=90``。
             publish_info: 是否把四态写入 UI info。默认关闭，开启后会在面板上多出统计信息。
+            run_log: 运行报表写入器；默认写 ``runs.jsonl``。测试可注入临时路径的实例。
         """
         self.task = task
         self.task_items = list(task_items)
         self.ensure_main_kwargs = dict(ensure_main_kwargs or {"time_out": 90})
         self.publish_info = publish_info
+        self.run_log = run_log if run_log is not None else RunLog()
         self.task_status = _new_task_status(self.task_items)
         self.current_task_key: str | None = None
         # {account_id: {任务名: 失败消息}}；单账户模式下 account_id 为空字符串
@@ -91,6 +98,29 @@ class DailyTaskRunner:
         except Exception:
             return message
 
+    def _clock(self) -> float:
+        """暂停感知的计时器：优先用任务的 active_time（暂停期间冻结）。"""
+        active_time = getattr(self.task, "active_time", None)
+        if callable(active_time):
+            try:
+                return float(active_time())
+            except Exception:
+                pass
+        return time.monotonic()
+
+    def _record_run(self, key: str, ok: bool, elapsed: float, note: str = "") -> None:
+        """把这一项的成败与用时写进运行报表（失败不影响主流程）。"""
+        with contextlib.suppress(Exception):
+            self.run_log.record(key, ok, elapsed, note="" if ok else note)
+
+    def _failure_note_for(self, key: str) -> str:
+        """从已记录的失败原因里取这一项的（没有就返回通用文案）。"""
+        account_id = self._current_account_info().get("account_id", "")
+        note = ""
+        with contextlib.suppress(Exception):
+            note = str((self.failure_details.get(account_id) or {}).get(key, "") or "").strip()
+        return note or self._tr("任务返回 False")
+
     def _is_multi_account(self) -> bool:
         return bool(self.task.config.get("多账户模式", False)) and callable(
             getattr(self.task, "iter_multi_account_context", None)
@@ -105,7 +135,7 @@ class DailyTaskRunner:
     def get_current_task_name(self) -> str:
         return str(self.current_task_key or self.final_summary.get("current_task", "") or "")
 
-    def set_task_failure(self, message: str, task_name: str = None, screenshot_taken: bool = False):
+    def set_task_failure(self, message: str, task_name: str | None = None, screenshot_taken: bool = False):
         """手动标记当前任务失败消息。
 
         Args:
@@ -124,14 +154,12 @@ class DailyTaskRunner:
         if account_id not in self.failure_details:
             self.failure_details[account_id] = {}
         self.failure_details[account_id].setdefault(resolved_task_name, resolved_message)
-        try:
+        with contextlib.suppress(Exception):
             self.task.log_info(
                 self._tr("任务失败标记 | {name}: {message}").format(
                     name=self._tr(resolved_task_name), message=resolved_message
                 )
             )
-        except Exception:
-            pass
 
     def clear_task_failure(self, task_name: str):
         """任务成功后移除当前账号下对应的失败记录。"""
@@ -221,11 +249,15 @@ class DailyTaskRunner:
         self.final_summary["current_task"] = key
         self.task.log_info(self._tr("开始任务: {key}").format(key=self._tr(key)))
         self.task.ensure_main(**self.ensure_main_kwargs)
+        started = self._clock()
         result = func()
+        elapsed = self._clock() - started
 
         if result is False:
             self.task_status["failed"].append(key)
             self.set_task_failure(self._tr("任务返回 False"), task_name=key)
+            # 先记失败原因再写报表，这样报表里能看到具体原因而不是只有「返回 False」
+            self._record_run(key, False, elapsed, note=self._failure_note_for(key))
             if key not in self.failure_screenshot_tasks:
                 self.task.screenshot(f"DailyTask_FailTask_{key}")
             self.task.log_info(self._tr("任务 {key} 执行失败").format(key=self._tr(key)), notify=True)
@@ -233,6 +265,7 @@ class DailyTaskRunner:
             self.final_summary["current_task"] = ""
             return False
 
+        self._record_run(key, True, elapsed)
         self.task_status["success"].append(key)
         self.clear_task_failure(key)
         self.current_task_key = None
@@ -324,14 +357,10 @@ class DailyTaskRunner:
             self._append_round_summary(self._current_round_index, self._current_repeat_total)
         self._sync_task_status_info()
 
-        try:
+        with contextlib.suppress(Exception):
             self.task.info_set("当前失败的任务", self.get_current_task_name())
-        except Exception:
-            pass
-        try:
+        with contextlib.suppress(Exception):
             self.task.screenshot("DailyTask_Exception")
-        except Exception:
-            pass
 
         # 与旧逻辑一致：异常不吞，记录现场后继续向外传播，由上层决定后续动作。
         raise e

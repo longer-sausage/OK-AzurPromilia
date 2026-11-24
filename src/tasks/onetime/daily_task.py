@@ -12,6 +12,7 @@
 
 import tempfile
 from pathlib import Path
+from typing import ClassVar
 
 from src.core.base_game_task import BaseGameTask
 from src.icons import Icons
@@ -19,9 +20,13 @@ from src.tasks.daily.account_mixin import AccountMixin
 from src.tasks.daily.daily_feature import DailyFeature
 from src.tasks.daily.daily_summary import create_task_summary_report, open_local_path_with_default_app
 from src.tasks.daily.daily_task_runner import DailyTaskRunner
+from src.tasks.daily.order import ORDER_KEY, order_plan_items
 from src.tasks.onetime.claim_daily_task import ClaimDailyTask
 from src.tasks.onetime.commission_daily_task import CommissionDailyTask
 from src.tasks.onetime.home_daily_task import HomeDailyTask
+
+#: 默认执行顺序（同时是「任务顺序」配置的默认值）
+DEFAULT_ORDER = "家园每日,委托每日,每日收菜"
 
 
 class DailyTask(AccountMixin, BaseGameTask):
@@ -35,7 +40,7 @@ class DailyTask(AccountMixin, BaseGameTask):
     support_multi_account = True
 
     # 这些是全账号共用的开关，按账号覆盖没有意义
-    account_config_blacklist = {
+    account_config_blacklist: ClassVar[set[str]] = {
         "生成汇总文件",
         "自动打开汇总文件",
         "Exit After Task",
@@ -63,6 +68,7 @@ class DailyTask(AccountMixin, BaseGameTask):
     def _init_default_config(self):
         """注册日常任务的配置项。"""
         self.default_config.update({
+            ORDER_KEY: DEFAULT_ORDER,
             "家园每日": True,
             "委托每日": False,
             "每日收菜": False,
@@ -70,6 +76,11 @@ class DailyTask(AccountMixin, BaseGameTask):
             "自动打开汇总文件": False,
         })
         self.config_description.update({
+            ORDER_KEY: (
+                "逗号分隔的任务执行顺序，也可在「一条龙顺序」页拖动调整\n"
+                f"可用任务：{DEFAULT_ORDER.replace(',', '、')}\n"
+                "漏写的任务会自动排在末尾"
+            ),
             "家园每日": "执行家园每日：收菜、做饭、喂饭",
             "委托每日": "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）",
             "每日收菜": "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡",
@@ -83,18 +94,21 @@ class DailyTask(AccountMixin, BaseGameTask):
     # ── 任务清单 ──────────────────────────────────────────
 
     def build_task_plan(self):
-        """声明日常任务执行清单。
+        """声明日常任务执行清单，并按配置 ``任务顺序`` 排序。
 
         元素为 (任务名, 执行函数)，任务名同时是配置开关的键名。
         需要自定义开关判定时追加第三个元素「开关谓词」。
+
+        默认顺序是「家园 → 委托 → 收菜」：委托战斗会推进日常/周常活跃与大月卡进度，
+        收菜殿后能把战斗产生的进度一并领走。用户可以在「一条龙顺序」页拖动调整。
         """
-        return [
+        default_plan = [
             self.home_daily.plan_item(),
-            # 委托每日在前：战斗会推进日常/周常活跃与大月卡任务进度
             self.commission_daily.plan_item(),
-            # 每日收菜殿后：把委托战斗产生的活跃度、任务进度一并领走
             self.claim_daily.plan_item(),
         ]
+        order = self.default_config.get(ORDER_KEY, DEFAULT_ORDER)
+        return order_plan_items(default_plan, self.config.get(ORDER_KEY, order))
 
     # ── 主执行入口 ────────────────────────────────────────
 

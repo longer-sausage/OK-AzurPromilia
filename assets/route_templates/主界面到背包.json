@@ -1,0 +1,25 @@
+{
+  "name": "主界面到背包",
+  "description": "示例路线：确认在主界面 → 点开背包 → 等背包界面稳定。用到的 menu_backpack 模板仓库里已有。",
+  "waypoints": [
+    {
+      "template": "menu_backpack",
+      "timeout": 20,
+      "note": "主界面右下角的背包入口"
+    },
+    {
+      "click": [0.92, 0.88],
+      "wait": 1.5,
+      "note": "点背包按钮（比例坐标，按你的分辨率校准）"
+    },
+    {
+      "template": "loading_check",
+      "timeout": 30,
+      "note": "等加载转圈出现再消失都行，这里只要求它能被识别"
+    },
+    {
+      "wait": 0.5,
+      "note": "给界面一点时间稳定"
+    }
+  ]
+}
