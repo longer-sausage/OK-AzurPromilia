@@ -140,6 +140,9 @@ config = {
         ["src.gui.daily_order_tab", "DailyOrderTab"],
         ["src.gui.flow_tab", "FlowTab"],
         ["src.gui.offline_tools_tab", "OfflineToolsTab"],
+        ["src.gui.privacy_tab", "PrivacyTab"],
+        ["src.gui.repo_tab", "RepoTab"],
+        ["src.gui.diagnostics_tab", "DiagnosticsTab"],
     ],
     "trigger_tasks": [  # 不断执行的触发式任务
         ["src.tasks.trigger.auto_jenga_task", "AutoJengaTask"],
