@@ -2,7 +2,7 @@
 
   <img src="icons/icon.png" alt="ok-ap logo" width="160" />
 
-  <h1>OK-AzurPromilia</h1>
+  <h1>ok-ap</h1>
 
   <p>QQ Group 1121173471</p>
 
@@ -45,7 +45,7 @@ provides the application configuration, tasks, and game-specific implementation 
 
 ## 📥 Download & Install
 
-Download the latest installer from [GitHub Releases](https://github.com/longer-sausage/OK-AzurPromilia/releases):
+Download the latest installer from [GitHub Releases](https://github.com/longer-sausage/ok-ap/releases):
 
 - **Mainland China**: Recommended to download `ok-ap-win32-China-setup-*.exe` (bundled runtime environment, uses domestic mirror for faster and more stable updates).
 - **Global**: Recommended to download `ok-ap-win32-Global-setup-*.exe` (bundled runtime environment, uses GitHub update source).
@@ -106,8 +106,8 @@ uv run python -m unittest discover -s tests
 
 ### Contributors
 
-<a href="https://github.com/longer-sausage/OK-AzurPromilia/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=longer-sausage/OK-AzurPromilia" alt="Contributors" />
+<a href="https://github.com/longer-sausage/ok-ap/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=longer-sausage/ok-ap" alt="Contributors" />
 </a>
 
 ### Special thanks

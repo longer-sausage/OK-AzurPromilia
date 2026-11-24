@@ -21,6 +21,6 @@ jobs:
           version_name: ${{ inputs.tag }}
 
           owner: longer-sausage
-          repo: OK-AzurPromilia
+          repo: ok-ap
           github_token: ${{ secrets.GITHUB_TOKEN }}
           upload_token: ${{ secrets.MirrorChyanUploadToken }}

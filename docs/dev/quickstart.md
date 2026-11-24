@@ -2,7 +2,7 @@
 
 本项目仅支持 **Python 3.12**，请以管理员权限启动终端。依赖管理使用 [uv](https://docs.astral.sh/uv/)。
 
-> 💡 **提示**：如果只需使用程序挂机或辅助，建议直接前往 [GitHub Releases](https://github.com/longer-sausage/OK-AzurPromilia/releases) 下载打包好的安装包运行，无需配置 Python 开发环境。
+> 💡 **提示**：如果只需使用程序挂机或辅助，建议直接前往 [GitHub Releases](https://github.com/longer-sausage/ok-ap/releases) 下载打包好的安装包运行，无需配置 Python 开发环境。
 
 ## 1. 安装依赖
 
