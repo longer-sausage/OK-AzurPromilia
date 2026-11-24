@@ -829,8 +829,7 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
         return JengaPlayer(max_delay=0.4, greedy_high_sway=True, greedy_release=True)
 
     def _drop(self, hwnd, deadline=None, *, capture_context=None):
-        # Trigger tasks do not include the daily account-override mixin.
-        key = self.key_manager.resolve_key("f", "common")
+        key = "f"
         try:
             with self._key_lock:
                 if not self._can_input(hwnd):

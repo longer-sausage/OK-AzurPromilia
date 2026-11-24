@@ -21,12 +21,6 @@ msgstr "現在のアカウント設定に変更はありません"
 msgid "该任务暂无可编辑配置项"
 msgstr "このタスクには編集可能な設定がありません"
 
-msgid "基础配置"
-msgstr "基本設定"
-
-msgid "键位配置"
-msgstr "キー設定"
-
 msgid "截图测试"
 msgstr "スクリーンショットテスト"
 
@@ -39,9 +33,6 @@ msgstr "1行にアカウント名を1つ、パスワード不要"
 msgid "配置默认隐藏，选择后展开对应配置项。"
 msgstr "設定は既定で非表示です。選択すると展開されます。"
 
-msgid "其他配置"
-msgstr "その他の設定"
-
 msgid "清空当前任务覆盖"
 msgstr "現在のタスク上書きをクリア"
 
@@ -53,9 +44,6 @@ msgstr "先にアカウントを選択してください"
 
 msgid "请先选择账号与任务"
 msgstr "先にアカウントとタスクを選択してください"
-
-msgid "全局配置"
-msgstr "グローバル設定"
 
 msgid "任务"
 msgstr "タスク"
@@ -77,9 +65,6 @@ msgstr "上書きをクリアしました：{account} / {task}"
 
 msgid "已清空账号全部覆盖：{account}"
 msgstr "アカウントの全上書きをクリアしました：{account}"
-
-msgid "游戏内快捷键配置"
-msgstr "ゲーム内ホットキー設定"
 
 msgid "账号"
 msgstr "アカウント"
@@ -105,26 +90,8 @@ msgstr "アカウントタスク上書き操作"
 msgid "账号任务选择"
 msgstr "アカウントタスク選択"
 
-msgid "主界面单次动作后延迟"
-msgstr "メイン画面の単一動作後遅延"
-
 msgid "状态"
 msgstr "状態"
-
-msgid "Backpack Key"
-msgstr "バックパックキー"
-
-msgid "Interact Key"
-msgstr "インタラクトキー"
-
-msgid "Jump Key"
-msgstr "ジャンプキー"
-
-msgid "Map Key"
-msgstr "マップキー"
-
-msgid "SingleActionWithDelay"
-msgstr "SingleActionWithDelay"
 
 msgid "跳剧情"
 msgstr "ダイアログをスキップ"

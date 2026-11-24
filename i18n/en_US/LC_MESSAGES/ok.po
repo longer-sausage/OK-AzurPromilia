@@ -21,12 +21,6 @@ msgstr "No changes to current account settings"
 msgid "该任务暂无可编辑配置项"
 msgstr "This task has no editable settings"
 
-msgid "基础配置"
-msgstr "Basic Settings"
-
-msgid "键位配置"
-msgstr "Key Settings"
-
 msgid "截图测试"
 msgstr "Screenshot Test"
 
@@ -39,9 +33,6 @@ msgstr "One account name per line, no password needed"
 msgid "配置默认隐藏，选择后展开对应配置项。"
 msgstr "Settings are hidden by default; select to expand."
 
-msgid "其他配置"
-msgstr "Other Settings"
-
 msgid "清空当前任务覆盖"
 msgstr "Clear Current Task Override"
 
@@ -53,9 +44,6 @@ msgstr "Select an account first"
 
 msgid "请先选择账号与任务"
 msgstr "Select an account and a task first"
-
-msgid "全局配置"
-msgstr "Global Settings"
 
 msgid "任务"
 msgstr "Task"
@@ -77,9 +65,6 @@ msgstr "Cleared override: {account} / {task}"
 
 msgid "已清空账号全部覆盖：{account}"
 msgstr "Cleared all account overrides: {account}"
-
-msgid "游戏内快捷键配置"
-msgstr "In-game hotkey settings"
 
 msgid "账号"
 msgstr "Account"
@@ -105,26 +90,8 @@ msgstr "Account Task Override Actions"
 msgid "账号任务选择"
 msgstr "Account Task Selection"
 
-msgid "主界面单次动作后延迟"
-msgstr "Single-action delay on main screen"
-
 msgid "状态"
 msgstr "Status"
-
-msgid "Backpack Key"
-msgstr "Backpack Key"
-
-msgid "Interact Key"
-msgstr "Interact Key"
-
-msgid "Jump Key"
-msgstr "Jump Key"
-
-msgid "Map Key"
-msgstr "Map Key"
-
-msgid "SingleActionWithDelay"
-msgstr "SingleActionWithDelay"
 
 msgid "跳剧情"
 msgstr "Skip Dialog"

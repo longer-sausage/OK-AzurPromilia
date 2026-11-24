@@ -21,12 +21,6 @@ msgstr "No hay cambios en la configuración de cuenta actual"
 msgid "该任务暂无可编辑配置项"
 msgstr "Esta tarea no tiene ajustes editables"
 
-msgid "基础配置"
-msgstr "Configuración básica"
-
-msgid "键位配置"
-msgstr "Configuración de teclas"
-
 msgid "截图测试"
 msgstr "Prueba de captura"
 
@@ -39,9 +33,6 @@ msgstr "Un nombre de cuenta por línea, sin contraseña"
 msgid "配置默认隐藏，选择后展开对应配置项。"
 msgstr "La configuración está oculta por defecto; seleccione para expandir."
 
-msgid "其他配置"
-msgstr "Otros ajustes"
-
 msgid "清空当前任务覆盖"
 msgstr "Borrar anulación de tarea actual"
 
@@ -53,9 +44,6 @@ msgstr "Seleccione primero una cuenta"
 
 msgid "请先选择账号与任务"
 msgstr "Seleccione primero una cuenta y una tarea"
-
-msgid "全局配置"
-msgstr "Configuración global"
 
 msgid "任务"
 msgstr "Tarea"
@@ -77,9 +65,6 @@ msgstr "Anulación borrada: {account} / {task}"
 
 msgid "已清空账号全部覆盖：{account}"
 msgstr "Todas las anulaciones de cuenta borradas: {account}"
-
-msgid "游戏内快捷键配置"
-msgstr "Configuración de atajos en el juego"
 
 msgid "账号"
 msgstr "Cuenta"
@@ -105,26 +90,8 @@ msgstr "Acciones de anulación de tarea de cuenta"
 msgid "账号任务选择"
 msgstr "Selección de tarea de cuenta"
 
-msgid "主界面单次动作后延迟"
-msgstr "Retraso tras una acción en la pantalla principal"
-
 msgid "状态"
 msgstr "Estado"
-
-msgid "Backpack Key"
-msgstr "Tecla de mochila"
-
-msgid "Interact Key"
-msgstr "Tecla de interacción"
-
-msgid "Jump Key"
-msgstr "Tecla de salto"
-
-msgid "Map Key"
-msgstr "Tecla de mapa"
-
-msgid "SingleActionWithDelay"
-msgstr "SingleActionWithDelay"
 
 msgid "跳剧情"
 msgstr "Saltar diálogo"

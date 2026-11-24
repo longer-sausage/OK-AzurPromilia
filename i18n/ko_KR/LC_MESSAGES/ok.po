@@ -21,12 +21,6 @@ msgstr "현재 계정 설정에 변경 사항이 없습니다"
 msgid "该任务暂无可编辑配置项"
 msgstr "이 작업에는 편집 가능한 설정이 없습니다"
 
-msgid "基础配置"
-msgstr "기본 설정"
-
-msgid "键位配置"
-msgstr "키 설정"
-
 msgid "截图测试"
 msgstr "스크린샷 테스트"
 
@@ -39,9 +33,6 @@ msgstr "한 줄에 계정 이름 하나, 비밀번호 불필요"
 msgid "配置默认隐藏，选择后展开对应配置项。"
 msgstr "설정은 기본적으로 숨겨져 있으며 선택하면 펼쳐집니다."
 
-msgid "其他配置"
-msgstr "기타 설정"
-
 msgid "清空当前任务覆盖"
 msgstr "현재 작업 재정의 지우기"
 
@@ -53,9 +44,6 @@ msgstr "먼저 계정을 선택하세요"
 
 msgid "请先选择账号与任务"
 msgstr "먼저 계정과 작업을 선택하세요"
-
-msgid "全局配置"
-msgstr "전역 설정"
 
 msgid "任务"
 msgstr "작업"
@@ -77,9 +65,6 @@ msgstr "재정의가 지워졌습니다: {account} / {task}"
 
 msgid "已清空账号全部覆盖：{account}"
 msgstr "계정의 모든 재정의가 지워졌습니다: {account}"
-
-msgid "游戏内快捷键配置"
-msgstr "게임 내 단축키 설정"
 
 msgid "账号"
 msgstr "계정"
@@ -105,26 +90,8 @@ msgstr "계정 작업 재정의 작업"
 msgid "账号任务选择"
 msgstr "계정 작업 선택"
 
-msgid "主界面单次动作后延迟"
-msgstr "메인 화면 단일 동작 후 지연"
-
 msgid "状态"
 msgstr "상태"
-
-msgid "Backpack Key"
-msgstr "가방 키"
-
-msgid "Interact Key"
-msgstr "상호작용 키"
-
-msgid "Jump Key"
-msgstr "점프 키"
-
-msgid "Map Key"
-msgstr "지도 키"
-
-msgid "SingleActionWithDelay"
-msgstr "SingleActionWithDelay"
 
 msgid "跳剧情"
 msgstr "대화 건너뛰기"

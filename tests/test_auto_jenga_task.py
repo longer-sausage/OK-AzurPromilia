@@ -2133,16 +2133,6 @@ class TestJengaTask(unittest.TestCase):
         self.assertEqual(task.executor.interaction.send_key_up.call_count, 2)
 
     @patch("src.tasks.trigger.auto_jenga_task.win32gui.GetForegroundWindow", return_value=42)
-    @patch("src.tasks.trigger.auto_jenga_task.time.sleep")
-    def test_remapped_interact_key_on_trigger_task(self, sleep, foreground):
-        task = task_harness()
-        with patch.object(task.key_manager, "resolve_key", return_value="g") as resolve:
-            self.assertTrue(task._drop(42))
-        resolve.assert_called_once_with("f", "common")
-        task.executor.interaction.send_key_down.assert_called_once_with("g", activate=False)
-        task.executor.interaction.send_key_up.assert_called_once_with("g")
-
-    @patch("src.tasks.trigger.auto_jenga_task.win32gui.GetForegroundWindow", return_value=42)
     @patch("src.tasks.trigger.auto_jenga_task.time.perf_counter", return_value=10.02)
     def test_delayed_dispatch_never_sends_expired_prediction(self, clock, foreground):
         task = task_harness()

@@ -292,5 +292,4 @@ class Icons:
     Test = "bug"
     Config = "gear"
     Account = Icon.PEOPLE
-    Keyboard = "gear"
     Interaction = "play"

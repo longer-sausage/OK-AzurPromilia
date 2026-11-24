@@ -13,6 +13,8 @@ logger = Logger.get_logger(__name__)
 class UIMixin:
     """UI 路由导航 Mixin，提供基于 Page 拓扑的状态检测与跳转能力。"""
 
+    once_sleep_time = 1.5
+
     def ui_page_appear(self, page: Page | str) -> bool:
         """检查当前帧是否匹配指定页面的特征。"""
         target_page = Page.get(page)
@@ -32,7 +34,7 @@ class UIMixin:
         Args:
             destination: 目标页面实例或页面名称。
             time_out: 最大导航超时时间（秒）。
-            interval: 页面切换动作后的防抖等待时间（秒）。默认读取 self.once_sleep_time 或 1.0。
+            interval: 页面切换动作后的防抖等待时间（秒），默认为 1.5。
             page_not_found_tolerance: 连续无法识别当前所在页面的最大容忍时间（秒）。
                 超过此时间仍未能匹配任何已注册页面时抛出 PageNotFoundError。
 
@@ -48,7 +50,7 @@ class UIMixin:
 
         Page.init_connection(dest_page)
         if interval is None:
-            interval = getattr(self, "once_sleep_time", 1.0)
+            interval = self.once_sleep_time
 
         logger.info(f"UI goto destination: {dest_page}")
         page_not_found_time = None

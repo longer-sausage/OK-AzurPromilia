@@ -23,7 +23,7 @@ DEFAULT_KEEP_DAYS = 7
 
 
 def get_software_name() -> str:
-    """从全局配置读取软件名（gui_title）。应用未启动时 og.config 为 None，需兜底。"""
+    """从应用启动配置读取软件名（gui_title），应用未启动时使用默认名称。"""
     try:
         from ok import og  # type: ignore
 

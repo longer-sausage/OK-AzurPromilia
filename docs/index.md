@@ -39,7 +39,6 @@
 │   │   ├── detector/           Action 生命周期识别层（Hit / Detector 统一判据）
 │   │   ├── config_migration.py 配置键迁移工具
 │   │   ├── game_window.py      按 exe + 窗口类名定位游戏窗口
-│   │   ├── global_config_store.py 项目自建全局配置存储
 │   │   └── sequence_parser.py  逗号分隔配置串解析
 │   ├── tasks/
 │   │   ├── onetime/            一次性业务任务（Daily、HomeDaily、CommissionDaily、ClaimDaily）
@@ -47,7 +46,7 @@
 │   │   ├── test/               调试与测试任务（Screenshot、Interaction、TreasureBand、UINavigate）
 │   │   ├── daily/              多步骤任务编排与汇总（DailyFeature、步骤统计）
 │   │   └── account/            账号作用域配置存储
-│   ├── gui/                    自定义 Tab（全局配置 / 账号配置）
+│   ├── gui/                    自定义账号配置页
 │   ├── interaction/            游戏交互（GameInteraction 模拟键鼠、ScreenPosition）
 │   ├── image/                  图像算法（旋转模板匹配、连通域、圆弧拟合、音游/叠叠乐检测等）
 │   ├── yolo/                   YOLO 模型注册与 OpenVINO 推理

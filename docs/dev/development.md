@@ -19,8 +19,7 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
 | `src/core/base_mixin/framework_override_mixin.py` | 用"同名覆写 + `super()`"扩展框架方法（不复制框架代码） |
 | `src/core/detector/` | **识别层**：把四类识别源（模板 / YOLO / OCR / 按钮）归一成统一判据 `Hit` / `Detector`，供 Action 生命周期编排使用 |
 | `src/core/config_migration.py` | 配置键迁移工具（改键名时使用，防丢用户配置） |
-| `src/core/global_config_store.py` | 本项目自建的全局配置（**不走框架的 `config['global_configs']`**） |
-| `src/interaction/` | 窗口与键鼠：`GameInteraction`（自定义后台输入）、`Mouse`、`ScreenPosition`、`KeyConfig` |
+| `src/interaction/` | 窗口与键鼠：`GameInteraction`（自定义后台输入）、`Mouse`、`ScreenPosition` |
 | `src/image/` | 图像算法：`rotated_template`（旋转模板匹配）、`stability`（图像指纹）、`frame_processes`、`hsv_config`、`button_detector`（固定 Box 按钮检测，无 OCR）、`glow_target_detector`（可射击光圈，HSV+圆弧拟合）、`treasure_band_detector`（开锁颜色带，HSV+连通域）、`rhythm_detector`（音游音符及长条头尾）、`jenga_detector`（祖赞卡之梯的悬挂图腾与塔顶） |
 | `src/yolo/` | YOLO 模型注册（`models.py`）与 OpenVINO 推理 |
 | `src/tasks/onetime/` | 一次性任务 |
@@ -28,7 +27,7 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
 | `src/tasks/test/` | 调试/测试任务 |
 | `src/tasks/daily/` | 多步骤任务的编排（四态统计、失败标记、分账号轮次、汇总报告） |
 | `src/tasks/account/` | 账号作用域配置存储 |
-| `src/gui/` | 自定义 Tab（全局配置页、账号配置页） |
+| `src/gui/` | 自定义账号配置页 |
 | `src/patches/` | 启动补丁。**是对框架内部实现的猴子补丁，升级 ok-script 前必须逐个复核** |
 | `src/data/feature_list.py` | 模板名枚举（**由标注自动生成**，代码里不要写裸字符串模板名） |
 | `src/data/lang/` | `assets/lang/*.json` 的读取器 |
@@ -173,7 +172,7 @@ Good / Normal / Miss / Wrong 全部为 0，总完成度 99.86%；另用 WGC 实�
   成功放置后，新一块需有消失重现、足够横移或双帧成功判定的证据，且释放后至少等待 0.8 秒，
   避免重复按键。判定轮询已消耗消失画面时，不再要求新块远离旧释放坐标。
   Miss / 判定缺失后的重新接管仍需至少两秒的新轨迹，不能立即再次放置。
-- 实际截图的操作提示为 **F / 鼠标左键**，任务使用全局 `Interact Key` 对 F 的映射。
+- 游戏提示可按 **F** 或鼠标左键，任务使用默认交互键 **F**。
   不照搬资料包 demo 的空格键、十层目标或 88 px/m；截图包含 `0/20`、`2/20`、
   `19/20`，任务也不把这些分数当作固定层数或结束条件。
 - `_input_lead_ms=45` 保留原有图像运动时序补偿的语义，包含输入与刚体渲染插值的影响；
