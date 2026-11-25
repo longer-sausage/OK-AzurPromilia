@@ -114,7 +114,9 @@ msgid "宝箱开锁"
 msgstr "Treasure Unlock"
 
 msgid "进入开锁界面后启动任务，自动校准颜色条带并开锁。"
-msgstr "Start the task on the lock screen to calibrate the color bands and unlock the chest."
+msgstr ""
+"Start the task on the lock screen to calibrate the color bands and unlock "
+"the chest."
 
 msgid "家园每日"
 msgstr "Home Daily"
@@ -145,7 +147,8 @@ msgid "每日收菜"
 msgstr "Daily Claim"
 
 msgid "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡"
-msgstr "Run daily claim: mail, surprise box, daily/weekly activity, monthly card"
+msgstr ""
+"Run daily claim: mail, surprise box, daily/weekly activity, monthly card"
 
 msgid "委托每日"
 msgstr "Commission Daily"
@@ -156,4 +159,112 @@ msgstr ""
 "(auto-combat must be unlocked first)"
 
 msgid "进入音游后启动任务，自动演奏当前曲目。"
-msgstr "Start the task in the rhythm game to play the current song automatically."
+msgstr ""
+"Start the task in the rhythm game to play the current song automatically."
+
+msgid "任务队列"
+msgstr "Task queue"
+
+msgid "队列空闲"
+msgstr "Queue idle"
+
+msgid "项"
+msgstr "items"
+
+msgid "合计"
+msgstr "Total"
+
+msgid "队列悬浮窗"
+msgstr "Queue overlay"
+
+msgid "位置与大小"
+msgstr "Position & size"
+
+msgid "当前状态"
+msgstr "Current state"
+
+msgid "选择图标"
+msgstr "Choose icon"
+
+msgid "悬停窗口可以拖动，拖右下角改大小，松手自动保存。"
+msgstr ""
+"Drag the window to move it, drag the bottom-right corner to resize; changes "
+"are saved automatically."
+
+msgid "保存并应用"
+msgstr "Save and apply"
+
+msgid "恢复默认位置与大小"
+msgstr "Reset position and size"
+
+msgid "选择图标文件"
+msgstr "Choose an icon file"
+
+msgid "游戏在前台，已隐藏"
+msgstr "Hidden (game in the foreground)"
+
+msgid "已恢复默认位置与大小"
+msgstr "Position and size reset"
+
+msgid "启用队列悬浮窗"
+msgstr "Enable the queue overlay"
+
+msgid "游戏在后台时显示（游戏在前台时永远不显示）"
+msgstr "Show while the game is in the background (never in the foreground)"
+
+msgid "显示正在执行和排队中的任务；每项耗时取最近 5 次实际用时的平均值。"
+msgstr ""
+"Shows the running and queued tasks; each estimate averages the last 5 actual"
+" runs."
+
+msgid "不透明度"
+msgstr "Opacity"
+
+msgid "图标"
+msgstr "Icon"
+
+msgid "图标大小"
+msgstr "Icon size"
+
+msgid "左键单击图标展开队列，双击面板收回图标。"
+msgstr ""
+"Left-click the icon to open the queue; double-click the panel to go back to "
+"the icon."
+
+msgid "图标会一直留在任务栏上方，不会被任务栏盖住。"
+msgstr "The icon always stays above the taskbar and is never covered by it."
+
+msgid "宽度"
+msgstr "Width"
+
+msgid "高度"
+msgstr "Height"
+
+msgid "圆角"
+msgstr "Corner radius"
+
+msgid "最多显示"
+msgstr "Show at most"
+
+msgid "队列里的耗时来自历史记录：每个任务保留最近 5 次，不足 5 次按已有次数平均。"
+msgstr ""
+"Estimates come from history: each task keeps its last 5 runs; fewer runs are"
+" averaged as-is."
+
+msgid "悬浮窗尚未创建"
+msgstr "The overlay has not been created yet"
+
+msgid "显示中"
+msgstr "Showing"
+
+msgid "未显示"
+msgstr "Hidden"
+
+msgid "已保存队列悬浮窗设置"
+msgstr "Queue overlay settings saved"
+
+msgid "已保存；重启程序后生效"
+msgstr "Saved; takes effect after a restart"
+
+msgid "队列"
+msgstr "Queue"

@@ -114,7 +114,9 @@ msgid "宝箱开锁"
 msgstr "Desbloqueo de cofres"
 
 msgid "进入开锁界面后启动任务，自动校准颜色条带并开锁。"
-msgstr "Inicia la tarea en la pantalla de la cerradura para calibrar las bandas de color y abrir el cofre."
+msgstr ""
+"Inicia la tarea en la pantalla de la cerradura para calibrar las bandas de "
+"color y abrir el cofre."
 
 msgid "家园每日"
 msgstr "Diario del hogar"
@@ -131,7 +133,9 @@ msgstr "Escalera de Zuzanka automática"
 
 #: src/tasks/onetime/auto_jenga_task.py
 msgid "进入祖赞卡之梯后启动任务，自动放置图腾。"
-msgstr "Inicia la tarea en la escalera de Zuzanka para colocar los tótems automáticamente."
+msgstr ""
+"Inicia la tarea en la escalera de Zuzanka para colocar los tótems "
+"automáticamente."
 
 #: src/tasks/onetime/auto_jenga_task.py
 msgid "正在对准图腾"
@@ -158,4 +162,115 @@ msgstr ""
 "seleccionado (requiere desbloquear antes el combate automático)"
 
 msgid "进入音游后启动任务，自动演奏当前曲目。"
-msgstr "Inicia la tarea en el juego de ritmo para tocar la canción actual automáticamente."
+msgstr ""
+"Inicia la tarea en el juego de ritmo para tocar la canción actual "
+"automáticamente."
+
+msgid "任务队列"
+msgstr "Cola de tareas"
+
+msgid "队列空闲"
+msgstr "Cola vacía"
+
+msgid "项"
+msgstr "elementos"
+
+msgid "合计"
+msgstr "Total"
+
+msgid "队列悬浮窗"
+msgstr "Ventana flotante de la cola"
+
+msgid "位置与大小"
+msgstr "Posición y tamaño"
+
+msgid "当前状态"
+msgstr "Estado actual"
+
+msgid "选择图标"
+msgstr "Elegir icono"
+
+msgid "悬停窗口可以拖动，拖右下角改大小，松手自动保存。"
+msgstr ""
+"Arrastra la ventana para moverla y la esquina inferior derecha para "
+"redimensionarla; se guarda automáticamente."
+
+msgid "保存并应用"
+msgstr "Guardar y aplicar"
+
+msgid "恢复默认位置与大小"
+msgstr "Restablecer posición y tamaño"
+
+msgid "选择图标文件"
+msgstr "Elegir un archivo de icono"
+
+msgid "游戏在前台，已隐藏"
+msgstr "Oculto (juego en primer plano)"
+
+msgid "已恢复默认位置与大小"
+msgstr "Posición y tamaño restablecidos"
+
+msgid "启用队列悬浮窗"
+msgstr "Activar la ventana flotante de la cola"
+
+msgid "游戏在后台时显示（游戏在前台时永远不显示）"
+msgstr "Mostrar cuando el juego está en segundo plano (nunca en primer plano)"
+
+msgid "显示正在执行和排队中的任务；每项耗时取最近 5 次实际用时的平均值。"
+msgstr ""
+"Muestra las tareas en curso y en cola; cada estimación promedia las últimas "
+"5 ejecuciones reales."
+
+msgid "不透明度"
+msgstr "Opacidad"
+
+msgid "图标"
+msgstr "Icono"
+
+msgid "图标大小"
+msgstr "Tamaño del icono"
+
+msgid "左键单击图标展开队列，双击面板收回图标。"
+msgstr ""
+"Clic izquierdo en el icono para abrir la cola; doble clic en el panel para "
+"volver al icono."
+
+msgid "图标会一直留在任务栏上方，不会被任务栏盖住。"
+msgstr ""
+"El icono siempre queda por encima de la barra de tareas y nunca queda "
+"oculto."
+
+msgid "宽度"
+msgstr "Ancho"
+
+msgid "高度"
+msgstr "Alto"
+
+msgid "圆角"
+msgstr "Radio de esquina"
+
+msgid "最多显示"
+msgstr "Mostrar como máximo"
+
+msgid "队列里的耗时来自历史记录：每个任务保留最近 5 次，不足 5 次按已有次数平均。"
+msgstr ""
+"Las estimaciones salen del historial: cada tarea guarda sus últimas 5 "
+"ejecuciones y promedia las disponibles."
+
+msgid "悬浮窗尚未创建"
+msgstr "La ventana flotante aún no se ha creado"
+
+msgid "显示中"
+msgstr "Mostrando"
+
+msgid "未显示"
+msgstr "Oculto"
+
+msgid "已保存队列悬浮窗设置"
+msgstr "Ajustes de la ventana flotante guardados"
+
+msgid "已保存；重启程序后生效"
+msgstr "Guardado; se aplicará tras reiniciar"
+
+msgid "队列"
+msgstr "Cola"
