@@ -442,6 +442,13 @@ jobs:
             ${{ needs.sync.outputs.changes_with_asterisk }}
           files: pyappify_dist/**
 
+      - name: Trigger WebDAV installer sync
+        continue-on-error: true
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run --repo "$GITHUB_REPOSITORY" webdav_release.yml
+
       - name: Trigger MirrorChyanUploading
         shell: bash
         run: |

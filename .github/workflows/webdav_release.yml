@@ -1,0 +1,58 @@
+name: Sync China installer to WebDAV
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: webdav-release
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        path:
+          - /baidu/OK-AzurPromilia
+          - /quark/OK-AzurPromilia
+    steps:
+      - name: Download the latest China installer
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir installer
+          gh release download --repo "$GITHUB_REPOSITORY" \
+            --pattern 'ok-ap-win32-China-setup-*.exe' --dir installer
+          shopt -s nullglob
+          files=(installer/*)
+          if (( ${#files[@]} != 1 )) || [[ ! -f "${files[0]}" || ! -s "${files[0]}" ]]; then
+            echo "::error::Expected exactly one non-empty China installer."
+            exit 1
+          fi
+
+      - name: Install rclone
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y rclone
+
+      - name: Upload installer and remove other top-level files
+        shell: bash
+        env:
+          DESTINATION: ${{ matrix.path }}
+          RCLONE_CONFIG_DAV_TYPE: webdav
+          RCLONE_CONFIG_DAV_VENDOR: other
+          RCLONE_CONFIG_DAV_URL: ${{ secrets.WEBDAV_URL }}
+          RCLONE_CONFIG_DAV_USER: ${{ secrets.WEBDAV_USERNAME }}
+          WEBDAV_PASSWORD: ${{ secrets.WEBDAV_PASSWORD }}
+        run: |
+          set -euo pipefail
+          : "${RCLONE_CONFIG_DAV_URL:?Missing WEBDAV_URL}" "${RCLONE_CONFIG_DAV_USER:?Missing WEBDAV_USERNAME}" "${WEBDAV_PASSWORD:?Missing WEBDAV_PASSWORD}"
+          RCLONE_CONFIG_DAV_PASS=$(printf '%s' "$WEBDAV_PASSWORD" | rclone obscure -)
+          export RCLONE_CONFIG_DAV_PASS
+          rclone sync installer "dav:${DESTINATION#/}" --max-depth 1 --delete-after
