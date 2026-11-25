@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+
 from src.interaction.game_interaction import GameInteraction
 
 version = "dev"
@@ -110,6 +111,7 @@ config = {
     ],
     "custom_tabs": [
         ["src.gui.account_config_tab", "AccountConfigTab"],
+        ["src.gui.queue_panel_tab", "QueuePanelTab"],
     ],
     "trigger_tasks": [  # 不断执行的触发式任务
         ["src.tasks.trigger.skip_dialog_task", "SkipDialogTask"],
