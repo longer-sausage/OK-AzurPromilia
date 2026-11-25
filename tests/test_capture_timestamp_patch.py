@@ -24,13 +24,13 @@ class TestCaptureTimestampPatch(unittest.TestCase):
             )
         )
 
-        def capture(method):
+        def capture(method, frame_deadline=None):
             source = method.source
             if source is None:
                 return None
             return method.convert_dx_frame(source)
 
-        self.patches.enter_context(patch.object(WindowsGraphicsCaptureMethod, "do_get_frame", capture))
+        self.patches.enter_context(patch.object(WindowsGraphicsCaptureMethod, "_do_get_frame", capture))
         self.patches.enter_context(
             patch.object(WindowsGraphicsCaptureMethod, "get_frame", WindowsGraphicsCaptureMethod.get_frame)
         )
@@ -73,6 +73,16 @@ class TestCaptureTimestampPatch(unittest.TestCase):
         self.method.source = None
         self.assertIsNone(self.method.get_frame())
         self.assertIsNone(self.method.frame_timestamp)
+
+    def test_busy_preview_honors_its_timeout(self):
+        capture_timestamp_patch.install_capture_timestamp_patch()
+        results = []
+        with self.method.get_frame_lock:
+            worker = threading.Thread(target=lambda: results.append(self.method.get_frame(busy_wait=0.01)))
+            worker.start()
+            worker.join(timeout=1)
+            self.assertFalse(worker.is_alive())
+        self.assertEqual(results, [None])
 
 
 if __name__ == "__main__":

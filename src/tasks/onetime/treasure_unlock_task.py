@@ -1,6 +1,6 @@
-"""宝箱开锁触发式任务。
+"""宝箱开锁任务。
 
-流程（状态机跨 ``run()`` 调用保持，单次调用只推进到「单次运行时长上限」）::
+单次手动运行流程::
 
     WAIT_TREASURE ── treasure_icon ──> CALIBRATING_BANDS ── 连续多帧稳定 ──> UNLOCKING
         ^                                                                        │
@@ -27,7 +27,7 @@
 
 from __future__ import annotations
 
-from ok import Box, TriggerTask
+from ok import Box
 
 from src.core.base_game_task import BaseGameTask
 from src.core.detector import PredicateDetector
@@ -48,8 +48,8 @@ BAND_X, BAND_Y, BAND_TO_X, BAND_TO_Y = 0.6797, 0.2324, 0.7021, 0.7778
 KEY_X, KEY_Y, KEY_TO_X, KEY_TO_Y = 0.630, 0.200, 0.700, 0.820
 
 
-class TreasureUnlockTask(BaseGameTask, TriggerTask):
-    """宝箱开锁触发式任务：校准颜色条带后按钥匙位置逐个点击。"""
+class TreasureUnlockTask(BaseGameTask):
+    """宝箱开锁任务：校准颜色条带后按钥匙位置逐个点击。"""
 
     # ── 状态 ──
     WAIT_TREASURE = "WAIT_TREASURE"
@@ -61,8 +61,8 @@ class TreasureUnlockTask(BaseGameTask, TriggerTask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = "宝箱开锁"
-        self.description = "宝箱开锁触发式任务：校准颜色条带后按钥匙位置逐个点击开锁。"
-        self.icon = Icons.Trigger
+        self.description = self.tr("进入开锁界面后启动任务，自动校准颜色条带并开锁。")
+        self.icon = Icons.Task
 
         self.default_config = {
             "_校准稳定帧数": 5,
@@ -95,10 +95,14 @@ class TreasureUnlockTask(BaseGameTask, TriggerTask):
     # ── 主循环 ──────────────────────────────────────────────
 
     def run(self):
+        self._reset()
+        self._roi_cache = None
+        self._key_box_cache = None
+        self._detector_cache = None
         budget = float(self.config.get("_单次运行时长上限(秒)", 25.0))
         interval = max(0.02, float(self.config.get("_检测间隔(秒)", 0.08)))
 
-        for frame in self.loop(budget, raise_if_time_out=False):
+        for frame in self.loop(budget):
             if frame is None:
                 self.sleep(interval)
                 continue
@@ -109,7 +113,6 @@ class TreasureUnlockTask(BaseGameTask, TriggerTask):
                 self._reset()
                 return
             if self._state == self.WAIT_TREASURE:
-                # 没有宝箱就别占着触发任务的时间片
                 return
             self.sleep(interval)
 

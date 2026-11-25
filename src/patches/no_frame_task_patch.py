@@ -45,17 +45,9 @@ def install_no_frame_task_patch():
     from ok.task.task import BaseTask
     from ok.task.TaskExecutor import TaskExecutor
 
-    _require_upstream_contract(TaskExecutor, BaseTask)
+    _require_upstream_contract(TaskExecutor)
 
-    _original_base_init = BaseTask.__init__
-
-    def _patched_base_init(self, *args, **kwargs):
-        _original_base_init(self, *args, **kwargs)
-        if not hasattr(self, "needs_frame"):
-            self.needs_frame = True
-
-    _patched_base_init.__wrapped__ = _original_base_init
-    BaseTask.__init__ = _patched_base_init
+    BaseTask.needs_frame = True
 
     _original_next_frame = TaskExecutor.next_frame
 
@@ -83,12 +75,10 @@ def install_no_frame_task_patch():
     logger.info("no_frame_task_patch installed")
 
 
-def _require_upstream_contract(TaskExecutor, BaseTask) -> None:
+def _require_upstream_contract(TaskExecutor) -> None:
     required_executor_attrs = ("next_frame", "reset_scene", "execute", "check_enabled")
     missing = [name for name in required_executor_attrs if not hasattr(TaskExecutor, name)]
     if missing:
         raise RuntimeError(
             f"no_frame_task_patch missing TaskExecutor attrs: {missing}"
         )
-    if not callable(getattr(BaseTask, "__init__", None)):
-        raise RuntimeError("no_frame_task_patch requires BaseTask.__init__")

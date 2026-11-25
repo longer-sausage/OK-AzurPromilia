@@ -4,20 +4,15 @@ import copy
 from collections import OrderedDict
 from typing import Any, Dict
 
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
-from qfluentwidgets import (
-    BodyLabel,
-    ComboBox,
-    FluentIcon,
-    NavigationItemPosition,
-    PrimaryPushButton,
-    PushButton,
-    TextEdit,
-)
+from PySide6.QtWidgets import QHBoxLayout, QTextEdit, QVBoxLayout, QWidget
 
-from ok.gui.tasks.ConfigCard import ConfigCard, og
-from ok.gui.tasks.LabelAndWidget import LabelAndWidget
-from ok.gui.widget.CustomTab import CustomTab
+from ok import ConfigOption, Icon, og
+from ok.ui.qt.kit.buttons import Button
+from ok.ui.qt.kit.cards import SettingRow
+from ok.ui.qt.kit.inputs import ComboBox
+from ok.ui.qt.kit.labels import Label
+from ok.ui.qt.settings.config_section import ConfigSection
+from ok.ui.qt.widget.CustomTab import CustomTab
 
 from src.tasks.account.account_scope_store import (
     load_overrides,
@@ -30,7 +25,7 @@ _EDITOR_CARD_CACHE_MAX = 16
 
 
 class InMemoryConfig(dict):
-    """A lightweight config object used by ConfigCard for account overrides."""
+    """A lightweight config object used by ConfigSection for account overrides."""
 
     def __init__(self, initial: Dict[str, Any], defaults: Dict[str, Any]):
         super().__init__(initial)
@@ -60,7 +55,7 @@ class AccountConfigTab(CustomTab):
         self.current_editor_card = None
         self.account_display_to_key: Dict[str, str] = {}
         self.account_display_to_name: Dict[str, str] = {}
-        self._editor_cards: OrderedDict[str, ConfigCard] = OrderedDict()
+        self._editor_cards: OrderedDict[str, ConfigSection] = OrderedDict()
 
         self._build_ui()
 
@@ -71,16 +66,12 @@ class AccountConfigTab(CustomTab):
         return "账号配置"
 
     @property
-    def position(self):
-        return NavigationItemPosition.TOP
-
-    @property
     def add_after_default_tabs(self):
         return False
 
     @property
     def icon(self):
-        return FluentIcon.PEOPLE
+        return Icon.PEOPLE
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -96,7 +87,7 @@ class AccountConfigTab(CustomTab):
         header_layout = QVBoxLayout(header)
         header_layout.setContentsMargins(0, 0, 0, 0)
         header_layout.setSpacing(6)
-        tip = BodyLabel(og.app.tr(
+        tip = Label(og.app.tr(
             "按账号和任务配置独立参数。先选账号，再选任务，下面会自动出现该任务的属性控件。"
             "账号页只需要填写账号名，无需填写密码。系统兼容旧格式 `账号,密码` 但不会保存密码。"
         ))
@@ -109,20 +100,17 @@ class AccountConfigTab(CustomTab):
         base_layout.setContentsMargins(0, 0, 0, 0)
         base_layout.setSpacing(8)
 
-        account_list_row = LabelAndWidget("账号列表", "每行一个账号名，无需密码")
-        self.account_list_edit = TextEdit()
+        account_list_row = SettingRow(self.tr("账号列表"), self.tr("每行一个账号名，无需密码"), control_width=420)
+        self.account_list_edit = QTextEdit()
         self.account_list_edit.setFixedWidth(420)
         self.account_list_edit.setMinimumHeight(120)
         self.account_list_edit.setPlaceholderText(og.app.tr("账号A\n账号B"))
-        account_list_row.add_widget(self.account_list_edit, stretch=0)
+        account_list_row.set_control(self.account_list_edit)
         base_layout.addWidget(account_list_row)
 
-        base_action_row = LabelAndWidget("账号列表操作")
-        base_action_layout = QHBoxLayout()
-        base_action_layout.addStretch(1)
-        self.save_base_button = PrimaryPushButton(og.app.tr("保存账号列表"))
-        base_action_layout.addWidget(self.save_base_button)
-        base_action_row.add_layout(base_action_layout, stretch=1)
+        base_action_row = SettingRow(self.tr("账号列表操作"))
+        self.save_base_button = Button(og.app.tr("保存账号列表"), variant="primary")
+        base_action_row.set_control(self.save_base_button)
         base_layout.addWidget(base_action_row)
 
         self.add_card(og.app.tr("账号基础设置"), base_widget)
@@ -132,28 +120,28 @@ class AccountConfigTab(CustomTab):
         selector_layout.setContentsMargins(0, 0, 0, 0)
         selector_layout.setSpacing(8)
 
-        account_selector_row = LabelAndWidget("账号", "从账号列表或已有覆盖中选择")
+        account_selector_row = SettingRow(self.tr("账号"), self.tr("从账号列表或已有覆盖中选择"), control_width=220)
         self.account_selector = ComboBox()
         self.account_selector.setMinimumWidth(220)
-        account_selector_row.add_widget(self.account_selector, stretch=0)
+        account_selector_row.set_control(self.account_selector)
         selector_layout.addWidget(account_selector_row)
 
-        task_selector_row = LabelAndWidget("任务", "选择任务后自动渲染属性控件")
+        task_selector_row = SettingRow(self.tr("任务"), self.tr("选择任务后自动渲染属性控件"), control_width=280)
         self.task_selector = ComboBox()
         self.task_selector.setMinimumWidth(280)
-        task_selector_row.add_widget(self.task_selector, stretch=0)
+        task_selector_row.set_control(self.task_selector)
         selector_layout.addWidget(task_selector_row)
 
-        action_row = LabelAndWidget("账号任务覆盖操作")
-        action_layout = QHBoxLayout()
+        action_row = QWidget()
+        action_layout = QHBoxLayout(action_row)
+        action_layout.addWidget(Label(self.tr("账号任务覆盖操作"), "strong"))
         action_layout.addStretch(1)
-        self.save_current_config_button = PrimaryPushButton(og.app.tr("保存当前账号配置"))
-        self.clear_task_override_button = PushButton(og.app.tr("清空当前任务覆盖"))
-        self.clear_account_override_button = PushButton(og.app.tr("清空当前账号全部覆盖"))
+        self.save_current_config_button = Button(og.app.tr("保存当前账号配置"), variant="primary")
+        self.clear_task_override_button = Button(og.app.tr("清空当前任务覆盖"))
+        self.clear_account_override_button = Button(og.app.tr("清空当前账号全部覆盖"))
         action_layout.addWidget(self.save_current_config_button)
         action_layout.addWidget(self.clear_task_override_button)
         action_layout.addWidget(self.clear_account_override_button)
-        action_row.add_layout(action_layout, stretch=1)
         selector_layout.addWidget(action_row)
 
         self.add_card(og.app.tr("账号任务选择"), selector_widget)
@@ -162,7 +150,7 @@ class AccountConfigTab(CustomTab):
         status_layout = QVBoxLayout(status_widget)
         status_layout.setContentsMargins(0, 0, 0, 0)
         status_layout.setSpacing(4)
-        self.status_label = BodyLabel(og.app.tr("就绪"))
+        self.status_label = Label(og.app.tr("就绪"))
         self.status_label.setWordWrap(True)
         status_layout.addWidget(self.status_label)
         self.add_card(og.app.tr("状态"), status_widget)
@@ -171,7 +159,7 @@ class AccountConfigTab(CustomTab):
         self.editor_layout = QVBoxLayout(editor_widget)
         self.editor_layout.setContentsMargins(0, 0, 0, 0)
         self.editor_layout.setSpacing(8)
-        self.editor_empty_label = BodyLabel(og.app.tr("请先选择账号与任务"))
+        self.editor_empty_label = Label(og.app.tr("请先选择账号与任务"))
         self.editor_layout.addWidget(self.editor_empty_label)
         self.add_card(og.app.tr("任务属性配置"), editor_widget)
 
@@ -429,17 +417,14 @@ class AccountConfigTab(CustomTab):
         config_type = dict(task.config_type or {})
         config_type = {key: value for key, value in config_type.items() if key in editable_keys}
 
-        card = ConfigCard(
-            None,
+        option = ConfigOption(
             task.name,
-            virtual_config,
-            "保存当前账号的完整任务配置快照。任务默认值变化不会影响已保存账号。",
-            {},
-            config_description,
-            config_type,
-            task.icon,
+            description="保存当前账号的完整任务配置快照。任务默认值变化不会影响已保存账号。",
+            config_description=config_description,
+            config_type=config_type,
         )
-        card.card.setTitle(f"{og.app.tr(task.name)} - {account_name or account_key}")
+        card = ConfigSection(virtual_config, option)
+        card.title_label.setText(f"{og.app.tr(task.name)} - {account_name or account_key}")
         card.show()
         self.editor_layout.addWidget(card)
 

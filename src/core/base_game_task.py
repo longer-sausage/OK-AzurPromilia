@@ -1,10 +1,7 @@
 import time
-from datetime import datetime
 
 import cv2
 
-# 覆写框架截图时间戳格式：日期_时分秒（无毫秒）
-import ok.gui.debug.Screenshot as _ok_screenshot
 from ok import BaseTask, TaskDisabledException, TriggerTask, WaitFailedException, CannotFindException
 
 from src.config import config as app_config
@@ -13,18 +10,13 @@ from src.core.base_mixin.runtime_mixin import RuntimeMixin
 from src.core.base_mixin.ui_mixin import UIMixin
 from src.core.config_migration import migrate_config_file_keys, migrate_config_values
 from src.core.game_window import find_game_hwnd
-from src.core.global_config_store import get_global_config
 from src.data.feature_list import FeatureList
 from src.data.page import PageNotFoundError, page_main
 from src.data.lang import get_lang_accessor
 from src.image.hsv_config import HSVRange
 from src.image.frame_processes import make_hsv_isolator
 from src.image.stability import perceptual_hash, hamming_distance
-from src.interaction.key_config import KeyConfigManager
 from src.interaction.screen_position import ScreenPosition
-
-_ok_screenshot.get_current_time_formatted = lambda: datetime.now().strftime("%Y%m%d_%H%M%S")
-
 
 def _round_ratio(value):
     try:
@@ -46,10 +38,6 @@ class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
         self.support_multi_account = False  # 是否支持多账号执行逻辑
         self.default_config_group = {}  # 配置项分组信息，格式为 { "分组名称": ["配置项1", "配置项2"] }
         self.box = ScreenPosition(self)  # 屏幕位置辅助对象，提供top/bottom/left/right等边界
-        self.key_manager = KeyConfigManager(get_global_config("Game Hotkey Config"))
-        self.once_sleep_time = get_global_config("Ensure Main Once Action Sleep").get(
-            "SingleActionWithDelay", 1.5
-        )  # 获取全局配置的单次动作睡眠时间
 
         # 语言访问器（按模块化 JSON 加载）
         try:

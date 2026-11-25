@@ -15,9 +15,8 @@ from pathlib import Path
 from PySide6.QtCore import QObject, QRectF, QSize, Qt
 from PySide6.QtGui import QIcon, QIconEngine, QMovie, QPixmap
 from PySide6.QtWidgets import QWidget
-from qfluentwidgets import FluentIconBase, Theme, isDarkTheme
-
-from qfluentwidgets import FluentIcon
+from ok.core.icons import Icon
+from ok.ui.qt.kit.theme import Theme, theme as app_theme
 
 _ICONS_DIR = Path("assets") / "ui" / "material_icons"
 _CACHE_DIR = Path("cache") / "icons"
@@ -200,7 +199,7 @@ class _GifIconEngine(QIconEngine):
         return _GifIconEngine(self._player)
 
 
-class GifIcon(FluentIconBase):
+class GifIcon:
     """单个 GIF 文件组成的动图图标。
 
     渲染时自动播放动画，并驱动所有绘制它的控件跟随重绘。
@@ -228,7 +227,7 @@ class GifIcon(FluentIconBase):
         self._player.stop()
 
 
-class ThemeIcon(FluentIconBase):
+class ThemeIcon:
     """根据主题自动切换的图标，dark/light 指图标文件本身的主题色。
 
     只传其中一个时，另一个自动取其"颜色反转"版本（写入 cache/icons/ 缓存）。
@@ -260,7 +259,7 @@ class ThemeIcon(FluentIconBase):
 
     def _is_dark(self, theme):
         if theme == Theme.AUTO:
-            return isDarkTheme()
+            return app_theme.is_dark()
         return theme == Theme.DARK
 
     def path(self, theme=Theme.AUTO):
@@ -272,26 +271,25 @@ class ThemeIcon(FluentIconBase):
     def icon(self, theme=Theme.AUTO, color=None):
         if self._is_gif:
             return self._gif_for(theme).icon(theme, color)
-        return super().icon(theme, color)
+        return QIcon(self.path(theme))
 
     def render(self, painter, rect, theme=Theme.AUTO, indexes=None, **attributes):
         if self._is_gif:
             self._gif_for(theme).render(painter, rect, theme, indexes, **attributes)
         else:
-            super().render(painter, rect, theme, indexes, **attributes)
+            self.icon(theme).paint(painter, QRectF(rect).toRect())
 
 
 class Icons:
     """统一图标入口。
 
-    静态图标用 FluentIcon；如需自定义 ThemeIcon / GifIcon，替换对应属性即可。
+    静态图标用框架的语义图标或内置名称；如需自定义 ThemeIcon / GifIcon，替换对应属性即可。
     """
 
-    Default = FluentIcon.APPLICATION
-    Task = FluentIcon.GAME
-    Trigger = FluentIcon.SYNC
-    Test = FluentIcon.ROBOT
-    Config = FluentIcon.SETTING
-    Account = FluentIcon.PEOPLE
-    Keyboard = FluentIcon.SETTING
-    Interaction = FluentIcon.PLAY
+    Default = Icon.APPLICATION
+    Task = Icon.GAME
+    Trigger = Icon.SYNC
+    Test = "bug"
+    Config = "gear"
+    Account = Icon.PEOPLE
+    Interaction = "play"

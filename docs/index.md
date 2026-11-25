@@ -11,12 +11,13 @@
   - **家园日常 (`HomeDailyTask`)**：支持家园烹饪制作、牧场作物收获等家园流程。
   - **每日委托 (`CommissionDailyTask`)**：日常委托接取与提交。
   - **每日收菜 (`ClaimDailyTask`)**：自动领取每日活跃、周常活跃、战令与大月卡奖励。
-- **触发式玩法与小游戏 (`src/tasks/trigger/`)**：
+- **手动启动的小游戏 (`src/tasks/onetime/`)**：
   - **自动祖赞卡之梯 (`AutoJengaTask`)**：根据八字摆动轨迹拟合与碰撞面积判定，实现全自动高分放置。
   - **自动花瓣音游 (`AutoRhythmTask`)**：高精度滚动速度拟合与输入时序预测，支持多轨、长按与双键连击。
+  - **宝箱开锁辅助 (`TreasureUnlockTask`)**：高精度颜色带连通域检测与自动对齐开锁。
+- **触发式辅助任务 (`src/tasks/trigger/`)**：
   - **自动跳过剧情 (`SkipDialogTask`)**：基于中央文本带特征的快速跳过与确认。
   - **星结契约辅助 (`StarLinkAssistTask`)**：屏幕中心准心光圈圆弧拟合与自动命中。
-  - **宝箱开锁辅助 (`TreasureUnlockTask`)**：高精度颜色带连通域检测与自动对齐开锁。
 
 ## 快速导航
 
@@ -32,22 +33,21 @@
 ├── src/
 │   ├── config.py               ok-script 应用配置与任务/Tab 注册
 │   ├── globals.py              全局单例
-│   ├── icons.py                图标（复用 FluentIcon）
+│   ├── icons.py                图标（使用 ok-script 内置图标）
 │   ├── core/
 │   │   ├── base_game_task.py   任务通用基类（self.loop、暂停感知、配置迁移）
 │   │   ├── base_mixin/         通用能力 mixin（RuntimeMixin、FrameworkOverrideMixin）
 │   │   ├── detector/           Action 生命周期识别层（Hit / Detector 统一判据）
 │   │   ├── config_migration.py 配置键迁移工具
 │   │   ├── game_window.py      按 exe + 窗口类名定位游戏窗口
-│   │   ├── global_config_store.py 项目自建全局配置存储
 │   │   └── sequence_parser.py  逗号分隔配置串解析
 │   ├── tasks/
-│   │   ├── onetime/            一次性业务任务（Daily、HomeDaily、CommissionDaily、ClaimDaily）
-│   │   ├── trigger/            触发式任务（AutoJenga、AutoRhythm、SkipDialog、StarLink、TreasureUnlock）
+│   │   ├── onetime/            一次性业务任务（Daily、HomeDaily、CommissionDaily、ClaimDaily、AutoJenga、AutoRhythm、TreasureUnlock）
+│   │   ├── trigger/            触发式任务（SkipDialog、StarLink）
 │   │   ├── test/               调试与测试任务（Screenshot、Interaction、TreasureBand、UINavigate）
 │   │   ├── daily/              多步骤任务编排与汇总（DailyFeature、步骤统计）
 │   │   └── account/            账号作用域配置存储
-│   ├── gui/                    自定义 Tab（全局配置 / 账号配置）
+│   ├── gui/                    自定义账号配置页
 │   ├── interaction/            游戏交互（GameInteraction 模拟键鼠、ScreenPosition）
 │   ├── image/                  图像算法（旋转模板匹配、连通域、圆弧拟合、音游/叠叠乐检测等）
 │   ├── yolo/                   YOLO 模型注册与 OpenVINO 推理

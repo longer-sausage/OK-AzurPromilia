@@ -21,12 +21,6 @@ msgstr "No changes to current account settings"
 msgid "该任务暂无可编辑配置项"
 msgstr "This task has no editable settings"
 
-msgid "基础配置"
-msgstr "Basic Settings"
-
-msgid "键位配置"
-msgstr "Key Settings"
-
 msgid "截图测试"
 msgstr "Screenshot Test"
 
@@ -39,9 +33,6 @@ msgstr "One account name per line, no password needed"
 msgid "配置默认隐藏，选择后展开对应配置项。"
 msgstr "Settings are hidden by default; select to expand."
 
-msgid "其他配置"
-msgstr "Other Settings"
-
 msgid "清空当前任务覆盖"
 msgstr "Clear Current Task Override"
 
@@ -53,9 +44,6 @@ msgstr "Select an account first"
 
 msgid "请先选择账号与任务"
 msgstr "Select an account and a task first"
-
-msgid "全局配置"
-msgstr "Global Settings"
 
 msgid "任务"
 msgstr "Task"
@@ -77,9 +65,6 @@ msgstr "Cleared override: {account} / {task}"
 
 msgid "已清空账号全部覆盖：{account}"
 msgstr "Cleared all account overrides: {account}"
-
-msgid "游戏内快捷键配置"
-msgstr "In-game hotkey settings"
 
 msgid "账号"
 msgstr "Account"
@@ -105,26 +90,8 @@ msgstr "Account Task Override Actions"
 msgid "账号任务选择"
 msgstr "Account Task Selection"
 
-msgid "主界面单次动作后延迟"
-msgstr "Single-action delay on main screen"
-
 msgid "状态"
 msgstr "Status"
-
-msgid "Backpack Key"
-msgstr "Backpack Key"
-
-msgid "Interact Key"
-msgstr "Interact Key"
-
-msgid "Jump Key"
-msgstr "Jump Key"
-
-msgid "Map Key"
-msgstr "Map Key"
-
-msgid "SingleActionWithDelay"
-msgstr "SingleActionWithDelay"
 
 msgid "跳剧情"
 msgstr "Skip Dialog"
@@ -146,10 +113,8 @@ msgstr ""
 msgid "宝箱开锁"
 msgstr "Treasure Unlock"
 
-msgid "宝箱开锁触发式任务：校准颜色条带后按钥匙位置逐个点击开锁。"
-msgstr ""
-"Treasure unlock trigger task: after calibrating the color bands, clicks each"
-" key position in turn to unlock."
+msgid "进入开锁界面后启动任务，自动校准颜色条带并开锁。"
+msgstr "Start the task on the lock screen to calibrate the color bands and unlock the chest."
 
 msgid "家园每日"
 msgstr "Home Daily"
@@ -160,19 +125,19 @@ msgstr "Complete home daily tasks"
 msgid "执行家园每日：收菜、做饭、喂饭"
 msgstr "Run home daily: harvest crops, cook, and feed"
 
-#: src/tasks/trigger/auto_jenga_task.py
+#: src/tasks/onetime/auto_jenga_task.py
 msgid "自动祖赞卡之梯"
 msgstr "Auto Zuzanka’s Ladder"
 
-#: src/tasks/trigger/auto_jenga_task.py
-msgid "检测到祖赞卡之梯界面自动完成。"
-msgstr "Automatically play when the Zuzanka’s Ladder interface appears."
+#: src/tasks/onetime/auto_jenga_task.py
+msgid "进入祖赞卡之梯后启动任务，自动放置图腾。"
+msgstr "Start the task in Zuzanka’s Ladder to place totems automatically."
 
-#: src/tasks/trigger/auto_jenga_task.py
+#: src/tasks/onetime/auto_jenga_task.py
 msgid "正在对准图腾"
 msgstr "Aligning the totem"
 
-#: src/tasks/trigger/auto_jenga_task.py
+#: src/tasks/onetime/auto_jenga_task.py
 msgid "祖赞卡之梯辅助已停止"
 msgstr "Zuzanka’s Ladder assistance stopped"
 
@@ -190,3 +155,5 @@ msgstr ""
 "Run commission daily: spend power to farm the selected daily commission "
 "(auto-combat must be unlocked first)"
 
+msgid "进入音游后启动任务，自动演奏当前曲目。"
+msgstr "Start the task in the rhythm game to play the current song automatically."

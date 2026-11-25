@@ -77,13 +77,13 @@ class CommissionDailyTask(BaseGameTask):
     # 与 sub_task_default_config 同键的控件类型
     sub_task_config_type: dict = {
         "选择委托": {
-            "type": "cascade_drop_down",
-            "options": ALL_COMISSIONS,
-            "labels": {
-                'daily_material': '每日委托-基础材料',
-                'daily_boss': '每日委托-首领挑战',
-                'daily_equipment': '每日委托-武备获取',
-            }
+            "type": "drop_down",
+            "options": [stage for stages in ALL_COMISSIONS.values() for stage in stages],
+            "option_groups": {
+                "每日委托-基础材料": ALL_COMISSIONS["daily_material"],
+                "每日委托-首领挑战": ALL_COMISSIONS["daily_boss"],
+                "每日委托-武备获取": ALL_COMISSIONS["daily_equipment"],
+            },
         },
     }
     # 运行时由 DailyFeature 注入：宿主的账号覆盖查询 fn(config_name) -> dict。

@@ -38,8 +38,13 @@ uv run python main_debug.py
 
 ## 5. 模板匹配
 
-标记模板资源后（ok-script 的标注工具），在 debug 模式运行一次会生成
-`src/data/feature_list.py` 枚举。之后可用 `self.wait_feature(FeatureList.xxx)`。
+在调试版的模板页完成标注后，打开导出对话框，选择拆分模板并保存到独立应用的
+`assets`。勾选生成标签枚举，输出路径填 `FeatureList.py`。框架用输出文件名决定
+Python 类名，生成后在仓库根目录执行以下命令，即可通过 `self.wait_feature(FeatureList.xxx)` 使用新模板。
+
+```powershell
+Move-Item -LiteralPath FeatureList.py -Destination src/data/feature_list.py -Force
+```
 
 ## 6. 测试
 

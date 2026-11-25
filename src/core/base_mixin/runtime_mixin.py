@@ -15,7 +15,6 @@ from ok import Box, WaitFailedException
 from src.core.detector.hit import Hit
 
 from src.config import config as app_config
-from src.core.global_config_store import KEY_CONFIG_NAME, get_global_config
 from src.data.feature_list import FeatureList as fL
 from src.image.button_detector import (
     DEFAULT_BUTTON_THRESHOLDS,
@@ -25,7 +24,6 @@ from src.image.button_detector import (
 )
 from src.image.frame_processes import isolate_by_hsv_ranges
 from src.interaction.key import move_keys as send_move_keys
-from src.interaction.key_config import KeyConfigManager
 from src.interaction.mouse import (
     active_and_send_mouse_delta as send_mouse_delta,
 )
@@ -850,25 +848,9 @@ class RuntimeMixin:
 
     # ── 按键 / 移动 ────────────────────────────────────
 
-    def _account_key_config(self) -> dict:
-        """全局键位配置叠加当前账号覆盖后的有效键位表（无账号上下文时为全局原值）。"""
-        base_config = get_global_config(KEY_CONFIG_NAME)
-        override = self._account_override_for(KEY_CONFIG_NAME)
-        if not override:
-            return base_config
-        effective = dict(base_config)
-        for key, value in override.items():
-            if key in base_config:
-                effective[key] = self._coerce_override_value(base_config[key], value)
-        return effective
-
-    def _resolve_config_key(self, key: str, key_type: str) -> str:
-        """按当前账号上下文解析实际按键。"""
-        return KeyConfigManager(self._account_key_config()).resolve_key(key, key_type)
-
     def press_key(self, key: str, down_time: float = 0.02, after_sleep: float = 0, interval: int = -1):
         """
-        按配置映射后的通用按键。
+        按下指定的通用按键。
 
         Args:
             key: 按键名称。
@@ -879,12 +861,11 @@ class RuntimeMixin:
         Returns:
             Any: send_key 的返回值。
         """
-        actual_key = self._resolve_config_key(key, "common")
-        return self.send_key(actual_key, interval=interval, down_time=down_time, after_sleep=after_sleep)
+        return self.send_key(key, interval=interval, down_time=down_time, after_sleep=after_sleep)
 
     def press_combat_key(self, key: str, down_time: float = 0.02, after_sleep: float = 0, interval: int = -1):
         """
-        按配置映射后的战斗按键。
+        按下指定的战斗按键。
 
         Args:
             key: 按键名称。
@@ -895,8 +876,7 @@ class RuntimeMixin:
         Returns:
             Any: send_key 的返回值。
         """
-        actual_key = self._resolve_config_key(key, "combat")
-        return self.send_key(actual_key, interval=interval, down_time=down_time, after_sleep=after_sleep)
+        return self.send_key(key, interval=interval, down_time=down_time, after_sleep=after_sleep)
 
     def move_keys(self, keys, duration, need_back=False):
         """

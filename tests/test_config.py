@@ -16,8 +16,11 @@ class TestConfig(unittest.TestCase):
     def test_config_required_keys(self):
         from src.config import config
 
-        for key in ("custom_tasks", "use_gui", "config_folder", "onetime_tasks", "trigger_tasks"):
+        for key in ("custom_tasks", "config_folder", "onetime_tasks", "trigger_tasks"):
             self.assertIn(key, config)
+        from ok.core.ui_config import resolve_ui_config
+
+        self.assertEqual(resolve_ui_config(config)["type"], "qt")
 
 
 if __name__ == "__main__":

@@ -24,14 +24,12 @@ POLLUTED_MSGIDS = {
     "Account List Operations",
     "Account Task Override Operations",
     "Auto-render attribute controls after selecting task",
-    "Global Config",
     "One account (phone) per line, no password needed",
     "Override this task config per account. Unset items will use the original task config.",
     "Select from account list or existing overrides",
     "Show only items differing from default config",
     "View",
     "アカウント設定",
-    "グローバル設定",
 }
 BOTTLE_PARTS = {
     "en_US": (

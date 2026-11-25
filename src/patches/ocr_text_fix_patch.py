@@ -337,32 +337,24 @@ def _apply_confusion_to_match(match, char_confusion: dict[str, tuple[str, ...]])
 def reload_ocr_text_fix(fix_dir: Path | None = None) -> dict[str, tuple[str, ...]]:
     """重新加载 assets/ocr_fix/ 下的所有配置并更新全局混淆表。"""
     global _GLOBAL_CHAR_CONFUSION
+    from ok.task.TaskExecutor import TaskExecutor
+
     fix_map = _load_fix_map(fix_dir)
     _GLOBAL_CHAR_CONFUSION = _build_char_confusion(fix_map)
+    # Custom tasks can still read or override executor.ocr_char_confusion.
+    TaskExecutor.ocr_char_confusion = _GLOBAL_CHAR_CONFUSION
     return _GLOBAL_CHAR_CONFUSION
 
 
 def install_ocr_text_fix_patch():
-    global _PATCH_INSTALLED, _GLOBAL_CHAR_CONFUSION
+    global _PATCH_INSTALLED
     if _PATCH_INSTALLED:
         return
 
     from ok.task.task import OCR
-    from ok.task.TaskExecutor import TaskExecutor
 
-    # 1. 读取并构建字符级混淆表
     reload_ocr_text_fix()
-
-    # 2. 保存混淆表到 executor（方便各 task 实例获取）
-    original_executor_init = TaskExecutor.__init__
-
-    def patched_executor_init(self, *args, **kwargs):
-        original_executor_init(self, *args, **kwargs)
-        self.ocr_char_confusion = _GLOBAL_CHAR_CONFUSION
-
-    TaskExecutor.__init__ = patched_executor_init
-
-    # 3. Patch fix_match_regex: 在现有翻译逻辑之后，再施加字符混淆
+    # 在框架翻译后扩展匹配规则，允许单个 executor 提供自己的混淆表。
     original_fix_match_regex = OCR.fix_match_regex
 
     def patched_fix_match_regex(self, match):

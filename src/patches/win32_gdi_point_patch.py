@@ -63,6 +63,6 @@ def install_win32_gdi_point_patch():
         user32.GetCursorPos.argtypes = originals["GetCursorPos.argtypes"]
         user32.UpdateLayeredWindow.argtypes = originals["UpdateLayeredWindow.argtypes"]
         gdi32.MoveToEx.argtypes = originals["MoveToEx.argtypes"]
-        logger.warning("win32_gdi_point_patch 安装失败，已回滚所有已修改的值: %s", exc)
+        logger.warning(f"win32_gdi_point_patch 安装失败，已回滚所有已修改的值: {exc}")
         return
     _PATCH_INSTALLED = True

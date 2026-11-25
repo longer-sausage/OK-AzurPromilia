@@ -6,21 +6,20 @@
 
 Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `test_*.py`；类名保持 `PascalCase`。
 
-**框架版本锁定 `ok-script==2.0.6`**（`pyproject.toml` + `uv.lock` 为唯一来源）。
+**框架版本锁定 `ok-script==3.0.13`**（`pyproject.toml` + `uv.lock` 为唯一来源）。
 
 ### 目录职责
 
 | 目录 | 职责 |
 |------|------|
-| `main.py` / `main_debug.py` | 入口（Release / Debug）。启动前先装 `src/patches/` |
+| `main.py` / `main_debug.py` | 正式和调试入口。框架通过 `src/globals.py` 的 `my_app` 钩子安装项目补丁，CLI 共用此入口 |
 | `src/config.py` | ok-script 应用配置：窗口、OCR、模板匹配、任务与 Tab 注册 |
 | `src/core/base_game_task.py` | **任务基类**：暂停感知计时、配置迁移、异常处理、配置分组 |
 | `src/core/base_mixin/runtime_mixin.py` | 通用能力库：分辨率映射、点击验证、YOLO 检测、画面稳定判定、键鼠 |
 | `src/core/base_mixin/framework_override_mixin.py` | 用"同名覆写 + `super()`"扩展框架方法（不复制框架代码） |
 | `src/core/detector/` | **识别层**：把四类识别源（模板 / YOLO / OCR / 按钮）归一成统一判据 `Hit` / `Detector`，供 Action 生命周期编排使用 |
 | `src/core/config_migration.py` | 配置键迁移工具（改键名时使用，防丢用户配置） |
-| `src/core/global_config_store.py` | 本项目自建的全局配置（**不走框架的 `config['global_configs']`**） |
-| `src/interaction/` | 窗口与键鼠：`GameInteraction`（自定义后台输入）、`Mouse`、`ScreenPosition`、`KeyConfig` |
+| `src/interaction/` | 窗口与键鼠：`GameInteraction`（自定义后台输入）、`Mouse`、`ScreenPosition` |
 | `src/image/` | 图像算法：`rotated_template`（旋转模板匹配）、`stability`（图像指纹）、`frame_processes`、`hsv_config`、`button_detector`（固定 Box 按钮检测，无 OCR）、`glow_target_detector`（可射击光圈，HSV+圆弧拟合）、`treasure_band_detector`（开锁颜色带，HSV+连通域）、`rhythm_detector`（音游音符及长条头尾）、`jenga_detector`（祖赞卡之梯的悬挂图腾与塔顶） |
 | `src/yolo/` | YOLO 模型注册（`models.py`）与 OpenVINO 推理 |
 | `src/tasks/onetime/` | 一次性任务 |
@@ -28,7 +27,7 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
 | `src/tasks/test/` | 调试/测试任务 |
 | `src/tasks/daily/` | 多步骤任务的编排（四态统计、失败标记、分账号轮次、汇总报告） |
 | `src/tasks/account/` | 账号作用域配置存储 |
-| `src/gui/` | 自定义 Tab（全局配置页、账号配置页） |
+| `src/gui/` | 自定义账号配置页 |
 | `src/patches/` | 启动补丁。**是对框架内部实现的猴子补丁，升级 ok-script 前必须逐个复核** |
 | `src/data/feature_list.py` | 模板名枚举（**由标注自动生成**，代码里不要写裸字符串模板名） |
 | `src/data/lang/` | `assets/lang/*.json` 的读取器 |
@@ -40,7 +39,7 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
 
 ## 花瓣音游：自动演奏
 
-在触发任务中启用「自动音游」，按 F 进入花瓣音游后自动接管，结束后自动释放按键。
+按 F 进入花瓣音游，再从一次性任务列表启动「自动音游」，结束后自动释放按键。
 蓝色用 Q、红色用 E、紫色同时按 Q/E；长条持续按住至尾部经过判定点。
 游戏需要保持前台，程序和游戏的权限等级应一致。
 
@@ -53,7 +52,7 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
   渐隐区域的颜色边界只作为长度下界；完整轨道用于测尾部，清晰区用于建轨迹。
   头部被命中特效覆盖时从右侧身体继续测尾部，圆角拟合拆开粘连的短音符。
   只归一化小 ROI，WGC 的 BGRA 截图也无需先复制整张画面。
-- `src/tasks/trigger/auto_rhythm_task.py`：在清晰区域建立轨迹，多帧直线拟合滚动速度，预测被
+- `src/tasks/onetime/auto_rhythm_task.py`：在清晰区域建立轨迹，多帧直线拟合滚动速度，预测被
   命中特效遮挡的音符。速度拟合至少需要三个观测、80 ms 的时间跨度；未完成拟合时，
   关联范围随帧间隔扩大，适应低帧率。使用 `perf_counter` 和画面生成时间补偿截图、
   识别延迟；按下和长条松开使用 UI 配置「输入延迟 (ms)」，默认提前 50 ms，范围 0..150 ms。
@@ -72,7 +71,7 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
 - `src/patches/capture_timestamp_patch.py`：为 WGC 保留 `SystemRelativeTime`，100 ns 单位转为
   与 `perf_counter` 一致的 QPC 秒数。时间戳在取帧锁内与返回画面配对，按调用线程保存，
   避免截图预览覆盖任务正在使用的观测时间；取帧失败时清除旧时间戳。
-  补丁针对锁定的 ok-script 2.0.6，升级时复核截图生命周期；
+  补丁针对锁定的 ok-script 3.0.13，升级时复核截图生命周期；
   其它截图方式使用截图耗时的中点估计，无法保证相同的时序精度。
 - 停用、暂停、失焦、退出、截图中断和异常均清理持键；清理直接调用交互层，避免框架
   `check_enabled()` 在停用后阻止 key-up。看门线程只负责终止输入，不截图也不按新键。
@@ -97,9 +96,9 @@ Good / Normal / Miss / Wrong 全部为 0，总完成度 99.86%；另用 WGC 实�
 其他轮次的 Miss 和超时，不能将这一轮作为当前实现稳定通过的证明。
 当前候选及不同分辨率、截图方式的整轮验收记录见上述文档。
 
-在触发任务中启用「自动祖赞卡之梯」，手动进入玩法并保持游戏前台。任务根据画面
+进入玩法后，从一次性任务列表启动「自动祖赞卡之梯」并保持游戏前台。任务根据画面
 自动对齐、放置。界面消失、暂停、失焦、窗口重建、截图中断或分辨率改变时结束当前跟踪会话，
-保留触发任务的启用状态；画面恢复或重新进入玩法后重新采样当前图腾和塔顶。
+画面恢复或重新进入玩法后，可手动再次启动任务。
 每次接管与会话退出都清除旧塔顶高度、造型、运动轨迹和会话模板，支持完成后重开、
 中途启用及程序重启后接管。手动停用或退出程序时结束任务，停用及异常均释放按键；
 窗口重连时仍通过原交互对象释放已按下的键。
@@ -127,7 +126,7 @@ Good / Normal / Miss / Wrong 全部为 0，总完成度 99.86%；另用 WGC 实�
   不让局部躯干持续成为新的完整上端。兔子的耳部另保留原有完整轮廓恢复路径。
   塔顶缓存带小角度转动变体；缓存失配时优先重查该造型，通过纹理、位置及置信度
   检查才接受，否则回退到全部造型，不把弱匹配当作有效跟踪。
-- `src/tasks/trigger/auto_jenga_task.py`：`JengaPlayer` 从鸟的横向轨迹恢复八字相位和
+- `src/tasks/onetime/auto_jenga_task.py`：`JengaPlayer` 从鸟的横向轨迹恢复八字相位和
   像素/世界单位比例，完整图腾底边独立测量高度；顶部提示条及光照造成的鸟颈
   下缘变化不会进入相位或横向速度。按原生 1/30 秒固定步先更新重力速度，
   用重力 49.05、终端速度 10 及最后一步的实际接触位置求解下落时间，保留
@@ -168,12 +167,12 @@ Good / Normal / Miss / Wrong 全部为 0，总完成度 99.86%；另用 WGC 实�
   每次释放后从两幅不同且有效的画面确认 Perfect / Good / Miss。只有成功判定才将释放造型
   作为新塔顶；Miss 或判定缺失时保留已验证的图形模板，重新识别实际承接面并重新采样运动，
   清除未完成的释放锁定。连续识别缺失超过一个鸟轨道周期时清理跟踪约束重新定位，
-  不因旧塔顶造型或高度约束一直等待。取帧异常不会停用触发任务；无单轮超时或失败锁定。
+  不因旧塔顶造型或高度约束一直等待。取帧异常时结束本次任务；无单轮超时或失败锁定。
   已排定的按键在暂停恢复、停用再启用或截图/交互对象更换后取消，避免旧预测继续投放。
   成功放置后，新一块需有消失重现、足够横移或双帧成功判定的证据，且释放后至少等待 0.8 秒，
   避免重复按键。判定轮询已消耗消失画面时，不再要求新块远离旧释放坐标。
   Miss / 判定缺失后的重新接管仍需至少两秒的新轨迹，不能立即再次放置。
-- 实际截图的操作提示为 **F / 鼠标左键**，任务使用全局 `Interact Key` 对 F 的映射。
+- 游戏提示可按 **F** 或鼠标左键，任务使用默认交互键 **F**。
   不照搬资料包 demo 的空格键、十层目标或 88 px/m；截图包含 `0/20`、`2/20`、
   `19/20`，任务也不把这些分数当作固定层数或结束条件。
 - `_input_lead_ms=45` 保留原有图像运动时序补偿的语义，包含输入与刚体渲染插值的影响；
@@ -238,9 +237,9 @@ TreasureBandDetector.hit_by_center_y(bands, 580)  # 钥匙 center_y 落在哪条
 占比（`presence`），不看形状。真实截图实测：条带在 0.99，被抹掉后 0.00，
 阈值 0.15 有充足余量。
 
-### 开锁任务 `src/tasks/trigger/treasure_unlock_task.py`
+### 开锁任务 `src/tasks/onetime/treasure_unlock_task.py`
 
-触发式任务，状态机跨 `run()` 调用保持：
+进入宝箱开锁界面后手动启动，每次从识别宝箱重新开始：
 
 ```text
 WAIT_TREASURE ──treasure_icon──> CALIBRATING_BANDS ──连续多帧稳定──> UNLOCKING
@@ -493,7 +492,7 @@ star_link_icon 存在? ──否──> 返回（不在星结界面，不干预�
 
 ### 用 `_` 前缀隐藏调优项
 
-框架的渲染逻辑是 `if not key.startswith('_')`（`ok/ui/qt/tasks/ConfigCard.py`），
+框架的渲染逻辑是 `if not key.startswith('_')`（`ok/ui/qt/tasks/config_form.py`），
 所以**键名以 `_` 开头就不会出现在 UI 上**，但：
 
 - 键仍在 `default_config` 里 → 默认值保留，`configs/*.json` 里仍会写入，仍可从日志恢复
@@ -508,7 +507,7 @@ star_link_icon 存在? ──否──> 返回（不在星结界面，不干预�
 
 ### 调试任务只在 debug 模式露面
 
-框架的三个任务列表（`OneTimeTaskTab` / `TriggerTaskTab` / `ScheduleTaskTab`）都会用
+框架的任务列表和计划任务页（`TasksPage` / `ScheduleTaskTab`）都会用
 `getattr(task, 'visible', True)` 过滤，所以纯调试任务在 `__init__` 里写：
 
 ```python

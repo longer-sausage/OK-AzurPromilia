@@ -7,7 +7,7 @@ import time
 
 import numpy as np
 import win32gui
-from ok import CaptureException, TriggerTask
+from ok import CaptureException
 
 from src.core.base_game_task import BaseGameTask
 from src.icons import Icons
@@ -777,13 +777,12 @@ class JengaPlayer:
         return True
 
 
-class AutoJengaTask(BaseGameTask, TriggerTask):
+class AutoJengaTask(BaseGameTask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = self.tr("自动祖赞卡之梯")
-        self.description = self.tr("检测到祖赞卡之梯界面自动完成。")
-        self.icon = Icons.Trigger
-        self.trigger_interval = 0.1
+        self.description = self.tr("进入祖赞卡之梯后启动任务，自动放置图腾。")
+        self.icon = Icons.Task
         self.default_config.update({"_input_lead_ms": 45, "_fall_time_ms": 500, "_drift_time_ms": 340})
         self._jenga_detector = JengaDetector()
         self._key_lock = threading.RLock()
@@ -829,8 +828,7 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
         return JengaPlayer(max_delay=0.4, greedy_high_sway=True, greedy_release=True)
 
     def _drop(self, hwnd, deadline=None, *, capture_context=None):
-        # Trigger tasks do not include the daily account-override mixin.
-        key = self.key_manager.resolve_key("f", "common")
+        key = "f"
         try:
             with self._key_lock:
                 if not self._can_input(hwnd):
@@ -887,6 +885,7 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
         return None
 
     def run(self):
+        self.ensure_in_front()
         self._jenga_detector.reset_tracking(clear_learned=True)
         session_started = False
         try:
@@ -928,7 +927,7 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
                     or captured - started > 1.0
                     or not self._jenga_detector.is_active(frame)
                 ):
-                    break  # Stay enabled; the next trigger reacquires the current scene/window.
+                    break
                 observed_at = getattr(getattr(self.executor, "method", None), "frame_timestamp", None)
                 if not isinstance(observed_at, (int, float)):
                     observed_at = (started + captured) / 2
@@ -998,7 +997,7 @@ class AutoJengaTask(BaseGameTask, TriggerTask):
                     missing_since = None
                     last_pixels = None
         except CaptureException as error:
-            logger.warning("Jenga capture interrupted; waiting for the next trigger: %s", error)
+            logger.warning("Jenga capture interrupted: %s", error)
         finally:
             self._release_key()
             self._jenga_detector.reset_tracking(clear_learned=True)

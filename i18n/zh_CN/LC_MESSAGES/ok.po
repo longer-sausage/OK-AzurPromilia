@@ -21,12 +21,6 @@ msgstr "当前账号配置没有变化"
 msgid "该任务暂无可编辑配置项"
 msgstr "该任务暂无可编辑配置项"
 
-msgid "基础配置"
-msgstr "基础配置"
-
-msgid "键位配置"
-msgstr "键位配置"
-
 msgid "截图测试"
 msgstr "截图测试"
 
@@ -39,9 +33,6 @@ msgstr "每行一个账号名，无需密码"
 msgid "配置默认隐藏，选择后展开对应配置项。"
 msgstr "配置默认隐藏，选择后展开对应配置项。"
 
-msgid "其他配置"
-msgstr "其他配置"
-
 msgid "清空当前任务覆盖"
 msgstr "清空当前任务覆盖"
 
@@ -53,9 +44,6 @@ msgstr "请先选择账号"
 
 msgid "请先选择账号与任务"
 msgstr "请先选择账号与任务"
-
-msgid "全局配置"
-msgstr "全局配置"
 
 msgid "任务"
 msgstr "任务"
@@ -77,9 +65,6 @@ msgstr "已清空：{account} / {task} 覆盖"
 
 msgid "已清空账号全部覆盖：{account}"
 msgstr "已清空账号全部覆盖：{account}"
-
-msgid "游戏内快捷键配置"
-msgstr "游戏内快捷键配置"
 
 msgid "账号"
 msgstr "账号"
@@ -105,26 +90,8 @@ msgstr "账号任务覆盖操作"
 msgid "账号任务选择"
 msgstr "账号任务选择"
 
-msgid "主界面单次动作后延迟"
-msgstr "主界面单次动作后延迟"
-
 msgid "状态"
 msgstr "状态"
-
-msgid "Backpack Key"
-msgstr "Backpack Key"
-
-msgid "Interact Key"
-msgstr "Interact Key"
-
-msgid "Jump Key"
-msgstr "Jump Key"
-
-msgid "Map Key"
-msgstr "Map Key"
-
-msgid "SingleActionWithDelay"
-msgstr "SingleActionWithDelay"
 
 msgid "跳剧情"
 msgstr "跳剧情"
@@ -141,8 +108,8 @@ msgstr "星结辅助触发式任务：缔结星结时，光标指向目标出现
 msgid "宝箱开锁"
 msgstr "宝箱开锁"
 
-msgid "宝箱开锁触发式任务：校准颜色条带后按钥匙位置逐个点击开锁。"
-msgstr "宝箱开锁触发式任务：校准颜色条带后按钥匙位置逐个点击开锁。"
+msgid "进入开锁界面后启动任务，自动校准颜色条带并开锁。"
+msgstr "进入开锁界面后启动任务，自动校准颜色条带并开锁。"
 
 msgid "家园每日"
 msgstr "家园每日"
@@ -153,19 +120,19 @@ msgstr "完成家园每日任务"
 msgid "执行家园每日：收菜、做饭、喂饭"
 msgstr "执行家园每日：收菜、做饭、喂饭"
 
-#: src/tasks/trigger/auto_jenga_task.py
+#: src/tasks/onetime/auto_jenga_task.py
 msgid "自动祖赞卡之梯"
 msgstr "自动祖赞卡之梯"
 
-#: src/tasks/trigger/auto_jenga_task.py
-msgid "检测到祖赞卡之梯界面自动完成。"
-msgstr "检测到祖赞卡之梯界面自动完成。"
+#: src/tasks/onetime/auto_jenga_task.py
+msgid "进入祖赞卡之梯后启动任务，自动放置图腾。"
+msgstr "进入祖赞卡之梯后启动任务，自动放置图腾。"
 
-#: src/tasks/trigger/auto_jenga_task.py
+#: src/tasks/onetime/auto_jenga_task.py
 msgid "正在对准图腾"
 msgstr "正在对准图腾"
 
-#: src/tasks/trigger/auto_jenga_task.py
+#: src/tasks/onetime/auto_jenga_task.py
 msgid "祖赞卡之梯辅助已停止"
 msgstr "祖赞卡之梯辅助已停止"
 
@@ -181,3 +148,5 @@ msgstr "委托每日"
 msgid "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
 msgstr "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
 
+msgid "进入音游后启动任务，自动演奏当前曲目。"
+msgstr "进入音游后启动任务，自动演奏当前曲目。"
