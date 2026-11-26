@@ -393,7 +393,7 @@ class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
             frame=frame
         ) or self.find_one(
             feature=[FeatureList.confirm_button_2],
-            box=self.box_of_screen(0.5753,0.6116,0.5957,0.6420),
+            box=self.box_of_screen(0.5755, 0.5935, 0.5979, 0.6352),
             frame=frame
         )
 

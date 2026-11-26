@@ -101,19 +101,6 @@
     {
       "id": 7,
       "image_id": 1,
-      "category_id": 7,
-      "bbox": [
-        1849,
-        36,
-        21,
-        20
-      ],
-      "area": 420,
-      "iscrowd": 0
-    },
-    {
-      "id": 8,
-      "image_id": 1,
       "category_id": 8,
       "bbox": [
         1078,
@@ -125,7 +112,7 @@
       "iscrowd": 0
     },
     {
-      "id": 9,
+      "id": 8,
       "image_id": 1,
       "category_id": 9,
       "bbox": [
@@ -138,7 +125,7 @@
       "iscrowd": 0
     },
     {
-      "id": 10,
+      "id": 9,
       "image_id": 1,
       "category_id": 10,
       "bbox": [
@@ -151,7 +138,7 @@
       "iscrowd": 0
     },
     {
-      "id": 11,
+      "id": 10,
       "image_id": 1,
       "category_id": 11,
       "bbox": [
@@ -161,6 +148,19 @@
         29
       ],
       "area": 638,
+      "iscrowd": 0
+    },
+    {
+      "id": 11,
+      "image_id": 1,
+      "category_id": 12,
+      "bbox": [
+        1842,
+        32,
+        23,
+        31
+      ],
+      "area": 713,
       "iscrowd": 0
     },
     {
@@ -594,19 +594,45 @@
     },
     {
       "id": 45,
-      "image_id": 2,
-      "category_id": 12,
+      "image_id": 1,
+      "category_id": 57,
       "bbox": [
-        1842,
-        32,
-        23,
-        31
+        1518,
+        462,
+        51,
+        49
       ],
-      "area": 713,
+      "area": 2499,
       "iscrowd": 0
     },
     {
       "id": 46,
+      "image_id": 1,
+      "category_id": 58,
+      "bbox": [
+        789,
+        835,
+        28,
+        56
+      ],
+      "area": 1568,
+      "iscrowd": 0
+    },
+    {
+      "id": 47,
+      "image_id": 1,
+      "category_id": 59,
+      "bbox": [
+        879,
+        546,
+        21,
+        19
+      ],
+      "area": 399,
+      "iscrowd": 0
+    },
+    {
+      "id": 48,
       "image_id": 2,
       "category_id": 22,
       "bbox": [
@@ -619,7 +645,7 @@
       "iscrowd": 0
     },
     {
-      "id": 47,
+      "id": 49,
       "image_id": 2,
       "category_id": 28,
       "bbox": [
@@ -632,7 +658,20 @@
       "iscrowd": 0
     },
     {
-      "id": 48,
+      "id": 50,
+      "image_id": 2,
+      "category_id": 33,
+      "bbox": [
+        1847,
+        37,
+        40,
+        32
+      ],
+      "area": 1280,
+      "iscrowd": 0
+    },
+    {
+      "id": 51,
       "image_id": 2,
       "category_id": 35,
       "bbox": [
@@ -645,7 +684,7 @@
       "iscrowd": 0
     },
     {
-      "id": 49,
+      "id": 52,
       "image_id": 2,
       "category_id": 44,
       "bbox": [
@@ -658,7 +697,7 @@
       "iscrowd": 0
     },
     {
-      "id": 50,
+      "id": 53,
       "image_id": 2,
       "category_id": 46,
       "bbox": [
@@ -671,7 +710,7 @@
       "iscrowd": 0
     },
     {
-      "id": 51,
+      "id": 54,
       "image_id": 2,
       "category_id": 48,
       "bbox": [
@@ -684,7 +723,7 @@
       "iscrowd": 0
     },
     {
-      "id": 52,
+      "id": 55,
       "image_id": 2,
       "category_id": 50,
       "bbox": [
@@ -697,20 +736,33 @@
       "iscrowd": 0
     },
     {
-      "id": 53,
-      "image_id": 3,
-      "category_id": 33,
+      "id": 56,
+      "image_id": 2,
+      "category_id": 56,
       "bbox": [
-        1847,
-        37,
-        40,
-        32
+        1792,
+        35,
+        22,
+        22
       ],
-      "area": 1280,
+      "area": 484,
       "iscrowd": 0
     },
     {
-      "id": 54,
+      "id": 57,
+      "image_id": 2,
+      "category_id": 60,
+      "bbox": [
+        880,
+        547,
+        18,
+        18
+      ],
+      "area": 324,
+      "iscrowd": 0
+    },
+    {
+      "id": 58,
       "image_id": 3,
       "category_id": 39,
       "bbox": [
@@ -747,11 +799,6 @@
     {
       "id": 6,
       "name": "account_switch"
-    },
-    {
-      "id": 7,
-      "name": "skip_dialog",
-      "supercategory": ""
     },
     {
       "id": 8,
@@ -986,6 +1033,31 @@
     {
       "id": 55,
       "name": "big_month_card_check",
+      "supercategory": ""
+    },
+    {
+      "id": 56,
+      "name": "skip_dialog",
+      "supercategory": ""
+    },
+    {
+      "id": 57,
+      "name": "tutorial_arrow_right",
+      "supercategory": ""
+    },
+    {
+      "id": 58,
+      "name": "tutorial_close",
+      "supercategory": ""
+    },
+    {
+      "id": 59,
+      "name": "dialog_remember_uncheck",
+      "supercategory": ""
+    },
+    {
+      "id": 60,
+      "name": "dialog_remember_check",
       "supercategory": ""
     }
   ]
