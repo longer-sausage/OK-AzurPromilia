@@ -289,8 +289,8 @@ page_active_daily.link(_click_box(0.5500, 0.0315, 0.5891, 0.0537), page_active_w
 page_active_weekly.link(_click_box(0.4104, 0.0296, 0.4500, 0.0537), page_active_daily)
 
 # big_month_card
-page_big_month_card = Page(FeatureList.big_month_card_check, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=True)})
-page_main.link(_send_key('f2'), page_big_month_card, _click_home())
+page_big_month_card = Page([FeatureList.big_month_card_check, FeatureList.big_month_card_task_check])
+page_main.link(_send_key('f2'), page_big_month_card, _send_key('esc'))
 
 
 Page.build()
