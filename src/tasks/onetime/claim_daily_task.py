@@ -57,7 +57,7 @@ class ClaimDailyTask(BaseGameTask):
         super().__init__(*args, **kwargs)
         self.name = "每日收菜"
         self.icon = Icons.Task
-        self.description = "按顺序领取邮件、每日惊喜盒子、日常活跃、周常活跃、大月卡任务、大月卡奖励。"
+        self.description = "按顺序领取邮件、日常活跃、周常活跃、大月卡任务、大月卡奖励。"
         # 注册子任务参数声明
         self._init_claim_daily_config()
 
@@ -282,7 +282,6 @@ class ClaimDailyTask(BaseGameTask):
 
     def run(self):
         self.claim_mail()
-        self.claim_shop()
         self.claim_active()
         self.claim_big_month_card()
         self.ui_ensure(page_main)
