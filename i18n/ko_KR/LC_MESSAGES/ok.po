@@ -169,3 +169,11 @@ msgstr "대시 간격 (ms)"
 #: src/tasks/trigger/auto_sprint_task.py
 msgid "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。"
 msgstr "W/A/S/D 키를 누르고 있을 때 Shift 키를 자동으로 누르는 간격(밀리초)."
+
+#: src/tasks/trigger/auto_pickup_task.py
+msgid "自动拾取"
+msgstr "자동 줍기"
+
+#: src/tasks/trigger/auto_pickup_task.py
+msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
+msgstr "수집 안내가 감지되면 사라질 때까지 F 키를 자동으로 연타합니다."

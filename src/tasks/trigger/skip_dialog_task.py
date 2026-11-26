@@ -40,23 +40,23 @@ class SkipDialogTask(BaseGameTask, TriggerTask):
     def handle_dialog(self):
         time = self.active_time()
         checked = False
-        for _ in self.loop(5, raise_if_time_out=False):
+        for frame in self.loop(5, raise_if_time_out=False):
             # 优先处理 Skip
             if skip_dialog := self.find_one(FeatureList.skip_dialog):
                 self.click(skip_dialog)
                 time = self.active_time()
                 continue
 
-            if check := self.find_one(FeatureList.dialog_remember_uncheck):
+            if check := self.find_one(FeatureList.dialog_remember_uncheck, box=self.box_of_screen(0.4318, 0.5028, 0.4682, 0.5259)):
                 self.click(check)
                 self.sleep(0.5)
                 time = self.active_time()
                 continue
 
-            if self.find_one(FeatureList.dialog_remember_check):
+            if self.find_one(FeatureList.dialog_remember_check, box=self.box_of_screen(0.4318, 0.5028, 0.4682, 0.5259)):
                 checked = True
 
-            if confirm := self.find_button(self.box_of_screen(0.6323, 0.7046, 0.7193, 0.7750)):
+            if confirm := self.find_skip_story_button(frame=frame):
                 self.click(confirm)
                 time = self.active_time()
                 continue

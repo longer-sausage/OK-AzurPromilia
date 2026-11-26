@@ -13,7 +13,7 @@ from src.icons import Icons
 from src.image.rhythm_detector import JUDGE_X, RhythmDetector, RhythmNote
 
 logger = logging.getLogger(f"ok.{__name__}")
-MIN_HIT_INTERVAL = 0.06  # 游戏会把 40ms 内的 Q/E 单键输入合成为紫色双键。
+MIN_HIT_INTERVAL = 0.06  # 游戏会把 40ms 内的 A/D 单键输入合成为紫色双键。
 MAX_HIT_LATENESS = 0.10  # 截图偶尔跨过截止时刻时，保留仍可判定的已确认音符。
 
 
@@ -115,7 +115,7 @@ class RhythmPlayer:
 
     @property
     def held(self):
-        return tuple(key for key in ("q", "e") if any(key in hold.keys for hold in self.holds))
+        return tuple(key for key in ("a", "d") if any(key in hold.keys for hold in self.holds))
 
     @property
     def release_at(self):

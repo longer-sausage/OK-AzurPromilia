@@ -55,7 +55,7 @@ class RhythmNote:
 
     @property
     def keys(self):
-        return {"blue": ("q",), "red": ("e",), "purple": ("q", "e")}[self.color]
+        return {"blue": ("a",), "red": ("d",), "purple": ("a", "d")}[self.color]
 
 
 class RhythmDetector:

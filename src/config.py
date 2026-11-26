@@ -65,7 +65,7 @@ config = {
         'item_names_json': os.path.join('assets', 'items', 'map', 'item_names.json'),
     },
     "windows": {  # Windows游戏请填写此设置
-        "exe": ["AzurPromilia.exe"],  # 蓝色星原：旅谣 (Azur Promilia)
+        "exe": ["AzurPromilia.exe", "AzurPromiliaJP.exe"],  # 蓝色星原：旅谣 国服 / 日服
         "launch_arguments": "-start=azurpromilia_launcher",
         "start_method": "os.startfile",
         'hwnd_class': 'UnityWndClass',  # 增加重名检查准确度
@@ -115,5 +115,6 @@ config = {
         ["src.tasks.trigger.skip_dialog_task", "SkipDialogTask"],
         ["src.tasks.trigger.star_link_assist_task", "StarLinkAssistTask"],
         ["src.tasks.trigger.auto_sprint_task", "AutoSprintTask"],
+        ["src.tasks.trigger.auto_pickup_task", "AutoPickupTask"],
     ],
 }

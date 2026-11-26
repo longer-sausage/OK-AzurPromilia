@@ -13,10 +13,23 @@ from src.core.game_window import find_game_hwnd
 from src.data.feature_list import FeatureList
 from src.data.page import PageNotFoundError, page_main
 from src.data.lang import get_lang_accessor
+from src.image.button_detector import ButtonThresholds
 from src.image.hsv_config import HSVRange
 from src.image.frame_processes import make_hsv_isolator
 from src.image.stability import perceptual_hash, hamming_distance
 from src.interaction.screen_position import ScreenPosition
+
+# 剧情梗概页右侧「跳过剧情 / ストーリーをスキップ」完整按钮区域（1920x1080: 1083,770 -> 1513,826）。
+# 传入完整按钮框并放宽 center_x_range，避免日文等较长文本超出中央窗口而被判 text_not_centered；
+# 同时开启深灰底色校验，防止放宽横向窗口后在非按钮区域误报。
+SKIP_STORY_BOX = (0.564, 0.713, 0.788, 0.765)
+SKIP_STORY_BUTTON = ButtonThresholds.for_button(
+    text_hsv=((0, 0, 170), (180, 100, 255)),
+    backdrop_hsv=((0, 0, 30), (180, 80, 110)),
+    name="skip_story",
+    center_x_range=(0.15, 0.85),
+    min_backdrop_ratio=0.70,
+)
 
 def _round_ratio(value):
     try:
@@ -380,13 +393,19 @@ class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
             dropdown_key: "配置默认隐藏，选择后展开对应配置项。"
         })
 
+    def find_skip_story_button(self, frame=None):
+        """查找剧情梗概页面的跳过剧情按钮，兼容多语言不同长度文本。"""
+        return self.find_button(
+            self.box_of_screen(*SKIP_STORY_BOX),
+            frame=frame,
+            name="skip_story",
+            thresholds=SKIP_STORY_BUTTON,
+        )
+
     def find_confirm(self):
         """查找对话框中的确认按钮，返回匹配的特征或 None。"""
-        frame=self.next_frame()
-        return self.find_button(
-            frame=frame,
-            box=self.box_of_screen(0.6323,0.7046,0.7193,0.7750),
-        ) or self.find_one(
+        frame = self.next_frame()
+        return self.find_skip_story_button(frame=frame) or self.find_one(
             feature=[FeatureList.confirm_button, FeatureList.confirm_button_2],
             vertical_variance=0.01,
             horizontal_variance=0.02,

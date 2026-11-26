@@ -41,12 +41,27 @@ class JengaDetector:
         self.templates = []
         self.birds = []
         self._template_kinds = {}
+        self.controls = None
+        self.controls_right = None
+        self.controls_right_mask = None
+        self.counter_divider = None
+        self.score = None
         for path in sorted(ASSETS.glob("*.png")):
             gray = cv2.imread(str(path), cv2.IMREAD_GRAYSCALE)
             if path.stem.startswith("bird"):
                 self.birds.append(_detail(cv2.resize(gray, None, fx=0.5, fy=0.5)))
             elif path.stem == "controls":
                 self.controls = gray
+            elif path.stem == "controls_right":
+                raw = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
+                if raw is not None and raw.ndim == 3 and raw.shape[2] == 4:
+                    self.controls_right = cv2.cvtColor(raw[:, :, :3], cv2.COLOR_BGR2GRAY)
+                    self.controls_right_mask = raw[:, :, 3]
+                else:
+                    self.controls_right = gray
+                    self.controls_right_mask = None
+            elif path.stem == "counter_divider":
+                self.counter_divider = gray
             elif path.stem == "score":
                 self.score = gray
             else:
@@ -132,20 +147,43 @@ class JengaDetector:
         image = frame[:, :, :3]
         return image if image.shape[:2] == (1080, 1920) else cv2.resize(image, (1920, 1080))
 
+    @staticmethod
+    def _has_star(frame, y1, y2, x1, x2):
+        hsv = cv2.cvtColor(frame[y1:y2, x1:x2], cv2.COLOR_BGR2HSV)
+        gold = cv2.inRange(hsv, (15, 100, 180), (40, 255, 255))
+        white = cv2.inRange(hsv, (0, 0, 220), (179, 80, 255))
+        return bool(np.mean(gold > 0) > 0.20 and np.mean(white > 0) > 0.025)
+
+    @staticmethod
+    def _match_hud(gray_roi, template, mask=None):
+        if mask is not None:
+            result = cv2.matchTemplate(gray_roi, template, cv2.TM_CCOEFF_NORMED, mask=mask)
+        else:
+            result = cv2.matchTemplate(gray_roi, template, cv2.TM_CCOEFF_NORMED)
+        finite = result[np.isfinite(result)]
+        return float(np.max(finite)) if finite.size else -1.0
+
     def is_active(self, frame):
         frame = self.normalize(frame)
         if frame is None:
             return False
-        gray = cv2.cvtColor(frame[48:92, 826:920], cv2.COLOR_BGR2GRAY)
-        # 两处独立的固定 HUD 图形；不依赖中文标题或分数数值。
-        result = cv2.matchTemplate(gray, self.controls, cv2.TM_CCOEFF_NORMED)
-        if cv2.minMaxLoc(result)[1] < 0.75:
-            return False
-        # The star rotates/pulses continuously; its color occupancy is invariant.
-        hsv = cv2.cvtColor(frame[932:1012, 1550:1640], cv2.COLOR_BGR2HSV)
-        gold = cv2.inRange(hsv, (15, 100, 180), (40, 255, 255))
-        white = cv2.inRange(hsv, (0, 0, 220), (179, 80, 255))
-        return np.mean(gold > 0) > 0.20 and np.mean(white > 0) > 0.025
+        if self._has_star(frame, 932, 1012, 48, 138):
+            # 重试时可能隐藏按键提示。计数翻牌会扫过斜线左侧，右侧与边框保持可见。
+            if self.counter_divider is not None:
+                gray_counter = cv2.cvtColor(frame[98:168, 1777:1817], cv2.COLOR_BGR2GRAY)
+                if self._match_hud(gray_counter, self.counter_divider) >= 0.93:
+                    return True
+            # 按键图标随本地化提示的排版横移。
+            if self.controls_right is not None:
+                gray_right = cv2.cvtColor(frame[726:782, 1780:1912], cv2.COLOR_BGR2GRAY)
+                if self._match_hud(gray_right, self.controls_right, self.controls_right_mask) >= 0.75:
+                    return True
+        # 兼容旧版 HUD：顶部按键提示（鼠标 / F）+ 右下星星
+        if self.controls is not None:
+            gray_top = cv2.cvtColor(frame[48:92, 826:920], cv2.COLOR_BGR2GRAY)
+            if self._match_hud(gray_top, self.controls) >= 0.75 and self._has_star(frame, 932, 1012, 1550, 1640):
+                return True
+        return False
 
     @staticmethod
     def _find_birds(frame):

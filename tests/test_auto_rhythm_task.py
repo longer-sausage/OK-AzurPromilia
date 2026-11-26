@@ -163,7 +163,7 @@ class TestRhythmVision(unittest.TestCase):
         self.assertTrue(long.clipped)
         frame = cv2.imread(str(FIXTURES / "other_pc_purple.png"))
         self.assertTrue(self.detector.is_active(frame))
-        self.assertEqual([n.keys for n in self.detector.detect(frame)], [("q", "e"), ("q", "e")])
+        self.assertEqual([n.keys for n in self.detector.detect(frame)], [("a", "d"), ("a", "d")])
 
     def test_covered_long_head_still_reports_body_tail(self):
         frame = cv2.imread(str(FIXTURES / "other_pc_effect_body.png"))
@@ -247,7 +247,7 @@ class TestRhythmTiming(unittest.TestCase):
                 notes = [RhythmNote("red", 548.5, 720.5, 535, True)]
             keys, _ = player.update(notes, now, lead=player.speed * 0.05)
             if 1.1 <= now <= 2.4:
-                self.assertEqual(keys, ("e",))
+                self.assertEqual(keys, ("d",))
         self.assertEqual(player.held, ())
 
     def test_clipped_tail_waits_for_reliable_visible_tail(self):
@@ -261,7 +261,7 @@ class TestRhythmTiming(unittest.TestCase):
             keys, hit = player.update([measured] if tail > 590 else [], now, lead=player.speed * 0.05)
             hits += hit is not None
             if 1.1 <= now <= 3.4:
-                self.assertEqual(keys, ("q",))
+                self.assertEqual(keys, ("a",))
         self.assertEqual(hits, 1)
         self.assertEqual(player.held, ())
 
@@ -288,9 +288,9 @@ class TestRhythmTiming(unittest.TestCase):
             if hit:
                 hits.append((now, hit.color))
                 if hit.color == "red":
-                    self.assertEqual(keys, ("e",))
+                    self.assertEqual(keys, ("d",))
             if 1.1 <= now <= 2.0:
-                self.assertIn("q", keys)
+                self.assertIn("a", keys)
         self.assertEqual([color for _, color in hits], ["blue", "red", "red"])
         self.assertEqual(player.held, ())
 
@@ -306,9 +306,9 @@ class TestRhythmTiming(unittest.TestCase):
             if hit:
                 hits.append(hit.color)
             if 1.4 <= now <= 2.0:
-                self.assertEqual(keys, ("q",))
+                self.assertEqual(keys, ("a",))
             elif 2.1 <= now <= 2.8:
-                self.assertEqual(keys, ("e",))
+                self.assertEqual(keys, ("d",))
         self.assertEqual(hits, ["blue", "red"])
         self.assertEqual(player.held, ())
 
@@ -367,13 +367,13 @@ class TestRhythmTiming(unittest.TestCase):
         self.assertTrue(long.long)
         release_at = player.release_at
         keys, hit = player.update([note(1358, "red", 250)], 0.71, lead=36)
-        self.assertEqual(keys, ("e",))
+        self.assertEqual(keys, ("d",))
         self.assertIsNone(hit)
         self.assertEqual(player.release_at, release_at)
         self.assertEqual(player.next_deadline(0.05), release_at)
 
     def test_all_colors_and_adjacent_same_color(self):
-        for color, keys in (("blue", ("q",)), ("red", ("e",)), ("purple", ("q", "e"))):
+        for color, keys in (("blue", ("a",)), ("red", ("d",)), ("purple", ("a", "d"))):
             player = RhythmPlayer()
             hits = []
             for i in range(140):
@@ -520,7 +520,7 @@ class TestRhythmTiming(unittest.TestCase):
             if hit:
                 hits.append(hit)
             if 1.4 <= now <= 1.7:
-                self.assertEqual(keys, ("e",))
+                self.assertEqual(keys, ("d",))
         self.assertEqual(len(hits), 1)
         self.assertTrue(hits[0].long)
 
@@ -542,7 +542,7 @@ class TestRhythmTiming(unittest.TestCase):
         self.assertEqual(len(hits), 2)
         self.assertLessEqual(long_release, hits[1][0] - 0.045 + 0.001)
 
-        # 2. 红色长条紧跟紫色短音符（共享 key 'e'），验证同样受冲突约束提前释放
+        # 2. 红色长条紧跟紫色短音符（共享 key 'd'），验证同样受冲突约束提前释放
         player2 = RhythmPlayer()
         hits2, long_release2 = [], 0.0
         for i in range(110):
@@ -565,13 +565,13 @@ class TestRhythmTiming(unittest.TestCase):
 class TestRhythmTaskLifecycle(unittest.TestCase):
     def test_retrigger_only_releases_the_new_notes_keys(self):
         task = task_harness()
-        task._set_keys(("q", "e"))
+        task._set_keys(("a", "d"))
         task.executor.interaction.reset_mock()
         with patch("src.tasks.onetime.auto_rhythm_task.time.sleep"):
-            task._set_keys(("q", "e"), retrigger=("e",))
+            task._set_keys(("a", "d"), retrigger=("d",))
         calls = [(call[0], call.args[0]) for call in task.executor.interaction.mock_calls]
-        self.assertEqual(calls, [("send_key_up", "e"), ("send_key_down", "e")])
-        self.assertEqual(task._held_keys, {"q", "e"})
+        self.assertEqual(calls, [("send_key_up", "d"), ("send_key_down", "d")])
+        self.assertEqual(task._held_keys, {"a", "d"})
 
     def test_slow_capture_serves_deadlines_and_reads_visible_latency_config(self):
         for timestamp in (None, float("nan"), 10.05):
@@ -603,7 +603,7 @@ class TestRhythmTaskLifecycle(unittest.TestCase):
                 task._rhythm_detector.track_band.return_value = np.zeros((3, 3, 3), dtype=np.uint8)
                 task._rhythm_detector.detect.side_effect = detect
                 player = MagicMock(speed=720)
-                player.update.return_value = (("q",), None)
+                player.update.return_value = (("a",), None)
                 player.next_deadline.side_effect = [10.24, float("inf")]
                 with (
                     patch(
@@ -631,20 +631,20 @@ class TestRhythmTaskLifecycle(unittest.TestCase):
     def test_double_down_before_either_up_and_disable_cleanup(self):
         task = task_harness()
         interaction = task.executor.interaction
-        task._set_keys(("q", "e"), retrigger=True)
+        task._set_keys(("a", "d"), retrigger=True)
         task.disable()
         actions = [(call[0], call.args[0]) for call in interaction.mock_calls]
-        self.assertEqual(actions[:2], [("send_key_down", "q"), ("send_key_down", "e")])
-        self.assertEqual(set(actions[2:]), {("send_key_up", "q"), ("send_key_up", "e")})
+        self.assertEqual(actions[:2], [("send_key_down", "a"), ("send_key_down", "d")])
+        self.assertEqual(set(actions[2:]), {("send_key_up", "a"), ("send_key_up", "d")})
         self.assertFalse(task._held_keys)
-        task._set_keys(("q",))
+        task._set_keys(("a",))
         self.assertEqual(len(interaction.mock_calls), 4)
 
     def test_watchdog_releases_on_pause_focus_loss_stop_and_capture_stall(self):
         for reason in ("pause", "focus", "stop", "stall"):
             with self.subTest(reason=reason):
                 task = task_harness()
-                task._set_keys(("q", "e"))
+                task._set_keys(("a", "d"))
                 task._last_frame_at = time.perf_counter() - (1 if reason == "stall" else 0)
                 task.executor.paused = reason == "pause"
                 if reason == "stop":
@@ -664,7 +664,7 @@ class TestRhythmTaskLifecycle(unittest.TestCase):
         task.get_game_hwnd = lambda: 123
         player = MagicMock()
         player.next_deadline.return_value = float("inf")
-        player.update.return_value = (("q", "e"), note(587, "purple"))
+        player.update.return_value = (("a", "d"), note(587, "purple"))
         with (
             patch("src.tasks.onetime.auto_rhythm_task.win32gui.GetForegroundWindow", return_value=123),
             patch("src.tasks.onetime.auto_rhythm_task.RhythmPlayer", return_value=player),
@@ -677,17 +677,17 @@ class TestRhythmTaskLifecycle(unittest.TestCase):
     @patch("src.tasks.onetime.auto_rhythm_task.time.sleep")
     def test_retrigger_sleeps_between_up_and_down(self, mock_sleep):
         task = task_harness()
-        task._held_keys = {"e"}
-        task._set_keys(("e",), retrigger=True)
+        task._held_keys = {"d"}
+        task._set_keys(("d",), retrigger=True)
         mock_sleep.assert_called_once_with(0.015)
         calls = [(call[0], call.args[0]) for call in task.executor.interaction.mock_calls]
-        self.assertEqual(calls, [("send_key_up", "e"), ("send_key_down", "e")])
+        self.assertEqual(calls, [("send_key_up", "d"), ("send_key_down", "d")])
 
     def test_cancel_during_retrigger_does_not_press_again(self):
         task = task_harness()
-        task._held_keys = {"e"}
+        task._held_keys = {"d"}
         with patch("src.tasks.onetime.auto_rhythm_task.time.sleep", side_effect=lambda _: task._cancel.set()):
-            task._set_keys(("e",), retrigger=True)
+            task._set_keys(("d",), retrigger=True)
         task.executor.interaction.send_key_down.assert_not_called()
         self.assertFalse(task._held_keys)
 

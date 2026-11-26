@@ -61,7 +61,7 @@ class RuntimeMixin:
 
     @property
     def GAME_CAPTURE_CONFIG(self) -> dict:
-        """游戏窗口捕获配置（AzurPromilia.exe + UnityWndClass）。"""
+        """游戏窗口捕获配置（国服/日服 exe + UnityWndClass）。"""
         return {
             "windows": {
                 "exe": app_config.get("windows", {}).get("exe", []),
