@@ -171,3 +171,11 @@ msgstr "ダッシュ間隔 (ms)"
 #: src/tasks/trigger/auto_sprint_task.py
 msgid "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。"
 msgstr "W/A/S/D 押下中に自動で Shift を押す間隔（ミリ秒）。"
+
+#: src/tasks/trigger/auto_pickup_task.py
+msgid "自动拾取"
+msgstr "自動採取"
+
+#: src/tasks/trigger/auto_pickup_task.py
+msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
+msgstr "採取アイコンを検出した際、消えるまで自動的に F キーを連打します。"

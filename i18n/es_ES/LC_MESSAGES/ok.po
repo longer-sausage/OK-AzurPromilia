@@ -175,3 +175,11 @@ msgstr "Intervalo de esprint (ms)"
 #: src/tasks/trigger/auto_sprint_task.py
 msgid "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。"
 msgstr "Intervalo en milisegundos entre pulsaciones automáticas de Shift al mantener W/A/S/D."
+
+#: src/tasks/trigger/auto_pickup_task.py
+msgid "自动拾取"
+msgstr "Recogida automática"
+
+#: src/tasks/trigger/auto_pickup_task.py
+msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
+msgstr "Pulsa F repetidamente de forma automática al detectar un aviso de recogida hasta que desaparezca."

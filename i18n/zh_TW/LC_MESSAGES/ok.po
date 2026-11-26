@@ -166,3 +166,11 @@ msgstr "衝刺間隔 (ms)"
 #: src/tasks/trigger/auto_sprint_task.py
 msgid "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。"
 msgstr "按下 W/A/S/D 時自動按 Shift 衝刺的間隔時間（毫秒）。"
+
+#: src/tasks/trigger/auto_pickup_task.py
+msgid "自动拾取"
+msgstr "自動拾取"
+
+#: src/tasks/trigger/auto_pickup_task.py
+msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
+msgstr "偵測到可拾取提示時自動連按 F，直到提示消失。"

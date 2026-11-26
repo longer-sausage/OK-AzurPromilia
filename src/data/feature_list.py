@@ -41,6 +41,7 @@ class FeatureList(str, Enum):
     home_levelup_popup = 'home_levelup_popup'
     home_ranch_claim = 'home_ranch_claim'
     home_restaurant_check = 'home_restaurant_check'
+    interact_collect = 'interact_collect'
     loading_check = 'loading_check'
     login_in = 'login_in'
     login_out = 'login_out'

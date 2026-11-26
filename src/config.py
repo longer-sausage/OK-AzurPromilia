@@ -115,5 +115,6 @@ config = {
         ["src.tasks.trigger.skip_dialog_task", "SkipDialogTask"],
         ["src.tasks.trigger.star_link_assist_task", "StarLinkAssistTask"],
         ["src.tasks.trigger.auto_sprint_task", "AutoSprintTask"],
+        ["src.tasks.trigger.auto_pickup_task", "AutoPickupTask"],
     ],
 }

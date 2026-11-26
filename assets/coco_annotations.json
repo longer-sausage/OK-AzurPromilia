@@ -633,6 +633,19 @@
     },
     {
       "id": 48,
+      "image_id": 1,
+      "category_id": 61,
+      "bbox": [
+        1154,
+        552,
+        32,
+        32
+      ],
+      "area": 1024,
+      "iscrowd": 0
+    },
+    {
+      "id": 49,
       "image_id": 2,
       "category_id": 22,
       "bbox": [
@@ -645,7 +658,7 @@
       "iscrowd": 0
     },
     {
-      "id": 49,
+      "id": 50,
       "image_id": 2,
       "category_id": 28,
       "bbox": [
@@ -658,7 +671,7 @@
       "iscrowd": 0
     },
     {
-      "id": 50,
+      "id": 51,
       "image_id": 2,
       "category_id": 33,
       "bbox": [
@@ -671,7 +684,7 @@
       "iscrowd": 0
     },
     {
-      "id": 51,
+      "id": 52,
       "image_id": 2,
       "category_id": 35,
       "bbox": [
@@ -684,7 +697,7 @@
       "iscrowd": 0
     },
     {
-      "id": 52,
+      "id": 53,
       "image_id": 2,
       "category_id": 44,
       "bbox": [
@@ -697,7 +710,7 @@
       "iscrowd": 0
     },
     {
-      "id": 53,
+      "id": 54,
       "image_id": 2,
       "category_id": 46,
       "bbox": [
@@ -710,7 +723,7 @@
       "iscrowd": 0
     },
     {
-      "id": 54,
+      "id": 55,
       "image_id": 2,
       "category_id": 48,
       "bbox": [
@@ -723,7 +736,7 @@
       "iscrowd": 0
     },
     {
-      "id": 55,
+      "id": 56,
       "image_id": 2,
       "category_id": 50,
       "bbox": [
@@ -736,7 +749,7 @@
       "iscrowd": 0
     },
     {
-      "id": 56,
+      "id": 57,
       "image_id": 2,
       "category_id": 56,
       "bbox": [
@@ -749,7 +762,7 @@
       "iscrowd": 0
     },
     {
-      "id": 57,
+      "id": 58,
       "image_id": 2,
       "category_id": 60,
       "bbox": [
@@ -762,7 +775,7 @@
       "iscrowd": 0
     },
     {
-      "id": 58,
+      "id": 59,
       "image_id": 3,
       "category_id": 39,
       "bbox": [
@@ -1058,6 +1071,11 @@
     {
       "id": 60,
       "name": "dialog_remember_check",
+      "supercategory": ""
+    },
+    {
+      "id": 61,
+      "name": "interact_collect",
       "supercategory": ""
     }
   ]
