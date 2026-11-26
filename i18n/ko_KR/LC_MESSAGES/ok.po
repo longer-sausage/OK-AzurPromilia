@@ -153,3 +153,19 @@ msgstr ""
 
 msgid "进入音游后启动任务，自动演奏当前曲目。"
 msgstr "리듬 게임에 입장한 뒤 작업을 시작하면 현재 곡을 자동으로 연주합니다."
+
+#: src/tasks/trigger/auto_sprint_task.py
+msgid "自动冲刺"
+msgstr "자동 대시"
+
+#: src/tasks/trigger/auto_sprint_task.py
+msgid "当键盘按住 W/A/S/D 任意按键满 0.2 秒后，按设定间隔自动按下 Shift 冲刺。"
+msgstr "W/A/S/D 키 중 하나를 0.2초 이상 누르고 있으면 설정한 간격으로 Shift 키를 자동으로 눌러 대시합니다."
+
+#: src/tasks/trigger/auto_sprint_task.py
+msgid "冲刺间隔 (ms)"
+msgstr "대시 간격 (ms)"
+
+#: src/tasks/trigger/auto_sprint_task.py
+msgid "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。"
+msgstr "W/A/S/D 키를 누르고 있을 때 Shift 키를 자동으로 누르는 간격(밀리초)."

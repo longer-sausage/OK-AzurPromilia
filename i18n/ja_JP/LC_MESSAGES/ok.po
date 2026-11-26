@@ -155,3 +155,19 @@ msgstr ""
 
 msgid "进入音游后启动任务，自动演奏当前曲目。"
 msgstr "音楽ゲームに入ってからタスクを開始すると、現在の曲を自動で演奏します。"
+
+#: src/tasks/trigger/auto_sprint_task.py
+msgid "自动冲刺"
+msgstr "自動ダッシュ"
+
+#: src/tasks/trigger/auto_sprint_task.py
+msgid "当键盘按住 W/A/S/D 任意按键满 0.2 秒后，按设定间隔自动按下 Shift 冲刺。"
+msgstr "W/A/S/D のいずれかを 0.2 秒間押し続けた後、設定した間隔で自動的に Shift キーを押してダッシュします。"
+
+#: src/tasks/trigger/auto_sprint_task.py
+msgid "冲刺间隔 (ms)"
+msgstr "ダッシュ間隔 (ms)"
+
+#: src/tasks/trigger/auto_sprint_task.py
+msgid "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。"
+msgstr "W/A/S/D 押下中に自動で Shift を押す間隔（ミリ秒）。"

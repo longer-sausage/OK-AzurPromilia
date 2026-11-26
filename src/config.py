@@ -114,5 +114,6 @@ config = {
     "trigger_tasks": [  # 不断执行的触发式任务
         ["src.tasks.trigger.skip_dialog_task", "SkipDialogTask"],
         ["src.tasks.trigger.star_link_assist_task", "StarLinkAssistTask"],
+        ["src.tasks.trigger.auto_sprint_task", "AutoSprintTask"],
     ],
 }
