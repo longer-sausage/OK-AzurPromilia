@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "A ready-to-use template for building game automation tools on ok-script"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "ok-script[default,qt,ocr]==3.0.13",
+    "ok-script[default,qt,ocr]==3.0.14",
     "onnxocr-ppocrv6[openvino]",
     "opencv-python==4.12.0.88",
     "numpy>=2.0.0",

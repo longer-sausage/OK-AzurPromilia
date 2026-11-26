@@ -15,7 +15,7 @@
   <p>
     <img src="https://img.shields.io/badge/platform-Windows-blue" alt="Platform" />
     <img src="https://img.shields.io/badge/python-3.12-skyblue" alt="Python version" />
-    <img src="https://img.shields.io/badge/ok--script-3.0.13-orange" alt="ok-script version" />
+    <img src="https://img.shields.io/badge/ok--script-3.0.14-orange" alt="ok-script version" />
     <img src="https://img.shields.io/badge/license-AGPL--3.0-green" alt="License" />
   </p>
 

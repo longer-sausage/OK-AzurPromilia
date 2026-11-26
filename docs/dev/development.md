@@ -6,7 +6,7 @@
 
 Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `test_*.py`；类名保持 `PascalCase`。
 
-**框架版本锁定 `ok-script==3.0.13`**（`pyproject.toml` + `uv.lock` 为唯一来源）。
+**框架版本锁定 `ok-script==3.0.14`**（`pyproject.toml` + `uv.lock` 为唯一来源）。
 
 ### 目录职责
 
