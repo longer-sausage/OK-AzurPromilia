@@ -534,6 +534,8 @@ class TestJengaVision(unittest.TestCase):
     def test_new_hud_layout_and_background_invariance(self):
         frame = cv2.imread(str(FIXTURES / "new_hud.png"))
         self.assertIsNotNone(frame)
+        # Exercise the key prompt independently of the counter.
+        frame[98:168, 1777:1817] = 0
         for scale in (0.75, 1.0, 4 / 3):
             with self.subTest(scale=scale):
                 self.detector.reset_tracking()
@@ -560,6 +562,51 @@ class TestJengaVision(unittest.TestCase):
             masked[roi] = 0
             self.assertFalse(self.detector.is_active(masked))
         self.assertFalse(self.detector.is_active(np.full((1080, 1920, 3), 255, np.uint8)))
+
+    def test_japanese_forest_hud_and_pieces(self):
+        for name, kind, held_x, feet, tower_x, top in (
+            ("forest_jp", "monkey", 794, 470, 972, 786),
+            ("forest_jp_owl", "owl", 889, 345, 945, 760),
+        ):
+            with self.subTest(name=name):
+                frame = cv2.imread(str(FIXTURES / f"{name}.png"))
+                self.assertIsNotNone(frame)
+                detector = JengaDetector()
+                self.assertTrue(detector.is_active(frame))
+                found = detector.detect(frame)
+                self.assertIsNotNone(found)
+                self.assertEqual((found.carried.kind, found.tower.kind), (kind, kind))
+                self.assertAlmostEqual(found.carried.x, held_x, delta=8)
+                self.assertAlmostEqual(found.carried.bottom, feet, delta=10)
+                self.assertAlmostEqual(found.tower.x, tower_x, delta=8)
+                self.assertAlmostEqual(found.tower.top, top, delta=10)
+
+                image = detector.normalize(frame).copy()
+                image[98:168, 1777:1817] = 0
+                self.assertTrue(detector.is_active(image))
+                image[726:782, 1780:1912] = 0
+                self.assertFalse(detector.is_active(image))
+
+    def test_japanese_retry_without_key_prompt(self):
+        frame = cv2.imread(str(FIXTURES / "forest_jp_retry.png"))
+        self.assertIsNotNone(frame)
+        detector = JengaDetector()
+        self.assertTrue(detector.is_active(frame))
+        found = detector.detect(frame)
+        self.assertIsNotNone(found)
+        self.assertEqual((found.carried.kind, found.tower.kind), ("owl", "monkey"))
+        self.assertAlmostEqual(found.carried.x, 754, delta=8)
+        self.assertAlmostEqual(found.tower.x, 972, delta=8)
+        for rows, cols in ((slice(98, 168), slice(1777, 1817)), (slice(932, 1012), slice(48, 138))):
+            with self.subTest(rows=rows):
+                image = detector.normalize(frame).copy()
+                image[rows, cols] = 0
+                self.assertFalse(detector.is_active(image))
+
+        # The changing left digit briefly folds across the divider after a placement.
+        image = detector.normalize(frame).copy()
+        image[82:181, 1678:1888] = cv2.imread(str(FIXTURES / "forest_jp_counter_flip.png"))
+        self.assertTrue(detector.is_active(image))
 
     def test_live_lighting_animated_star_and_sway(self):
         for name, held_x, tower_x in (

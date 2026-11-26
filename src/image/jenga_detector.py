@@ -44,6 +44,7 @@ class JengaDetector:
         self.controls = None
         self.controls_right = None
         self.controls_right_mask = None
+        self.counter_divider = None
         self.score = None
         for path in sorted(ASSETS.glob("*.png")):
             gray = cv2.imread(str(path), cv2.IMREAD_GRAYSCALE)
@@ -59,6 +60,8 @@ class JengaDetector:
                 else:
                     self.controls_right = gray
                     self.controls_right_mask = None
+            elif path.stem == "counter_divider":
+                self.counter_divider = gray
             elif path.stem == "score":
                 self.score = gray
             else:
@@ -152,7 +155,7 @@ class JengaDetector:
         return bool(np.mean(gold > 0) > 0.20 and np.mean(white > 0) > 0.025)
 
     @staticmethod
-    def _match_controls(gray_roi, template, mask=None):
+    def _match_hud(gray_roi, template, mask=None):
         if mask is not None:
             result = cv2.matchTemplate(gray_roi, template, cv2.TM_CCOEFF_NORMED, mask=mask)
         else:
@@ -164,17 +167,21 @@ class JengaDetector:
         frame = self.normalize(frame)
         if frame is None:
             return False
-        # 新版 HUD：右侧按键提示（F / 鼠标）+ 左下星星
-        if self.controls_right is not None:
-            gray_right = cv2.cvtColor(frame[726:782, 1806:1912], cv2.COLOR_BGR2GRAY)
-            if self._match_controls(
-                gray_right, self.controls_right, self.controls_right_mask
-            ) >= 0.75 and self._has_star(frame, 932, 1012, 48, 138):
-                return True
+        if self._has_star(frame, 932, 1012, 48, 138):
+            # 重试时可能隐藏按键提示。计数翻牌会扫过斜线左侧，右侧与边框保持可见。
+            if self.counter_divider is not None:
+                gray_counter = cv2.cvtColor(frame[98:168, 1777:1817], cv2.COLOR_BGR2GRAY)
+                if self._match_hud(gray_counter, self.counter_divider) >= 0.93:
+                    return True
+            # 按键图标随本地化提示的排版横移。
+            if self.controls_right is not None:
+                gray_right = cv2.cvtColor(frame[726:782, 1780:1912], cv2.COLOR_BGR2GRAY)
+                if self._match_hud(gray_right, self.controls_right, self.controls_right_mask) >= 0.75:
+                    return True
         # 兼容旧版 HUD：顶部按键提示（鼠标 / F）+ 右下星星
         if self.controls is not None:
             gray_top = cv2.cvtColor(frame[48:92, 826:920], cv2.COLOR_BGR2GRAY)
-            if self._match_controls(gray_top, self.controls) >= 0.75 and self._has_star(frame, 932, 1012, 1550, 1640):
+            if self._match_hud(gray_top, self.controls) >= 0.75 and self._has_star(frame, 932, 1012, 1550, 1640):
                 return True
         return False
 
