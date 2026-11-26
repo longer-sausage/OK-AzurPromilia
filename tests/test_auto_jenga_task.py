@@ -531,6 +531,36 @@ class TestJengaVision(unittest.TestCase):
         for image in (None, np.zeros((20, 20, 3), np.uint8), np.zeros((800, 800, 3), np.uint8)):
             self.assertFalse(self.detector.is_active(image))
 
+    def test_new_hud_layout_and_background_invariance(self):
+        frame = cv2.imread(str(FIXTURES / "new_hud.png"))
+        self.assertIsNotNone(frame)
+        for scale in (0.75, 1.0, 4 / 3):
+            with self.subTest(scale=scale):
+                self.detector.reset_tracking()
+                image = frame if scale == 1.0 else cv2.resize(frame, None, fx=scale, fy=scale)
+                self.assertTrue(self.detector.is_active(image))
+                found = self.detector.detect(image)
+                self.assertIsNotNone(found)
+                self.assertIsNotNone(found.bird)
+                self.assertEqual(found.carried.kind, "owl")
+                self.assertEqual(found.tower.kind, "monkey")
+
+        fg_mask = self.detector.controls_right_mask > 0
+        crop_bgr = frame[741:767, 1826:1892].copy()
+        for bg_val in (20, 120, 220):
+            with self.subTest(bg_val=bg_val):
+                tinted = frame.copy()
+                tinted[726:782, 1806:1912] = bg_val
+                patch = tinted[741:767, 1826:1892]
+                patch[fg_mask] = crop_bgr[fg_mask]
+                self.assertTrue(self.detector.is_active(tinted))
+
+        for roi in ((slice(726, 782), slice(1806, 1912)), (slice(932, 1012), slice(48, 138))):
+            masked = frame.copy()
+            masked[roi] = 0
+            self.assertFalse(self.detector.is_active(masked))
+        self.assertFalse(self.detector.is_active(np.full((1080, 1920, 3), 255, np.uint8)))
+
     def test_live_lighting_animated_star_and_sway(self):
         for name, held_x, tower_x in (
             ("live_night", 1110, 972),
