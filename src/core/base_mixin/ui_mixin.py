@@ -20,7 +20,11 @@ class UIMixin:
         target_page = Page.get(page)
         if target_page.check_feature is None:
             return False
-        return bool(self.find_one(target_page.check_feature, **target_page.check_kwargs) is not None)
+        check_kwargs = dict(target_page.check_kwargs)
+        if target_page.relative_box is not None:
+            # find_one 的 box 使用像素坐标，需按当前画面尺寸转换。
+            check_kwargs["box"] = self.box_of_screen(*target_page.relative_box)
+        return bool(self.find_one(target_page.check_feature, **check_kwargs) is not None)
 
     def ui_goto(
         self,

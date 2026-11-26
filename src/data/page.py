@@ -139,9 +139,10 @@ class Page:
             if page.check_feature is not None:
                 yield page.check_feature
 
-    def __init__(self, check_feature: Any = None, check_kwargs = None, name: str | None = None):
+    def __init__(self, check_feature: Any = None, check_kwargs = None, name: str | None = None, relative_box: tuple[float, float, float, float] | None = None):
         self.check_feature = check_feature
         self.check_kwargs = check_kwargs or {}
+        self.relative_box = relative_box
         self.links: dict[Page, Any] = {}
         self._pending_links: list[tuple[Any, Page | str, Any | None]] = []
         self.parent: Page | None = None
@@ -229,7 +230,7 @@ def _click_home():
 page_main = Page(FeatureList.char_button, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)})
 
 # menu
-page_menu = Page(FeatureList.menu_backpack, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)})
+page_menu = Page(FeatureList.menu_backpack, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)}, relative_box=(0.55, 0.85, 0.65, 0.95))
 page_main.link(_send_key('esc'), page_menu, back_button=_send_key('esc'))
 
 # home
