@@ -24,6 +24,8 @@
 `D:/AzurPromilia/CodexJengaEvidence/153453/`，回归截图已遮去身份区域。
 
 - `controls.png`：顶部鼠标 / F 图形，不含标题文字。
+- `controls_right.png`：新版界面右侧 `F / 鼠标` 图形（带前景 alpha 掩码，适配昼夜与天空背景变化），对应回归截图 `tests/fixtures/jenga/new_hud.png`（已遮去左下身份区域）。
+- `counter_divider.png` 取自 `new_hud.png` 的右上计数牌，覆盖斜线右侧与固定牌边。重试隐藏按键、左牌翻动时，这部分和左下星星仍可确认玩法。
 - `score.png`：右下星星参考图，不含分数；实际检测使用颜色占比，以适应旋转动画。
 - `bird_*.png`：鸟的头和身体，排除大部分扑动翅膀。
 - 其余 PNG：图腾内部纹理，分别覆盖悬挂、已放置和昼夜光照。
@@ -33,6 +35,10 @@
 这些是 `JengaDetector` 专用的外观模板，不属于 COCO 固定界面按钮标注。
 检测时在归一化画面上搜索，并生成旋转和缩放变体。
 新增参考图应同时补充 `tests/fixtures/jenga` 回归用例。
+
+名称含 `forest` 的人形和猫头鹰参考图来自日服森林场景，分别覆盖鸟下悬挂和塔顶承接时的视角。
+回归截图 `forest_jp.png` 与 `forest_jp_owl.png` 取自另外两个时刻，覆盖开局、换层后的塔顶，以及日文提示旁偏左的按键图标。
+`forest_jp_retry.png` 记录日间重试后按键提示消失、猫头鹰在鸟下悬挂的画面。`forest_jp_counter_flip.png` 取自一次实际放置后的翻牌动画。
 
 2026-09-28 的补充回归图：`backlit_partial_legs.png` 来自实机 `005004` 的暗腿帧，
 `partial_cached_owl.png` 来自 `010028` 的局部躯干缓存，`short_sunlit_neck.png`
