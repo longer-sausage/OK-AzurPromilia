@@ -159,3 +159,19 @@ msgstr ""
 
 msgid "进入音游后启动任务，自动演奏当前曲目。"
 msgstr "Inicia la tarea en el juego de ritmo para tocar la canción actual automáticamente."
+
+#: src/tasks/trigger/auto_sprint_task.py
+msgid "自动冲刺"
+msgstr "Esprint automático"
+
+#: src/tasks/trigger/auto_sprint_task.py
+msgid "当键盘按住 W/A/S/D 任意按键满 0.2 秒后，按设定间隔自动按下 Shift 冲刺。"
+msgstr "Tras mantener pulsada cualquiera de las teclas W/A/S/D durante 0.2 segundos, pulsa Shift automáticamente según el intervalo configurado."
+
+#: src/tasks/trigger/auto_sprint_task.py
+msgid "冲刺间隔 (ms)"
+msgstr "Intervalo de esprint (ms)"
+
+#: src/tasks/trigger/auto_sprint_task.py
+msgid "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。"
+msgstr "Intervalo en milisegundos entre pulsaciones automáticas de Shift al mantener W/A/S/D."
