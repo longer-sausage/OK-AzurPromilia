@@ -15,7 +15,7 @@
   <p>
     <img src="https://img.shields.io/badge/platform-Windows-blue" alt="平台" />
     <img src="https://img.shields.io/badge/python-3.12-skyblue" alt="Python 版本" />
-    <img src="https://img.shields.io/badge/ok--script-3.0.13-orange" alt="ok-script 版本" />
+    <img src="https://img.shields.io/badge/ok--script-3.0.14-orange" alt="ok-script 版本" />
     <img src="https://img.shields.io/badge/license-AGPL--3.0-green" alt="许可证" />
   </p>
 

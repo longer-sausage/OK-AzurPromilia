@@ -7,8 +7,8 @@
 - Python：依赖通过 [uv](https://docs.astral.sh/uv/) 管理，`uv sync` 创建仓库本地 `.venv`，
   用 `uv run python ...` 执行。`pyproject.toml` + `uv.lock` 为唯一来源，
   `requirements.txt` 为发布流水线的派生产物（`uv run --locked python scripts/release/gen_release_requirements.py`），**勿手改**。
-- **锁定的框架版本是 `ok-script==3.0.13`**（`pyproject.toml` / `uv.lock` / `requirements.txt` / `.venv` 四处一致）。
-  需要离线查阅框架源码时，可解压 wheel 到本地（`python -m pip download ok-script==3.0.13 --no-deps`，
+- **锁定的框架版本是 `ok-script==3.0.14`**（`pyproject.toml` / `uv.lock` / `requirements.txt` / `.venv` 四处一致）。
+  需要离线查阅框架源码时，可解压 wheel 到本地（`python -m pip download ok-script==3.0.14 --no-deps`，
   wheel 是 `py3-none-any`，解压即全部源码）。
 - 测试：`run_tests.ps1`（经 `uv run`）或 `uv run python -m unittest discover -s tests`。
   ⚠️ **不要用 `python -m ok.test.RunTests`**：它在跑完测试后会在 `ok.quit()` 处崩掉，退出码非 0。
