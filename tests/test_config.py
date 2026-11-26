@@ -22,6 +22,14 @@ class TestConfig(unittest.TestCase):
 
         self.assertEqual(resolve_ui_config(config)["type"], "qt")
 
+    def test_windows_config_includes_cn_and_jp_executables(self):
+        from src.config import config
+
+        windows = config["windows"]
+        self.assertIn("AzurPromilia.exe", windows["exe"])
+        self.assertIn("AzurPromiliaJP.exe", windows["exe"])
+        self.assertEqual(windows["hwnd_class"], "UnityWndClass")
+
 
 if __name__ == "__main__":
     unittest.main()
