@@ -24,6 +24,7 @@
 `D:/AzurPromilia/CodexJengaEvidence/153453/`，回归截图已遮去身份区域。
 
 - `controls.png`：顶部鼠标 / F 图形，不含标题文字。
+- `controls_right.png`：新版界面右侧 `F / 鼠标` 图形（带前景 alpha 掩码，适配昼夜与天空背景变化），对应回归截图 `tests/fixtures/jenga/new_hud.png`（已遮去左下身份区域）。
 - `score.png`：右下星星参考图，不含分数；实际检测使用颜色占比，以适应旋转动画。
 - `bird_*.png`：鸟的头和身体，排除大部分扑动翅膀。
 - 其余 PNG：图腾内部纹理，分别覆盖悬挂、已放置和昼夜光照。
