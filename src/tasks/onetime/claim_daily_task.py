@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from functools import cached_property
 
 from src.core.account_override_mixin import AccountOverrideMixin
@@ -94,7 +95,7 @@ class ClaimDailyTask(BaseGameTask):
         self.ui_ensure(page_mail)
 
         end_flag = False
-        for _ in self.loop():
+        for _ in self.loop(time_out=5, raise_if_time_out=False):
             if box := self.find_one(FeatureList.mail_button_claim_all, mask_function=make_hsv_isolator(HSVRange.WHITE, invert=False)):
                 if end_flag:
                     break
@@ -111,6 +112,8 @@ class ClaimDailyTask(BaseGameTask):
                 self.click(self.safe_box)
                 self.sleep(0.1)
                 continue
+        if not end_flag:
+            logging.getLogger(__name__).warning("邮件领取未确认完成，继续执行后续任务")
 
         if self._sub_task_cfg("删除已读邮件"):
             end_flag = False
@@ -121,7 +124,10 @@ class ClaimDailyTask(BaseGameTask):
                     self.click(self.box_of_screen(0.2401, 0.7546, 0.2484, 0.7750))
                     self.sleep(0.1)
                     continue
-                if box := self.find_one(FeatureList.confirm_button_3):
+                if box := self.find_one(
+                    FeatureList.confirm_button_3,
+                    box=self.box_of_screen(0.55, 0.58, 0.65, 0.66),
+                ):
                     end_flag = True
                     self.click(box)
                     self.sleep(0.1)
