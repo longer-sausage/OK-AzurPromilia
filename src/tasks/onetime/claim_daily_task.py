@@ -178,8 +178,7 @@ class ClaimDailyTask(BaseGameTask):
         for _ in self.loop():
             if box := self.find_one(
                 FeatureList.active_daily_claim_task,
-                mask_function=make_hsv_isolator(HSVRange.WHITE, invert=False),
-                box=self.box_of_screen(0.84, 0.14, 0.91, 0.83),
+                box=self.box_of_screen(0.89, 0.14, 0.92, 0.83),
             ):
                 frame_count = 0
                 self.click(box)
@@ -214,8 +213,7 @@ class ClaimDailyTask(BaseGameTask):
         for _ in self.loop():
             if box := self.find_one(
                 FeatureList.active_weekly_claim_task,
-                use_gray_scale=True,
-                box=self.box_of_screen(0.84, 0.14, 0.91, 0.83),
+                box=self.box_of_screen(0.89, 0.14, 0.92, 0.83),
             ):
                 frame_count = 0
                 self.click(box)
@@ -257,7 +255,7 @@ class ClaimDailyTask(BaseGameTask):
         for _ in self.loop():
             if box := self.find_one(
                 FeatureList.big_month_card_button_claim_all,
-                box=self.box_of_screen(0.85, 0.75, 0.95, 0.83),
+                box=self.box_of_screen(0.85, 0.75, 0.99, 0.83),
             ):
                 self.click(box)
                 self.sleep(0.1)
@@ -280,7 +278,7 @@ class ClaimDailyTask(BaseGameTask):
         for _ in self.loop():
             if box := self.find_one(
                 FeatureList.big_month_card_button_claim_all,
-                box=self.box_of_screen(0.85, 0.75, 0.95, 0.83),
+                box=self.box_of_screen(0.85, 0.75, 0.99, 0.83),
             ):
                 self.click(box)
                 self.sleep(0.1)
