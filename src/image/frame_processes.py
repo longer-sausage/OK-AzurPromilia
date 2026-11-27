@@ -2,6 +2,12 @@ import cv2
 import numpy as np
 
 
+def local_contrast_map(frame: np.ndarray) -> np.ndarray:
+    """取 3×3 邻域内各颜色通道的最大极差，得到单通道花纹轮廓图。"""
+    gradient = cv2.morphologyEx(frame[:, :, :3], cv2.MORPH_GRADIENT, None)
+    return gradient.max(axis=2)
+
+
 def isolate_by_hsv_ranges(frame, ranges, invert=True, kernel_size=2):
     """
     通用 HSV 颜色提取器

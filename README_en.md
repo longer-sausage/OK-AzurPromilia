@@ -45,10 +45,11 @@ provides the application configuration, tasks, and game-specific implementation 
 
 ## 📥 Download & Install
 
-Download the latest installer from [GitHub Releases](https://github.com/longer-sausage/ok-ap/releases):
+Installers and portable archives are available on [GitHub Releases](https://github.com/longer-sausage/ok-ap/releases).
 
 - **Mainland China**: Recommended to download `ok-ap-win32-China-setup-*.exe` (bundled runtime environment, uses domestic mirror for faster and more stable updates).
 - **Global**: Recommended to download `ok-ap-win32-Global-setup-*.exe` (bundled runtime environment, uses GitHub update source).
+- **Portable**: Choose `ok-ap-win32-China-portable-*.7z` in mainland China or `ok-ap-win32-Global-portable-*.7z` elsewhere. Both include Python and dependencies. Extract the entire archive and double-click `ok-ap\ok-ap.cmd`.
 
 > 💡 **Note**: Windows Defender may block the installer on first run — click "More info" and select "Run anyway".
 

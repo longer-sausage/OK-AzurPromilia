@@ -378,14 +378,27 @@ jobs:
       - name: Build with PyAppify Action
         id: build-app
         uses: ok-oldking/pyappify-action@master
+        with:
+          app_version: ${{ needs.prepare.outputs.tag }}
+          build_setup: true
+          package_zip: true
+          package_zip_format: 7z
 
-      - name: Add version to build filenames
+      - name: Prepare versioned release assets
         shell: pwsh
         env:
           VERSION: ${{ needs.prepare.outputs.safe_tag }}
         run: |
-          $version = "$env:VERSION"
-          Get-ChildItem -Path pyappify_dist -File | ForEach-Object {
+          $version = $env:VERSION
+          foreach ($region in 'China', 'Global') {
+            $baseName = "ok-ap-win32-$region"
+            $portable = "pyappify_dist/$baseName.7z"
+            7z t -t7z $portable
+            if ($LASTEXITCODE -ne 0) { throw "Failed to verify $portable" }
+            Rename-Item -LiteralPath $portable -NewName "$baseName-portable-$version.7z"
+          }
+
+          Get-ChildItem -Path pyappify_dist -File -Filter '*.exe' | ForEach-Object {
             Rename-Item -LiteralPath $_.FullName -NewName "$($_.BaseName)-$version$($_.Extension)"
           }
 
@@ -393,7 +406,10 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: pyappify_dist-${{ needs.prepare.outputs.safe_tag }}
-          path: pyappify_dist/*
+          path: |
+            pyappify_dist/*.exe
+            pyappify_dist/ok-ap-win32-*-portable-*.7z
+          compression-level: 0
           overwrite: true
 
   release:
@@ -422,14 +438,17 @@ jobs:
             - [Mirror酱](https://mirrorchyan.com/zh/projects?rid=OK-AzurPromilia)
             - [夸克网盘](https://pan.quark.cn/s/5f0cb1150fc4)
             - [百度网盘](https://pan.baidu.com/s/1gz4JZyMtvcXL6lL9xIPEQQ?pwd=okap)
+            - [123网盘](https://4007903710.share.123pan.cn/123pan/4tl4wh-C2DZd?pwd=okap#)
 
-            不确定选哪个？**中国大陆用户选 China，其他地区选 Global。**
-            Not sure? Pick **China** if you are in mainland China, otherwise **Global**.
+            中国大陆选 **China**，其他地区选 **Global**。两个地区的免安装包均自带 Python 和依赖，完整解压后双击 `ok-ap\ok-ap.cmd` 启动。
+            Choose **China** in mainland China or **Global** elsewhere. Both portable archives include Python and dependencies. Extract the entire archive and double-click `ok-ap\ok-ap.cmd` to start.
 
             | 文件 / File | 适用情况 / When to use | 下载 / Download |
             | --- | --- | --- |
             | `ok-ap-win32-China-setup-${{ needs.prepare.outputs.safe_tag }}.exe` | **中国大陆推荐。** 安装包自带运行环境，更新源为 CNB，国内下载与更新速度更快。<br>*Recommended in mainland China. The installer bundles its own runtime and updates from CNB, which is faster within China.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ needs.prepare.outputs.tag }}/ok-ap-win32-China-setup-${{ needs.prepare.outputs.safe_tag }}.exe) |
+            | `ok-ap-win32-China-portable-${{ needs.prepare.outputs.safe_tag }}.7z` | 中国大陆免安装版。<br>*Portable for mainland China.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ needs.prepare.outputs.tag }}/ok-ap-win32-China-portable-${{ needs.prepare.outputs.safe_tag }}.7z) |
             | `ok-ap-win32-Global-setup-${{ needs.prepare.outputs.safe_tag }}.exe` | **海外推荐。** 安装包自带运行环境，更新源为 GitHub，无需访问国内服务。<br>*Recommended outside mainland China. The installer bundles its own runtime and updates from GitHub, with no dependency on China-only services.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ needs.prepare.outputs.tag }}/ok-ap-win32-Global-setup-${{ needs.prepare.outputs.safe_tag }}.exe) |
+            | `ok-ap-win32-Global-portable-${{ needs.prepare.outputs.safe_tag }}.7z` | 海外免安装版。<br>*Portable outside mainland China.* | [下载](https://github.com/${{ github.repository }}/releases/download/${{ needs.prepare.outputs.tag }}/ok-ap-win32-Global-portable-${{ needs.prepare.outputs.safe_tag }}.7z) |
 
             > **注意 / Note**
             > 安装包首次运行可能被 Windows Defender 拦截，选择「仍要运行」即可。

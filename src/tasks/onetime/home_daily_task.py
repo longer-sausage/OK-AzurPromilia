@@ -9,6 +9,7 @@ from src.data.feature_list import FeatureList
 from src.core.detector.template_detector import TemplateDetector
 from src.core.detector.ocr_detector import OcrDetector
 from src.icons import Icons
+from src.image.frame_processes import local_contrast_map
 
 class HomeDailyTask(BaseGameTask):
     """家园每日任务：收菜 → 做饭 → 喂饭 → 回主界面。
@@ -66,46 +67,49 @@ class HomeDailyTask(BaseGameTask):
                 return AccountOverrideMixin._coerce_override_value(base, overrides.get(key))
         return self.config.get(key, declared_default)
 
-    def _handle_claim_popup(self, checker):
-        stable_frame = 0
-        for _ in self.loop(10, raise_if_time_out=False):
-            if self.find_one(checker):
-                stable_frame += 1
-                if stable_frame >= 5:
-                    return
-                self.sleep(0.1)
-                continue
-            stable_frame = 0
-
-            if box := self.find_one(FeatureList.home_claim_cross):
-                self.click(box)
-                self.sleep(0.1)
-                continue
-
-            if self.find_one(FeatureList.home_levelup_popup):
-                self.click(self.box_of_screen(0.4818, 0.6907, 0.5198, 0.7269))
-                self.sleep(0.1)
-                continue
-        raise WaitFailedException('Claim task of HomeDaily timeout.')
+    def _find_levelup_popup(self, frame):
+        """在徽章下沿的标注位置匹配浮雕轮廓，允许不同等级的金属配色。"""
+        name = self.get_feature_by_resolution(FeatureList.home_levelup_popup)
+        templates = self.executor.feature_set
+        feature = templates.get_feature_by_name(frame, name)
+        if feature is None:
+            return None
+        return self.find_one(
+            name,
+            frame=frame,
+            box=templates.get_box_by_name(frame, name).scale(1.2),
+            template=local_contrast_map(feature.mat),
+            frame_processor=local_contrast_map,
+            threshold=0.60,
+        )
 
     def claim(self):
         self.ui_ensure(page_home)
-        if self.wait_action_result(
-            condition=TemplateDetector(FeatureList.home_ranch_claim),
-            action=lambda box: self.click(box),
-            expect=TemplateDetector(FeatureList.home_claim_cross),
-            max_attempts=3,
-            time_out=2,
-        ):
-            self._handle_claim_popup(FeatureList.home_kibo_manage)
 
-        self.ui_ensure(page_home_building)
-        self.wait_action_result(
-            action=lambda: self.click(self.box_of_screen(0.0333, 0.8093, 0.0656, 0.8676)),
-            expect=TemplateDetector(FeatureList.home_claim_cross),
-            max_attempts=3
-        )
-        self._handle_claim_popup(FeatureList.home_building_check)
+        time = self.active_time()
+        for frame in self.loop(10):
+            if box := self.find_one(FeatureList.home_claim_cross):
+                self.click(box)
+                self.sleep(0.1)
+                time = self.active_time()
+                continue
+            if self._find_levelup_popup(frame):
+                self.click(self.safe_box)
+                self.sleep(0.1)
+                time = self.active_time()
+                continue
+            if box := self.find_one(FeatureList.home_building_claim):
+                self.click(box)
+                self.sleep(0.1)
+                time = self.active_time()
+                continue
+            if box := self.find_one(FeatureList.home_ranch_claim):
+                self.click(box)
+                self.sleep(0.1)
+                time = self.active_time()
+                continue
+            if self.active_time() - time > 1:
+                break
 
     def make_food(self):
         self.ui_ensure(page_home_building_pot)
@@ -161,10 +165,10 @@ class HomeDailyTask(BaseGameTask):
         self.claim()
 
         # 做饭
-        self.make_food()
+        # self.make_food()
 
         # 喂饭
-        self.feed()
+        # self.feed()
 
         # 回主页面
         self.ui_ensure(page_main)

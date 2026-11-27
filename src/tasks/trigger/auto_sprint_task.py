@@ -1,191 +1,248 @@
-"""自动冲刺触发式任务。
-
-当游戏窗口位于前台且键盘上 W / A / S / D 任意按键持续按下满 0.2 秒后，
-按配置的「冲刺间隔 (ms)」周期性按下 Shift 键。
-"""
+"""长按物理 Shift 时，按队伍顺序切人并冲刺。"""
 
 from __future__ import annotations
 
-import math
 import threading
+from dataclasses import dataclass, field
+from functools import partial
+from time import monotonic
 
-import win32api
+import win32con
 import win32gui
-from ok import Logger, TriggerTask
+from ok import Handler, Logger, TriggerTask
+from pynput import keyboard
+from pynput.keyboard import Controller, Key, KeyCode
 
 from src.core.base_game_task import BaseGameTask
 from src.icons import Icons
 
 logger = Logger.get_logger(__name__)
 
-INTERVAL_CONFIG_KEY = "冲刺间隔 (ms)"
-DEFAULT_SPRINT_INTERVAL_MS = 620
-MIN_SPRINT_INTERVAL_MS = 10
-MAX_SPRINT_INTERVAL_MS = 10000
+CHAR_COUNT_CONFIG_KEY = "快速奔跑角色数量"
+MAX_CHAR_COUNT = 3
+HOLD_SECONDS = 0.5
+SWITCH_INTERVAL = 0.7
+SPRINT_AFTER_SWITCH = 0.25
+SPRINT_INTERVAL = 0.2
+KEY_DOWN_SECONDS = 0.02
 
-SPRINT_KEY = "shift"
-START_DELAY_SECONDS = 0.2  # 按下 WASD 后等待此时长（秒）再开始冲刺
-KEY_DOWN_TIME = 0.02  # 单次按键按下时长（秒），过短时按间隔一半限幅
-WASD_VK_CODES = (0x57, 0x41, 0x53, 0x44)  # W, A, S, D
+KEY_DOWN = (win32con.WM_KEYDOWN, win32con.WM_SYSKEYDOWN)
+KEY_UP = (win32con.WM_KEYUP, win32con.WM_SYSKEYUP)
+SHIFT_VKS = (win32con.VK_SHIFT, win32con.VK_LSHIFT, win32con.VK_RSHIFT)
+INJECTED = win32con.LLKHF_INJECTED | win32con.LLKHF_LOWER_IL_INJECTED
+
+
+@dataclass
+class _ShiftHold:
+    """每次长按独享取消信号和节奏，旧回调无法继续下一次长按。"""
+
+    released: threading.Event = field(default_factory=threading.Event)
+    # None 表示尚未接管。集合里的键已补发抬起，或其首次按下已被拦截。
+    owned_shifts: set[Key] | None = None
+    slot_index: int = 0
+    switch_at: float = 0.0
+    sprint_at: float = 0.0
+
+    def next_at(self, count: int) -> float:
+        return min(self.switch_at, self.sprint_at) if count > 1 else self.sprint_at
+
+    def next_key(self, count: int, now: float) -> Key | KeyCode:
+        if count > 1 and self.switch_at <= self.sprint_at:
+            slot = self.slot_index % count
+            self.slot_index = slot + 1
+            self.switch_at = now + SWITCH_INTERVAL
+            self.sprint_at = now + SPRINT_AFTER_SWITCH
+            # 游戏绑定的是键盘顶排数字键，使用虚拟键可兼容不同键盘布局。
+            return KeyCode.from_vk(ord("1") + slot)
+        if count > 1:
+            # 调度延迟时保留冲刺到下一次切人的间距，避免集中补发过期动作。
+            self.switch_at += now - self.sprint_at
+        self.sprint_at = now + SPRINT_INTERVAL
+        return Key.shift_l
+
+
+class _SprintInput:
+    """钩子接收物理 Shift，单个 Handler 按时间顺序发送按键。"""
+
+    def __init__(self, task: AutoSprintTask):
+        self.task = task
+        self._lock = threading.Lock()
+        self._held_shifts: set[Key] = set()
+        self._hold: _ShiftHold | None = None
+        self._closed = False
+        self._keyboard = Controller()
+        self.listener = keyboard.Listener(win32_event_filter=self._filter)
+        self._handler = Handler(task.executor.exit_event, name="auto-sprint", daemon=True)
+
+    def start(self) -> None:
+        self.listener.start()
+        self.listener.wait()
+
+    def stop(self) -> None:
+        with self._lock:
+            self._closed = True
+            if self._hold:
+                self._hold.released.set()
+        try:
+            self.listener.stop()
+        except Exception:
+            logger.exception("停止自动冲刺键盘监听失败")
+        finally:
+            self._handler.stop()
+            self._handler.join()
+
+    def _filter(self, msg: int, data) -> bool:
+        """返回 False 跳过 pynput 的字符翻译，系统事件仅由 suppress_event 拦截。"""
+        if data.flags & INJECTED or data.vkCode not in SHIFT_VKS:
+            return False
+        down = msg in KEY_DOWN
+        if not down and msg not in KEY_UP:
+            return False
+        right = data.vkCode == win32con.VK_RSHIFT or (data.vkCode == win32con.VK_SHIFT and data.scanCode == 0x36)
+        key = Key.shift_r if right else Key.shift_l
+        with self._lock:
+            if self._closed:
+                return False
+            allowed = self.task.can_sprint()
+            hold = self._hold
+            if hold and not allowed:
+                hold.released.set()
+            suppress = hold is not None and hold.owned_shifts is not None and not hold.released.is_set()
+            if down:
+                if not self._held_shifts and allowed:
+                    self._hold = _ShiftHold()
+                    self._handler.post(partial(self._step, self._hold), delay=HOLD_SECONDS)
+                elif suppress and key not in self._held_shifts:
+                    hold.owned_shifts.add(key)
+                self._held_shifts.add(key)
+            else:
+                suppress = suppress and key in hold.owned_shifts
+                self._held_shifts.discard(key)
+                if not self._held_shifts and hold:
+                    hold.released.set()
+                    self._hold = None
+        if suppress:
+            self.listener.suppress_event()
+        return False
+
+    def _can_send(self, hold: _ShiftHold) -> bool:
+        if not hold.released.is_set() and self.listener.is_alive() and self.task.can_sprint():
+            return True
+        hold.released.set()
+        return False
+
+    def _step(self, hold: _ShiftHold) -> None:
+        try:
+            with self._lock:
+                if not self._can_send(hold):
+                    return
+                shifts = ()
+                if hold.owned_shifts is None:
+                    shifts = tuple(self._held_shifts)
+                    hold.owned_shifts = set()
+            # 原始 Shift 按下已透传。直接配平它，之后只由本次长按生成按键边沿。
+            # 发键会回到 Win32 钩子，不能在持锁期间调用 Controller。
+            for key in shifts:
+                if not self._can_send(hold):
+                    return
+                self._keyboard.release(key)
+                with self._lock:
+                    hold.owned_shifts.add(key)
+
+            count = self.task.char_count()
+            now = monotonic()
+            if now >= hold.next_at(count):
+                key = hold.next_key(count, now)
+                if not self._can_send(hold):
+                    return
+                try:
+                    self._keyboard.press(key)
+                    hold.released.wait(KEY_DOWN_SECONDS)
+                finally:
+                    self._keyboard.release(key)
+            if not hold.released.is_set():
+                delay = max(0.0, hold.next_at(count) - monotonic())
+                self._handler.post(partial(self._step, hold), delay=delay)
+        except Exception:
+            hold.released.set()
+            raise  # Handler 记录异常，下一次按住 Shift 可重新开始。
 
 
 class AutoSprintTask(BaseGameTask, TriggerTask):
-    """自动冲刺触发式任务：持续按下 WASD 任意键满 0.2 秒后按设定间隔自动按 Shift。"""
-
     needs_frame = False
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.name = "自动冲刺"
-        self.description = "当键盘按住 W/A/S/D 任意按键满 0.2 秒后，按设定间隔自动按下 Shift 冲刺。"
+        self.name = self.tr("自动冲刺")
+        self.description = self.tr("按住 Shift 半秒后自动冲刺，松开即停止。")
         self.icon = Icons.Trigger
-        self.trigger_interval = 0
-
-        self.default_config.update({
-            "冲刺间隔 (ms)": DEFAULT_SPRINT_INTERVAL_MS,
-        })
-        self.config_description.update({
-            "冲刺间隔 (ms)": "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。",
-        })
-        self.config_type.update({
-            "冲刺间隔 (ms)": {
-                "min": MIN_SPRINT_INTERVAL_MS,
-                "max": MAX_SPRINT_INTERVAL_MS,
-                "step": 10,
-            },
-        })
-
-        self._wasd_pressed_since: float | None = None
-        self._last_sprint_at: float | None = None
-        self._key_lock = threading.RLock()
-        self._held_interaction = None
-        self._stop_event = threading.Event()
+        self.default_config[CHAR_COUNT_CONFIG_KEY] = MAX_CHAR_COUNT
+        self.config_type[CHAR_COUNT_CONFIG_KEY] = {"min": 1, "max": MAX_CHAR_COUNT, "step": 1}
+        self.config_description[CHAR_COUNT_CONFIG_KEY] = self.tr("1 人时只冲刺，2–3 人时按队伍顺序切人冲刺。")
+        self.trigger_interval = 1  # 框架仅检查监听器是否存活，冲刺节奏由 Handler 驱动。
+        self._lifecycle_lock = threading.Lock()
+        self._input: _SprintInput | None = None
         self._destroyed = False
 
-    # ── 状态判定 ────────────────────────────────────────────
+    def char_count(self) -> int:
+        count = (self.config or self.default_config).get(CHAR_COUNT_CONFIG_KEY, MAX_CHAR_COUNT)
+        return max(1, min(MAX_CHAR_COUNT, count)) if type(count) is int else MAX_CHAR_COUNT
 
-    def _is_key_pressed(self, vk: int) -> bool:
-        """查询虚拟键当前是否处于物理按下状态（忽略历史触发位）。"""
-        return bool(win32api.GetAsyncKeyState(vk) & 0x8000)
+    def load_config(self):
+        super().load_config()
+        self.config[CHAR_COUNT_CONFIG_KEY] = self.char_count()
 
-    def _is_wasd_pressed(self) -> bool:
-        return any(self._is_key_pressed(vk) for vk in WASD_VK_CODES)
-
-    def _is_game_foreground(self) -> bool:
-        device_manager = getattr(getattr(self, "executor", None), "device_manager", None)
-        hwnd_window = getattr(device_manager, "hwnd_window", None)
-        if hwnd_window is None:
-            return False
-        is_fg = getattr(hwnd_window, "is_foreground", None)
-        if callable(is_fg):
-            return bool(is_fg())
-        hwnd = getattr(hwnd_window, "hwnd", 0)
-        return bool(hwnd and win32gui.GetForegroundWindow() == hwnd)
-
-    def _can_input(self) -> bool:
-        executor = getattr(self, "executor", None)
-        if executor is None:
-            return False
-        exit_event = getattr(executor, "exit_event", None)
-        return (
-            bool(self.enabled)
+    def can_sprint(self) -> bool:
+        executor = self.executor
+        window = getattr(executor.device_manager, "hwnd_window", None)
+        hwnd = getattr(window, "hwnd", None)
+        return bool(
+            self.enabled
             and not self._destroyed
-            and not self._stop_event.is_set()
             and not self.paused
-            and not getattr(executor, "paused", False)
-            and not (exit_event is not None and exit_event.is_set())
-            and getattr(executor, "interaction", None) is not None
-            and self._is_game_foreground()
+            and not executor.paused
+            and not executor.exit_event.is_set()
+            and executor.exclusive_owner is None
+            and executor.interaction is not None
+            and hwnd
+            and win32gui.GetForegroundWindow() == hwnd
         )
 
-    def _sprint_interval_seconds(self) -> float:
-        raw = (
-            self.config.get(INTERVAL_CONFIG_KEY, DEFAULT_SPRINT_INTERVAL_MS)
-            if self.config is not None
-            else DEFAULT_SPRINT_INTERVAL_MS
-        )
-        try:
-            interval_ms = float(raw)
-        except (TypeError, ValueError):
-            interval_ms = float(DEFAULT_SPRINT_INTERVAL_MS)
-        if not math.isfinite(interval_ms) or interval_ms <= 0:
-            interval_ms = float(DEFAULT_SPRINT_INTERVAL_MS)
-        return max(float(MIN_SPRINT_INTERVAL_MS), interval_ms) / 1000.0
-
-    # ── 按键操作 ────────────────────────────────────────────
-
-    def _release_shift(self) -> None:
-        """安全释放已按下的 Shift，不经 BaseTask.send_key_up 以免停用后被 check_enabled 阻断。"""
-        with self._key_lock:
-            interaction = self._held_interaction
-            if interaction is None:
-                return
-            self._held_interaction = None
-            try:
-                interaction.send_key_up(SPRINT_KEY)
-            except Exception:
-                logger.exception("释放冲刺按键 %s 失败", SPRINT_KEY)
-
-    def _press_shift(self, down_time: float) -> bool:
-        try:
-            with self._key_lock:
-                if not self._can_input():
-                    return False
-                interaction = self.executor.interaction
-                if interaction.send_key_down(SPRINT_KEY, activate=False) is False:
-                    return False
-                self._held_interaction = interaction
-            if down_time > 0:
-                self._stop_event.wait(down_time)
-            return True
-        finally:
-            self._release_shift()
-
-    # ── 生命周期与主逻辑 ────────────────────────────────────
+    def _sync_input(self):
+        with self._lifecycle_lock:
+            enabled = self.enabled and not self._destroyed and not self.executor.exit_event.is_set()
+            if self._input:
+                if enabled and self._input.listener.is_alive():
+                    return
+                try:
+                    self._input.stop()
+                finally:
+                    self._input = None
+            if enabled:
+                sprint_input = _SprintInput(self)
+                try:
+                    sprint_input.start()
+                except Exception:
+                    sprint_input.stop()
+                    raise
+                self._input = sprint_input
 
     def run(self):
-        if not self._can_input():
-            self._wasd_pressed_since = None
-            return
-        if not self._is_wasd_pressed():
-            self._wasd_pressed_since = None
-            return
+        self._sync_input()
 
-        now = self.active_time()
-        if self._wasd_pressed_since is None:
-            self._wasd_pressed_since = now
-            return
-        if now - self._wasd_pressed_since < START_DELAY_SECONDS:
-            return
-
-        interval = self._sprint_interval_seconds()
-        if self._last_sprint_at is not None and now - self._last_sprint_at < interval:
-            return
-
-        down_time = min(KEY_DOWN_TIME, interval * 0.5)
-        if self._press_shift(down_time) and not self._stop_event.is_set():
-            self._last_sprint_at = now
+    def on_create(self):
+        super().on_create()
+        self._sync_input()
 
     def enable(self):
-        with self._key_lock:
-            self._stop_event.clear()
-            self._wasd_pressed_since = None
-            self._last_sprint_at = None
         super().enable()
+        self._sync_input()
 
     def disable(self):
-        with self._key_lock:
-            self._stop_event.set()
-            self._wasd_pressed_since = None
-            self._last_sprint_at = None
-            self._release_shift()
         super().disable()
+        self._sync_input()
 
     def on_destroy(self):
-        with self._key_lock:
-            self._destroyed = True
-            self._stop_event.set()
-            self._wasd_pressed_since = None
-            self._last_sprint_at = None
-            self._release_shift()
+        self._destroyed = True
+        self._sync_input()
         super().on_destroy()

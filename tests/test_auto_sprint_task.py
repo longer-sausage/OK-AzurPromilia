@@ -1,451 +1,377 @@
-"""自动冲刺触发式任务测试。
+"""用物理按键事件和可推进的时钟验证自动冲刺，不安装系统钩子。"""
 
-全部 Win32 按键状态读取、前台窗口判定、交互输入与时钟均使用 stub / mock，
-不连接游戏窗口，不发送真实按键。
-"""
-
-from __future__ import annotations
-
+import heapq
+import json
+import tempfile
 import threading
 import unittest
+from itertools import count
+from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
-from ok import og
-from ok.ui.qt.tasks import config_form
+import win32con
+from ok import ExitEvent, Handler, og
 from ok.ui.qt.tasks.config_editors import NumberEditor
+from ok.ui.qt.tasks.config_form import ConfigForm
+from ok.util.config import Config
+from pynput.keyboard import Key, KeyCode
 from PySide6.QtWidgets import QApplication
 
 from src.gui.account_config_tab import InMemoryConfig
-from src.icons import Icons
-from src.patches import no_frame_task_patch
-from src.tasks.trigger import auto_sprint_task
-from src.tasks.trigger.auto_sprint_task import (
-    DEFAULT_SPRINT_INTERVAL_MS,
-    INTERVAL_CONFIG_KEY,
-    KEY_DOWN_TIME,
-    MIN_SPRINT_INTERVAL_MS,
-    SPRINT_KEY,
-    START_DELAY_SECONDS,
-    WASD_VK_CODES,
-    AutoSprintTask,
-)
+from src.tasks.trigger import auto_sprint_task as sprint
+
+COUNT = sprint.CHAR_COUNT_CONFIG_KEY
+LEFT, RIGHT = win32con.VK_LSHIFT, win32con.VK_RSHIFT
+DOWN, UP = win32con.WM_KEYDOWN, win32con.WM_KEYUP
+ONE, TWO, THREE = (KeyCode.from_vk(ord(digit)) for digit in "123")
 
 
-class FakeInteraction:
-    """记录按键按下/抬起序列的假交互层。"""
+class ManualHandler:
+    def __init__(self):
+        self.now = 0.0
+        self.queue = []
+        self.order = count()
 
-    def __init__(self, down_result=True):
-        self.down_result = down_result
-        self.events: list[tuple] = []
-        self.on_down = None
+    def post(self, callback, delay):
+        heapq.heappush(self.queue, (self.now + delay, next(self.order), callback))
 
-    def send_key_down(self, key, activate=True):
-        self.events.append(("down", key, activate))
-        if callable(self.on_down):
-            self.on_down(key)
-        return self.down_result
+    def advance_to(self, target):
+        while self.queue and self.queue[0][0] <= target:
+            self.now, _, callback = heapq.heappop(self.queue)
+            callback()
+        self.now = target
 
-    def send_key_up(self, key):
-        self.events.append(("up", key))
+    def stop(self):
+        self.queue.clear()
 
-    def on_run(self):
+    def join(self):
         pass
 
 
-class SprintHarness:
-    """将 AutoSprintTask 从框架运行期剥离：假时钟 + 假前景窗口 + 假键盘状态 + 假交互。"""
-
-    def __init__(
-        self,
-        *,
-        pressed_vks: set[int] | None = None,
-        foreground: bool = True,
-        enabled: bool = True,
-        paused: bool = False,
-        executor_paused: bool = False,
-        down_result: bool = True,
-        **config_overrides,
-    ):
-        self.now = 0.0
-        self.pressed_vks: set[int] = set(pressed_vks or ())
-        self.foreground = foreground
-        self.wait_calls: list[float] = []
-        self.interaction = FakeInteraction(down_result=down_result)
-
-        self.hwnd_window = SimpleNamespace(
-            hwnd=12345,
-            is_foreground=lambda: self.foreground,
-        )
-        self.executor = SimpleNamespace(
-            debug=False,
-            scene=None,
-            paused=executor_paused,
-            pause_start=None,
-            exit_event=threading.Event(),
-            interaction=self.interaction,
-            device_manager=SimpleNamespace(
-                hwnd_window=self.hwnd_window,
-                ensure_capture=lambda *a, **kw: None,
-            ),
-            enqueue_onetime_task=lambda task: False,
-            remove_onetime_task=lambda task: False,
-            _wake_executor=lambda: None,
-        )
-        self.app = SimpleNamespace(tr=str)
-
-        task = AutoSprintTask(self.executor, self.app)
-        task.config = dict(task.default_config)
-        task.config.update(config_overrides)
-        task._enabled = enabled
-        task._paused = paused
-        task.active_time = lambda: self.now
-
-        # 避免单元测试真的 sleep，记录请求的按下时长并保留停止事件语义
-        real_event = task._stop_event
-
-        class _FastStopEvent:
-            def is_set(self):
-                return real_event.is_set()
-
-            def set(self):
-                real_event.set()
-
-            def clear(self):
-                real_event.clear()
-
-            def wait(self_evt, timeout=None):
-                if timeout is not None:
-                    self.wait_calls.append(timeout)
-                return real_event.is_set()
-
-        task._stop_event = _FastStopEvent()
-        self.task = task
-
-    def key_state(self, vk: int) -> int:
-        return -32768 if vk in self.pressed_vks else 0
-
-    def advance(self, seconds: float):
-        self.now += seconds
-
-    def run(self, times: int = 1, gap: float = 0.0):
-        with patch.object(auto_sprint_task.win32api, "GetAsyncKeyState", side_effect=self.key_state):
-            for _ in range(times):
-                self.task.run()
-                if gap:
-                    self.advance(gap)
-
-    def hold_until_sprint(self):
-        """模拟首次按下 WASD 并持续按住满 START_DELAY_SECONDS 后再触发一次 run()。"""
-        self.run()
-        self.advance(START_DELAY_SECONDS)
-        self.run()
-
-    @property
-    def shift_press_count(self) -> int:
-        return sum(1 for event in self.interaction.events if event[0] == "down" and event[1] == SPRINT_KEY)
-
-
 class TestAutoSprintTask(unittest.TestCase):
-    # ── 1. 基本属性与默认配置 ───────────────────────────────
+    def setUp(self):
+        self.handler = ManualHandler()
+        self.handler_factory = self.enterContext(patch.object(sprint, "Handler", return_value=self.handler))
+        self.enterContext(patch.object(sprint, "monotonic", side_effect=lambda: self.handler.now))
+        self.enterContext(patch.object(sprint, "KEY_DOWN_SECONDS", 0))
+        self.enterContext(patch("ok.task.task.communicate"))
+        self.listeners = self.enterContext(patch.object(sprint.keyboard, "Listener"))
+        self.listeners.return_value.is_alive.return_value = True
+        self.keys = self.enterContext(patch.object(sprint, "Controller")).return_value
+        self.foreground = self.enterContext(patch.object(sprint.win32gui, "GetForegroundWindow", return_value=42))
+        self.executor = MagicMock(paused=False, exclusive_owner=None, exit_event=ExitEvent())
+        self.executor.device_manager.hwnd_window.hwnd = 42
+        self.app = SimpleNamespace(tr=str)
+        self.task = sprint.AutoSprintTask(self.executor, self.app)
+        self.task.config = dict(self.task.default_config)
+        self.addCleanup(self.task.on_destroy)
 
-    def test_metadata_and_default_config(self):
-        harness = SprintHarness()
-        task = harness.task
-        self.assertEqual(task.name, "自动冲刺")
-        self.assertEqual(task.icon, Icons.Trigger)
-        self.assertIs(task.needs_frame, False)
-        self.assertEqual(task.trigger_interval, 0)
-        self.assertEqual(task.default_config[INTERVAL_CONFIG_KEY], DEFAULT_SPRINT_INTERVAL_MS)
-        self.assertEqual(task.default_config["_enabled"], False)
-        self.assertIn(INTERVAL_CONFIG_KEY, task.config_description)
-        self.assertEqual(
-            task.config_type[INTERVAL_CONFIG_KEY],
-            {"min": MIN_SPRINT_INTERVAL_MS, "max": 10000, "step": 10},
-        )
+    def key(self, msg, vk=LEFT, flags=0, scan=0):
+        callback = self.listeners.call_args.kwargs["win32_event_filter"]
+        return callback(msg, SimpleNamespace(vkCode=vk, flags=flags, scanCode=scan))
 
-    # ── 2. WASD 检测与 0.2 秒起跑延迟 ───────────────────────
+    def presses(self):
+        return [args[0] for args, _ in self.keys.press.call_args_list]
 
-    def test_waits_start_delay_after_press_before_starting_sprint(self):
-        self.assertAlmostEqual(START_DELAY_SECONDS, 0.2)
-        harness = SprintHarness(pressed_vks={0x57})  # W
-        harness.run()  # t=0.000 -> 开始计时，不冲刺
-        self.assertEqual(harness.interaction.events, [])
-
-        harness.now = 0.100
-        harness.run()  # t=0.100 < 0.200 -> 不冲刺
-        harness.now = 0.199
-        harness.run()  # t=0.199 < 0.200 -> 不冲刺
-        self.assertEqual(harness.interaction.events, [])
-
-        harness.now = 0.200
-        harness.run()  # t=0.200 >= 0.200 -> 开始首次冲刺
-        self.assertEqual(
-            harness.interaction.events,
-            [("down", "shift", False), ("up", "shift")],
-        )
-
-    def test_brief_wasd_tap_under_start_delay_never_sprints(self):
-        harness = SprintHarness(pressed_vks={0x57})
-        harness.run()  # t=0.0
-        harness.now = 0.15
-        harness.run()  # t=0.15
-        harness.pressed_vks.clear()
-        harness.now = 0.18
-        harness.run()  # t=0.18 松开
-        harness.pressed_vks.add(0x57)
-        harness.now = 0.30
-        harness.run()  # t=0.30 重新按下，刚开始计时
-        harness.now = 0.45
-        harness.run()  # t=0.45 仅按住 0.15s
-        self.assertEqual(harness.interaction.events, [])
-
-    def test_each_wasd_key_triggers_shift_after_start_delay_hold(self):
-        for vk in WASD_VK_CODES:
-            with self.subTest(vk=hex(vk)):
-                harness = SprintHarness(pressed_vks={vk})
-                harness.hold_until_sprint()
-                self.assertEqual(
-                    harness.interaction.events,
-                    [("down", "shift", False), ("up", "shift")],
-                )
-                self.assertEqual(harness.wait_calls, [KEY_DOWN_TIME])
-
-    def test_switching_between_wasd_keys_without_release_keeps_hold_timer(self):
-        """W -> W+D -> D 连续切换不松开全部方向键时，不重置 0.2 秒计时。"""
-        harness = SprintHarness(pressed_vks={0x57})
-        harness.run()  # t=0.0 按 W
-        harness.now = 0.12
-        harness.pressed_vks.add(0x44)  # W+D
-        harness.run()  # t=0.12
-        harness.now = 0.20
-        harness.pressed_vks.discard(0x57)  # 仅 D
-        harness.run()  # t=0.20 连续按住满 0.2s
-        self.assertEqual(harness.shift_press_count, 1)
-
-    def test_no_shift_when_no_wasd_pressed(self):
-        harness = SprintHarness(pressed_vks=set())
-        harness.run(times=5, gap=0.5)
-        self.assertEqual(harness.interaction.events, [])
-
-    def test_ignores_historical_key_bit_without_current_down_bit(self):
-        """GetAsyncKeyState 返回 0x0001（仅历史触发位）不应视为当前按下。"""
-        harness = SprintHarness()
-        with patch.object(auto_sprint_task.win32api, "GetAsyncKeyState", return_value=0x0001):
-            harness.task.run()
-            harness.advance(START_DELAY_SECONDS)
-            harness.task.run()
-        self.assertEqual(harness.interaction.events, [])
-
-    # ── 3. 冲刺间隔控制 ─────────────────────────────────────
-
-    def test_default_interval_throttles_presses_after_start_delay(self):
-        interval_s = DEFAULT_SPRINT_INTERVAL_MS / 1000.0
-        harness = SprintHarness(pressed_vks={0x57})  # W
-        harness.hold_until_sprint()  # t=0.200 -> 第 1 次
-        self.assertEqual(harness.shift_press_count, 1)
-
-        harness.now = START_DELAY_SECONDS + interval_s - 0.001
-        harness.run()  # 差 1ms -> 冷却中
-        self.assertEqual(harness.shift_press_count, 1)
-
-        harness.now = START_DELAY_SECONDS + interval_s + 1e-6
-        harness.run()  # 满 1 个间隔 -> 第 2 次
-        self.assertEqual(harness.shift_press_count, 2)
-
-        harness.now = START_DELAY_SECONDS + interval_s * 2 + 2e-6
-        harness.run()  # 再满 1 个间隔 -> 第 3 次
-        self.assertEqual(harness.shift_press_count, 3)
-
-    def test_custom_interval_and_live_config_change(self):
-        harness = SprintHarness(pressed_vks={0x44}, **{INTERVAL_CONFIG_KEY: 300})
-        harness.hold_until_sprint()  # t=1.0 -> 第 1 次
-        harness.advance(0.200)
-        harness.run()  # t=1.200, 距上次 0.200 < 0.300
-        self.assertEqual(harness.shift_press_count, 1)
-
-        # 运行中调小间隔，立即生效
-        harness.task.config[INTERVAL_CONFIG_KEY] = 100
-        harness.run()  # t=1.200, 距上次 0.200 >= 0.100
-        self.assertEqual(harness.shift_press_count, 2)
-
-    def test_small_interval_clamps_key_down_time(self):
-        harness = SprintHarness(pressed_vks={0x57}, **{INTERVAL_CONFIG_KEY: 10})
-        harness.hold_until_sprint()
-        self.assertEqual(harness.wait_calls, [0.005])
-
-    def test_invalid_interval_falls_back_to_default(self):
-        for bad_value in (0, -50, None, "abc", float("nan"), float("inf")):
-            with self.subTest(bad_value=bad_value):
-                harness = SprintHarness(pressed_vks={0x57}, **{INTERVAL_CONFIG_KEY: bad_value})
-                self.assertAlmostEqual(
-                    harness.task._sprint_interval_seconds(),
-                    DEFAULT_SPRINT_INTERVAL_MS / 1000.0,
-                )
-
-    def test_releasing_wasd_resets_start_delay(self):
-        harness = SprintHarness(pressed_vks={0x57})
-        harness.hold_until_sprint()  # t=0.2 -> 第 1 次
-        self.assertEqual(harness.shift_press_count, 1)
-
-        # 松开全部 WASD，并等冷却完全过去
-        harness.pressed_vks.clear()
-        harness.now = 0.3
-        harness.run()  # 重置按住起点
-
-        # 重新按下后需再次按住满 0.2s 才触发
-        harness.pressed_vks.add(0x41)
-        harness.now = 1.0
-        harness.run()  # t=1.0 -> 开始新一轮计时
-        harness.now = 1.199
-        harness.run()  # 仅按住 0.199s，不触发
-        self.assertEqual(harness.shift_press_count, 1)
-
-        harness.now = 1.0 + START_DELAY_SECONDS + 1e-6
-        harness.run()  # 按住满 0.2s，触发第 2 次
-        self.assertEqual(harness.shift_press_count, 2)
-
-    # ── 4. 前台与运行状态保护 ───────────────────────────────
-
-    def test_no_shift_when_game_not_foreground_and_resets_hold_timer(self):
-        harness = SprintHarness(pressed_vks={0x57}, foreground=True)
-        harness.run()  # t=0.0 开始计时
-        harness.now = 0.15
-        harness.foreground = False
-        harness.run()  # t=0.15 失焦 -> 重置计时
-        harness.foreground = True
-        harness.now = 0.30
-        harness.run()  # t=0.30 回到前台重新开始计时，不该立即触发
-        self.assertEqual(harness.interaction.events, [])
-
-        harness.now = 0.30 + START_DELAY_SECONDS
-        harness.run()  # 满 0.2s 才触发
-        self.assertEqual(harness.shift_press_count, 1)
-
-    def test_no_shift_when_hwnd_window_missing(self):
-        harness = SprintHarness(pressed_vks={0x57})
-        harness.executor.device_manager.hwnd_window = None
-        harness.hold_until_sprint()
-        self.assertEqual(harness.interaction.events, [])
-
-    def test_foreground_fallback_uses_win32gui_when_no_is_foreground_method(self):
-        harness = SprintHarness(pressed_vks={0x57})
-        harness.executor.device_manager.hwnd_window = SimpleNamespace(hwnd=4242)
-        with patch.object(auto_sprint_task.win32gui, "GetForegroundWindow", return_value=9999):
-            harness.hold_until_sprint()
-        self.assertEqual(harness.interaction.events, [])
-        with patch.object(auto_sprint_task.win32gui, "GetForegroundWindow", return_value=4242):
-            harness.hold_until_sprint()
-        self.assertEqual(harness.shift_press_count, 1)
-
-    def test_no_shift_when_disabled_paused_or_exiting(self):
-        for name, overrides in (
-            ("disabled", {"enabled": False}),
-            ("task_paused", {"paused": True}),
-            ("executor_paused", {"executor_paused": True}),
-        ):
-            with self.subTest(case=name):
-                harness = SprintHarness(pressed_vks={0x57}, **overrides)
-                harness.hold_until_sprint()
-                self.assertEqual(harness.interaction.events, [])
-
-        harness = SprintHarness(pressed_vks={0x57})
-        harness.executor.exit_event.set()
-        harness.hold_until_sprint()
-        self.assertEqual(harness.interaction.events, [])
-
-    # ── 5. 释放保护与生命周期 ───────────────────────────────
-
-    def test_disable_during_press_releases_shift_exactly_once_and_reenable_works(self):
-        harness = SprintHarness(pressed_vks={0x57})
-        harness.task._stop_event = threading.Event()
-        entered_wait = threading.Event()
-        original_wait = harness.task._stop_event.wait
-
-        def _wait_and_disable(timeout=None):
-            entered_wait.set()
-            harness.task.disable()
-            return original_wait(timeout)
-
-        harness.task._stop_event.wait = _wait_and_disable
-
-        with patch("ok.task.task.communicate"):
-            harness.hold_until_sprint()
-
-        self.assertTrue(entered_wait.is_set())
-        self.assertEqual(
-            harness.interaction.events,
-            [("down", "shift", False), ("up", "shift")],
-        )
-        self.assertIsNone(harness.task._wasd_pressed_since)
-        self.assertIsNone(harness.task._last_sprint_at)
-        self.assertFalse(harness.task.enabled)
-
-        # 重新启用后，需要重新按住满 1s 才触发
-        harness.task._stop_event = threading.Event()
-        with patch("ok.task.task.communicate"):
-            harness.task.enable()
-        harness.run()
-        self.assertEqual(harness.shift_press_count, 1)
-        harness.advance(START_DELAY_SECONDS)
-        harness.run()
-        self.assertEqual(harness.shift_press_count, 2)
-
-    def test_on_destroy_releases_held_shift_and_blocks_future_input(self):
-        harness = SprintHarness(pressed_vks={0x57})
-        harness.task._held_interaction = harness.interaction
-        harness.task.on_destroy()
-        self.assertEqual(harness.interaction.events, [("up", "shift")])
-
-        harness.hold_until_sprint()
-        self.assertEqual(harness.interaction.events, [("up", "shift")])
-
-    def test_failed_key_down_does_not_release_or_consume_cooldown(self):
-        harness = SprintHarness(pressed_vks={0x57}, down_result=False)
-        harness.hold_until_sprint()
-        self.assertEqual(harness.interaction.events, [("down", "shift", False)])
-        self.assertIsNone(harness.task._last_sprint_at)
-
-    def test_exception_during_hold_still_releases_shift(self):
-        harness = SprintHarness(pressed_vks={0x57})
-        harness.task._stop_event.wait = MagicMock(side_effect=RuntimeError("boom"))
-        with self.assertRaises(RuntimeError):
-            harness.hold_until_sprint()
-        self.assertEqual(
-            harness.interaction.events,
-            [("down", "shift", False), ("up", "shift")],
-        )
-
-    # ── 6. 框架补丁与配置表单集成 ───────────────────────────
-
-    def test_no_frame_patch_skips_capture_for_auto_sprint(self):
-        harness = SprintHarness()
-        executor = SimpleNamespace(current_task=harness.task)
-        self.assertFalse(no_frame_task_patch._task_wants_frame(executor))
-
-    def test_config_form_renders_interval_number_editor(self):
+    def test_settings_show_only_party_size_with_bounds_and_default(self):
+        self.assertEqual(self.task.default_config, {"_enabled": False, COUNT: 3})
+        self.assertFalse(self.task.needs_frame)
         app = QApplication.instance() or QApplication(["test", "-platform", "offscreen"])
-        harness = SprintHarness()
-        task = harness.task
-        values = InMemoryConfig(task.default_config, task.default_config)
-        with patch.object(og, "app", SimpleNamespace(tr=str)):
-            form = config_form.ConfigForm(
-                task,
-                values,
-                task.default_config,
-                task.config_description,
-                task.config_type,
+        values = InMemoryConfig(self.task.default_config, self.task.default_config)
+        with patch.object(og, "app", self.app):
+            form = ConfigForm(
+                self.task, values, self.task.default_config, self.task.config_description, self.task.config_type
             )
-            self.assertEqual(list(form.config_widget_by_key.keys()), [INTERVAL_CONFIG_KEY])
-            editor = form.config_widget_by_key[INTERVAL_CONFIG_KEY]
+            self.assertEqual(list(form.config_widget_by_key), [COUNT])
+            editor = form.config_widget_by_key[COUNT]
             self.assertIsInstance(editor, NumberEditor)
-            self.assertEqual(editor.spin_box.value(), DEFAULT_SPRINT_INTERVAL_MS)
-            self.assertEqual(editor.spin_box.spin_box.minimum(), MIN_SPRINT_INTERVAL_MS)
-            self.assertEqual(editor.spin_box.spin_box.singleStep(), 10)
-            editor.spin_box.setValue(220)
-            self.assertEqual(values[INTERVAL_CONFIG_KEY], 220)
+            self.assertEqual(editor.spin_box.value(), 3)
+            editor.spin_box.setValue(0)
+            self.assertEqual(values[COUNT], 1)
+            editor.spin_box.setValue(4)
+            self.assertEqual(values[COUNT], 3)
             form.deleteLater()
             app.processEvents()
+
+    def test_saved_counts_and_enabled_flag_survive_upgrade(self):
+        with tempfile.TemporaryDirectory() as folder, patch.object(Config, "config_folder", folder):
+            path = Path(folder) / "AutoSprintTask.json"
+            for saved, expected in ((1, 1), (2, 2), (3, 3), (4, 3), (0, 1), (True, 3), ("bad", 3)):
+                with self.subTest(saved=saved):
+                    path.write_text(
+                        json.dumps({"_enabled": True, COUNT: saved, "Shift冲刺模式": False}), encoding="utf-8"
+                    )
+                    self.task.load_config()
+                    self.assertEqual(self.task.char_count(), expected)
+                    self.assertEqual(json.loads(path.read_text(encoding="utf-8")), {"_enabled": True, COUNT: expected})
+
+    def test_short_press_other_keys_and_injected_events_pass_through(self):
+        self.task.enable()
+        for msg in (DOWN, UP):
+            self.key(msg, ord("W"))
+            self.key(msg, flags=win32con.LLKHF_INJECTED)
+            self.key(msg, RIGHT, flags=win32con.LLKHF_LOWER_IL_INJECTED)
+        self.assertFalse(self.handler.queue)
+        self.key(DOWN)
+        self.handler.advance_to(0.49)
+        self.key(UP)
+        self.handler.advance_to(1)
+        self.assertFalse(self.keys.mock_calls)
+        self.listeners.return_value.suppress_event.assert_not_called()
+
+    def test_default_rotates_three_slots_with_sprints_between_switches(self):
+        self.task.enable()
+        self.key(DOWN)
+        self.handler.advance_to(0.49)
+        self.keys.press.assert_not_called()
+        self.handler.advance_to(0.5)
+        self.assertEqual(self.keys.mock_calls, [call.release(Key.shift_l), call.press(ONE), call.release(ONE)])
+        self.handler.advance_to(0.749)
+        self.assertEqual(self.presses(), [ONE])
+        self.handler.advance_to(2.61)
+        shifts = [Key.shift_l] * 3
+        self.assertEqual(self.presses(), [ONE, *shifts, TWO, *shifts, THREE, *shifts, ONE])
+
+    def test_late_callback_sprints_before_switching_and_does_not_catch_up_in_a_burst(self):
+        self.task.enable()
+        self.key(DOWN)
+        self.handler.advance_to(0.5)
+        _, _, delayed_sprint = heapq.heappop(self.handler.queue)
+        self.handler.now = 5
+        delayed_sprint()
+        self.handler.advance_to(5.19)
+        self.assertEqual(self.presses(), [ONE, Key.shift_l])
+        self.handler.advance_to(5.46)
+        self.assertEqual(self.presses(), [ONE, Key.shift_l, Key.shift_l, Key.shift_l, TWO])
+
+    def test_two_characters_and_live_count_change(self):
+        self.task.config[COUNT] = 2
+        self.task.enable()
+        self.key(DOWN)
+        self.handler.advance_to(2)
+        self.assertEqual([key for key in self.presses() if key != Key.shift_l], [ONE, TWO, ONE])
+        self.task.config[COUNT] = 1
+        self.keys.reset_mock()
+        self.handler.advance_to(3.5)
+        self.assertTrue(self.presses())
+        self.assertEqual(set(self.presses()), {Key.shift_l})
+
+    def test_one_character_sprints_without_number_keys(self):
+        self.task.config[COUNT] = 1
+        self.task.enable()
+        self.key(DOWN, RIGHT)
+        self.handler.advance_to(1.01)
+        self.assertEqual(self.presses(), [Key.shift_l] * 3)
+        self.assertEqual(self.keys.mock_calls[0], call.release(Key.shift_r))
+        self.key(UP, RIGHT)
+        self.handler.advance_to(2)
+        self.assertEqual(len(self.presses()), 3)
+
+    def test_both_shift_keys_share_one_hold_and_only_physical_shift_is_suppressed(self):
+        self.task.enable()
+        self.key(win32con.WM_SYSKEYDOWN, win32con.VK_SHIFT, scan=0x36)
+        self.key(DOWN, LEFT)
+        self.key(DOWN, RIGHT)
+        self.assertEqual(len(self.handler.queue), 1)
+        self.handler.advance_to(0.5)
+        self.assertCountEqual(self.keys.mock_calls[:2], [call.release(Key.shift_l), call.release(Key.shift_r)])
+        suppress = self.listeners.return_value.suppress_event
+        self.key(DOWN, ord("W"))
+        self.key(UP, flags=win32con.LLKHF_INJECTED)
+        suppress.assert_not_called()
+        self.key(DOWN, RIGHT)
+        self.key(win32con.WM_SYSKEYUP, RIGHT)
+        self.assertEqual(suppress.call_count, 2)
+        self.handler.advance_to(0.76)
+        self.assertEqual(self.presses(), [ONE, Key.shift_l])
+        self.key(UP, LEFT)
+        self.assertEqual(suppress.call_count, 3)
+        self.handler.advance_to(2)
+        self.assertEqual(self.presses(), [ONE, Key.shift_l])
+
+    def test_repress_starts_a_new_hold_even_with_an_old_callback_queued(self):
+        self.task.enable()
+        self.key(DOWN)
+        self.handler.advance_to(0.3)
+        self.key(UP)
+        self.key(DOWN)
+        self.handler.advance_to(0.79)
+        self.keys.press.assert_not_called()
+        self.handler.advance_to(0.81)
+        self.assertEqual(self.presses(), [ONE])
+        self.key(UP)
+        self.key(DOWN)
+        self.handler.advance_to(1.32)
+        self.assertEqual(self.presses(), [ONE, ONE])
+
+    def test_release_during_key_down_pairs_the_release_and_cancels_followup(self):
+        self.task.enable()
+        self.keys.press.side_effect = lambda _: self.key(UP)
+        self.key(DOWN)
+        self.handler.advance_to(2)
+        self.assertEqual(self.keys.mock_calls, [call.release(Key.shift_l), call.press(ONE), call.release(ONE)])
+        self.assertFalse(self.handler.queue)
+
+    def test_physical_up_during_takeover_passes_before_synthetic_up_is_confirmed(self):
+        self.task.enable()
+        self.keys.release.side_effect = lambda _: self.key(UP)
+        self.key(DOWN)
+        self.handler.advance_to(1)
+        self.listeners.return_value.suppress_event.assert_not_called()
+        self.keys.press.assert_not_called()
+
+    def test_second_shift_pressed_after_takeover_keeps_sprinting_until_both_are_up(self):
+        self.task.enable()
+        self.key(DOWN)
+        self.handler.advance_to(0.5)
+        self.key(DOWN, RIGHT)
+        self.key(UP, LEFT)
+        self.handler.advance_to(0.76)
+        self.key(UP, RIGHT)
+        self.handler.advance_to(2)
+        self.assertEqual(self.listeners.return_value.suppress_event.call_count, 3)
+        self.assertEqual(self.presses(), [ONE, Key.shift_l])
+
+    def test_focus_loss_during_takeover_prevents_first_slot(self):
+        self.task.enable()
+        self.keys.release.side_effect = lambda _: setattr(self.foreground, "return_value", 99)
+        self.key(DOWN)
+        self.handler.advance_to(1)
+        self.keys.press.assert_not_called()
+        self.key(UP)
+        self.listeners.return_value.suppress_event.assert_not_called()
+
+    def test_press_started_outside_game_requires_a_fresh_press(self):
+        self.task.enable()
+        self.foreground.return_value = 99
+        self.key(DOWN)
+        self.foreground.return_value = 42
+        self.key(DOWN)
+        self.handler.advance_to(1)
+        self.assertFalse(self.keys.mock_calls)
+        self.key(UP)
+        self.key(DOWN)
+        self.handler.advance_to(1.5)
+        self.assertEqual(self.presses(), [ONE])
+
+    def test_guards_cancel_an_active_cycle_until_shift_is_released(self):
+        self.task.enable()
+        for obj, attr, blocked in (
+            (self.foreground, "return_value", 99),
+            (self.task, "_paused", True),
+            (self.executor, "paused", True),
+            (self.executor, "exclusive_owner", "another task"),
+            (self.executor, "interaction", None),
+            (self.executor.device_manager, "hwnd_window", None),
+        ):
+            with self.subTest(guard=attr):
+                self.keys.reset_mock()
+                self.key(DOWN)
+                self.handler.advance_to(self.handler.now + 0.51)
+                self.assertEqual(self.presses(), [ONE])
+                original = getattr(obj, attr)
+                try:
+                    setattr(obj, attr, blocked)
+                    self.handler.advance_to(self.handler.now + 1)
+                finally:
+                    setattr(obj, attr, original)
+                self.key(DOWN)
+                self.handler.advance_to(self.handler.now + 1)
+                self.assertEqual(self.presses(), [ONE])
+                self.key(UP)
+
+    def test_input_failure_releases_the_key_and_allows_next_hold(self):
+        self.task.enable()
+        self.key(DOWN)
+        self.keys.press.side_effect = OSError("input failed")
+        with self.assertRaises(OSError):
+            self.handler.advance_to(0.5)
+        self.keys.release.assert_called_with(ONE)
+        self.key(UP)
+        self.keys.press.side_effect = None
+        self.key(DOWN)
+        self.handler.advance_to(1.26)
+        self.assertEqual(self.presses(), [ONE, ONE, Key.shift_l])
+
+    def test_restore_disable_restart_and_destroy(self):
+        self.task.on_create()
+        self.listeners.assert_not_called()
+        self.task.config["_enabled"] = True
+        self.task.on_create()
+        self.task.enable()
+        self.task.run()
+        self.listeners.assert_called_once()
+        self.handler_factory.assert_called_once()
+        old_filter = self.listeners.call_args.kwargs["win32_event_filter"]
+        self.key(DOWN)
+        self.handler.advance_to(0.5)
+        self.task.disable()
+        self.handler.advance_to(1)
+        self.assertFalse(self.task.config["_enabled"])
+        self.assertEqual(self.presses(), [ONE])
+        self.task.enable()
+        old_filter(DOWN, SimpleNamespace(vkCode=LEFT, flags=0))
+        self.assertFalse(self.handler.queue)
+        self.key(DOWN)
+        self.handler.advance_to(1.5)
+        self.task.on_destroy()
+        self.task.run()
+        self.handler.advance_to(3)
+        self.assertEqual(self.listeners.call_count, 2)
+        self.assertEqual(self.listeners.return_value.stop.call_count, 2)
+        self.assertEqual(self.presses(), [ONE, ONE])
+
+    def test_dead_listener_cancels_input_and_is_replaced_on_next_framework_run(self):
+        self.task.enable()
+        self.key(DOWN)
+        self.handler.advance_to(0.5)
+        self.listeners.return_value.is_alive.return_value = False
+        self.handler.advance_to(2)
+        self.assertEqual(self.presses(), [ONE])
+        self.task.run()
+        self.assertEqual(self.listeners.call_count, 2)
+        self.listeners.return_value.is_alive.return_value = True
+        self.key(DOWN)
+        self.handler.advance_to(2.5)
+        self.assertEqual(self.presses(), [ONE, ONE])
+
+    def test_reenable_after_listener_stop_failure(self):
+        self.task.enable()
+        self.key(DOWN)
+        self.listeners.return_value.stop.side_effect = OSError("stop failed")
+        with patch.object(sprint.logger, "exception") as log:
+            self.task.disable()
+        log.assert_called_once()
+        self.assertFalse(self.handler.queue)
+        self.listeners.return_value.stop.side_effect = None
+        self.task.enable()
+        self.key(DOWN)
+        self.handler.advance_to(0.5)
+        self.assertEqual(self.presses(), [ONE])
+
+    def test_real_handler_finishes_in_flight_key_release_on_disable(self):
+        pressed = threading.Event()
+        self.keys.press.side_effect = lambda _: pressed.set()
+        with (
+            patch.object(sprint, "Handler", Handler),
+            patch.object(sprint, "HOLD_SECONDS", 0),
+            patch.object(sprint, "KEY_DOWN_SECONDS", 5),
+        ):
+            self.task.enable()
+            self.key(DOWN)
+            self.assertTrue(pressed.wait(2))
+            self.task.disable()
+        self.assertEqual(self.keys.mock_calls, [call.release(Key.shift_l), call.press(ONE), call.release(ONE)])
+
+    def test_executor_exit_cancels_pending_sprint(self):
+        self.task.enable()
+        self.key(DOWN)
+        self.handler.advance_to(0.5)
+        self.executor.exit_event.set()
+        self.handler.advance_to(2)
+        self.assertEqual(self.presses(), [ONE])
+        self.assertFalse(self.handler.queue)
 
 
 if __name__ == "__main__":

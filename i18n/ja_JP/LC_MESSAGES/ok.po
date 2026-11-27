@@ -141,17 +141,13 @@ msgid "每日收菜"
 msgstr "デイリー報酬受け取り"
 
 msgid "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡"
-msgstr ""
-"デイリー報酬受け取りを実行：メール、サプライズボックス、デイリー/ウィークリー"
-"活躍度、月間カード"
+msgstr "デイリー報酬受け取りを実行：メール、サプライズボックス、デイリー/ウィークリー活躍度、月間カード"
 
 msgid "委托每日"
 msgstr "依頼デイリー"
 
 msgid "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）"
-msgstr ""
-"依頼デイリーを実行：体力を消費して選択したデイリー依頼を周回（先にオートバトル"
-"の解放が必要）"
+msgstr "依頼デイリーを実行：体力を消費して選択したデイリー依頼を周回（先にオートバトルの解放が必要）"
 
 msgid "进入音游后启动任务，自动演奏当前曲目。"
 msgstr "音楽ゲームに入ってからタスクを開始すると、現在の曲を自動で演奏します。"
@@ -161,16 +157,16 @@ msgid "自动冲刺"
 msgstr "自動ダッシュ"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "当键盘按住 W/A/S/D 任意按键满 0.2 秒后，按设定间隔自动按下 Shift 冲刺。"
-msgstr "W/A/S/D のいずれかを 0.2 秒間押し続けた後、設定した間隔で自動的に Shift キーを押してダッシュします。"
+msgid "按住 Shift 半秒后自动冲刺，松开即停止。"
+msgstr "Shift を半秒間押し続けるとダッシュを開始し、離すと停止します。"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "冲刺间隔 (ms)"
-msgstr "ダッシュ間隔 (ms)"
+msgid "快速奔跑角色数量"
+msgstr "ダッシュに参加する人数"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。"
-msgstr "W/A/S/D 押下中に自動で Shift を押す間隔（ミリ秒）。"
+msgid "1 人时只冲刺，2–3 人时按队伍顺序切人冲刺。"
+msgstr "1 人のときはダッシュを繰り返し、2～3 人のときは編成順にキャラクターを切り替えてダッシュします。"
 
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "自动拾取"

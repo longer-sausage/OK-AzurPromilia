@@ -46,11 +46,13 @@
 - [Mirror酱](https://mirrorchyan.com/zh/projects?rid=OK-AzurPromilia)
 - [夸克网盘](https://pan.quark.cn/s/5f0cb1150fc4)
 - [百度网盘](https://pan.baidu.com/s/1gz4JZyMtvcXL6lL9xIPEQQ?pwd=okap)
+- [123网盘](https://4007903710.share.123pan.cn/123pan/4tl4wh-C2DZd?pwd=okap#)
 
-也可前往 [GitHub Releases](https://github.com/longer-sausage/ok-ap/releases) 下载最新版本安装包：
+最新安装包和免安装包均可从 [GitHub Releases](https://github.com/longer-sausage/ok-ap/releases) 下载。
 
 - **中国大陆**：推荐下载 `ok-ap-win32-China-setup-*.exe`（安装包自带运行环境，更新源为国内节点，国内下载与更新更稳定）。
 - **海外地区**：推荐下载 `ok-ap-win32-Global-setup-*.exe`（安装包自带运行环境，更新源为 GitHub）。
+- **免安装版**：在中国大陆选 `ok-ap-win32-China-portable-*.7z`，其他地区选 `ok-ap-win32-Global-portable-*.7z`。两版均自带 Python 和依赖，完整解压后双击 `ok-ap\ok-ap.cmd` 启动。
 
 > 💡 **提示**：安装包首次运行若被 Windows Defender 拦截，点击「更多信息」并选择「仍要运行」即可。
 

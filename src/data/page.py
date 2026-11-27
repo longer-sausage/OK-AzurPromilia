@@ -139,9 +139,10 @@ class Page:
             if page.check_feature is not None:
                 yield page.check_feature
 
-    def __init__(self, check_feature: Any = None, check_kwargs = None, name: str | None = None):
+    def __init__(self, check_feature: Any = None, check_kwargs = None, name: str | None = None, relative_box: tuple[float, float, float, float] | None = None):
         self.check_feature = check_feature
         self.check_kwargs = check_kwargs or {}
+        self.relative_box = relative_box
         self.links: dict[Page, Any] = {}
         self._pending_links: list[tuple[Any, Page | str, Any | None]] = []
         self.parent: Page | None = None
@@ -223,45 +224,41 @@ def _find_with_scroll_then_click(feature, box):
         task.box_of_screen(*box)
     ))
 
-def _click_home():
-    return _click_box(0.1771, 0.0389, 0.1927, 0.0630)
 
 page_main = Page(FeatureList.char_button, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)})
 
 # menu
-page_menu = Page(FeatureList.menu_backpack, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)})
+page_menu = Page(FeatureList.menu_backpack, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)}, relative_box=(0.55, 0.85, 0.65, 0.95))
 page_main.link(_send_key('esc'), page_menu, back_button=_send_key('esc'))
 
 # home
-page_home = Page(FeatureList.home_kibo_manage, check_kwargs={'use_gray_scale': True})
-page_menu.link(_click_box(0.2276, 0.9111, 0.2401, 0.9333), page_home, back_button=_send_key('esc'))
-page_home.link(_click_home(), page_main)
+page_home = Page(FeatureList.home_kibo_manage)
+page_menu.link(_click_box(0.2932, 0.8861, 0.3099, 0.9204), page_home, back_button=_send_key('esc'))
 
 # home_building
-page_home_building = Page(FeatureList.home_building_check, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)})
-page_home.link(_click_box(0.1380, 0.7769, 0.2010, 0.8176), page_home_building, back_button=_send_key('esc'))
-page_home_building.link(_click_home(), page_main)
+page_home_building = Page(FeatureList.home_building_check)
+page_home.link(_click_box(0.1010, 0.6648, 0.1292, 0.6907), page_home_building, back_button=_send_key('esc'))
 
 # home_building_crafting_table
-page_home_building_crafting_table = Page(FeatureList.crafting_table_check, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)})
+page_home_building_crafting_table = Page(FeatureList.home_building_crafting_table, check_kwargs={'threshold': 0.6}, relative_box=(0.1224, 0.3454, 0.2010, 0.4389))
 page_home_building.link(_find_with_scroll_then_click(FeatureList.home_building_crafting_table, (0.0880, 0.1213, 0.7995, 0.8694)), page_home_building_crafting_table, back_button=_send_key('esc'))
 
 # home_building_pot
-page_home_building_pot = Page(FeatureList.pot_check, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)})
+page_home_building_pot = Page(FeatureList.home_building_pot, check_kwargs={'threshold': 0.6}, relative_box=(0.1224, 0.3454, 0.2010, 0.4389))
 page_home_building.link(_find_with_scroll_then_click(FeatureList.home_building_pot, (0.0880, 0.1213, 0.7995, 0.8694)), page_home_building_pot, back_button=_send_key('esc'))
 
 # home_restaurant
-page_home_restaurant = Page(FeatureList.home_restaurant_check, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)})
-page_home.link(_click_box(0.0932, 0.6593, 0.1594, 0.6954), page_home_restaurant, back_button=_send_key('esc'))
+page_home_restaurant = Page(FeatureList.home_restaurant_check)
+page_home.link(_click_box(0.7229, 0.8731, 0.7510, 0.9083), page_home_restaurant, back_button=_send_key('esc'))
 
 # commission
 page_commission = Page(FeatureList.commission_check)
-page_main.link(_send_key('f4'), page_commission, _click_home())
+page_main.link(_send_key('f4'), page_commission, _send_key('esc'))
 
 # commission_daily
-page_commission_daily_material = Page(FeatureList.commission_daily_material_check).link(_send_key('esc'), page_commission).link(_click_home(), page_main)
-page_commission_daily_boss = Page(FeatureList.commission_daily_boss_check).link(_send_key('esc'), page_commission).link(_click_home(), page_main)
-page_commission_daily_equipment = Page(FeatureList.commission_daily_equipment_check).link(_send_key('esc'), page_commission).link(_click_home(), page_main)
+page_commission_daily_material = Page(FeatureList.commission_daily_material_check).link(_send_key('esc'), page_commission)
+page_commission_daily_boss = Page(FeatureList.commission_daily_boss_check).link(_send_key('esc'), page_commission)
+page_commission_daily_equipment = Page(FeatureList.commission_daily_equipment_check).link(_send_key('esc'), page_commission)
 page_commission.link(_click_box(0.6635, 0.6713, 0.7042, 0.7074), page_commission_daily_material)
 page_commission_daily_boss.link(_click_box(0.3000, 0.9398, 0.3208, 0.9565), page_commission_daily_material)
 page_commission_daily_equipment.link(_click_box(0.3000, 0.9398, 0.3208, 0.9565), page_commission_daily_material)
@@ -276,8 +273,7 @@ page_menu.link(_click_box(0.1401, 0.0972, 0.1563, 0.1194), page_mail, back_butto
 
 # shop
 page_shop = Page(FeatureList.shop_check, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)})
-page_main.link(_send_key('f6'), page_shop, _click_home())
-page_menu.link(_click_box(0.7448, 0.7833, 0.7589, 0.8074), page_shop)
+page_main.link(_send_key('f6'), page_shop, _send_key('esc'))
 
 # active
 page_active_daily = Page(FeatureList.active_daily_check, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=True)})
@@ -288,8 +284,12 @@ page_active_daily.link(_click_box(0.5500, 0.0315, 0.5891, 0.0537), page_active_w
 page_active_weekly.link(_click_box(0.4104, 0.0296, 0.4500, 0.0537), page_active_daily)
 
 # big_month_card
-page_big_month_card = Page(FeatureList.big_month_card_check, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=True)})
-page_main.link(_send_key('f2'), page_big_month_card, _click_home())
+# 中日文页签的图标横坐标不同；每个标记围绕自己的标注位置搜索。
+page_big_month_card = Page(
+    [FeatureList.big_month_card_task_check, FeatureList.big_month_card_reward_check, FeatureList.big_month_card_check],
+    check_kwargs={"horizontal_variance": 0.016, "vertical_variance": 0.005},
+)
+page_main.link(_send_key('f2'), page_big_month_card, _send_key('esc'))
 
 
 Page.build()
