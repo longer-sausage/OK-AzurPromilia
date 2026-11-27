@@ -16,6 +16,7 @@
   - **自动花瓣音游 (`AutoRhythmTask`)**：高精度滚动速度拟合与输入时序预测，支持多轨、长按与双键连击。
   - **宝箱开锁辅助 (`TreasureUnlockTask`)**：高精度颜色带连通域检测与自动对齐开锁。
 - **触发式辅助任务 (`src/tasks/trigger/`)**：
+  - **自动冲刺 (`AutoSprintTask`)** 在游戏前台按住任一 Shift 半秒后开始冲刺，松开即停。可选 1–3 人，默认 3 人。单人连续冲刺，多人从 1 号位开始按队伍顺序轮换。
   - **自动跳过剧情 (`SkipDialogTask`)**：基于中央文本带特征的快速跳过与确认。
   - **星结契约辅助 (`StarLinkAssistTask`)**：屏幕中心准心光圈圆弧拟合与自动命中。
 
@@ -43,7 +44,7 @@
 │   │   └── sequence_parser.py  逗号分隔配置串解析
 │   ├── tasks/
 │   │   ├── onetime/            一次性业务任务（Daily、HomeDaily、CommissionDaily、ClaimDaily、AutoJenga、AutoRhythm、TreasureUnlock）
-│   │   ├── trigger/            触发式任务（SkipDialog、StarLink）
+│   │   ├── trigger/            触发式任务（AutoSprint、SkipDialog、StarLink）
 │   │   ├── test/               调试与测试任务（Screenshot、Interaction、TreasureBand、UINavigate）
 │   │   ├── daily/              多步骤任务编排与汇总（DailyFeature、步骤统计）
 │   │   └── account/            账号作用域配置存储

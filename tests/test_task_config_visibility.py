@@ -30,7 +30,7 @@ BUSINESS_TASKS = [AutoPickupTask, AutoSprintTask, SkipDialogTask, StarLinkAssist
 
 #: 期望在 UI 里出现的配置键（未列出的键必须已用 _ 前缀隐藏）
 EXPECTED_VISIBLE_KEYS = {
-    AutoSprintTask: ["冲刺间隔 (ms)", "使用独立线程", "Shift冲刺模式", "切换角色", "快速奔跑角色数量"],
+    AutoSprintTask: ["快速奔跑角色数量"],
     TreasureUnlockTask: ["画调试框"],
     StarLinkAssistTask: [
         "检测绿色", "检测黄色", "检测红色", "要求环形", "记录点击日志", "画调试框",

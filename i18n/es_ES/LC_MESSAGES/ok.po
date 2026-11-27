@@ -171,20 +171,20 @@ msgid "自动冲刺"
 msgstr "Esprint automático"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "当键盘按住 W/A/S/D 任意按键满 0.2 秒后，按设定间隔自动按下 Shift 冲刺。"
+msgid "按住 Shift 半秒后自动冲刺，松开即停止。"
 msgstr ""
-"Tras mantener pulsada cualquiera de las teclas W/A/S/D durante 0.2 segundos,"
-" pulsa Shift automáticamente según el intervalo configurado."
+"Mantén pulsada la tecla Mayús durante medio segundo para empezar a "
+"esprintar. Suéltala para parar."
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "冲刺间隔 (ms)"
-msgstr "Intervalo de esprint (ms)"
+msgid "快速奔跑角色数量"
+msgstr "Tamaño del grupo"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。"
+msgid "1 人时只冲刺，2–3 人时按队伍顺序切人冲刺。"
 msgstr ""
-"Intervalo en milisegundos entre pulsaciones automáticas de Shift al mantener"
-" W/A/S/D."
+"Con un personaje, el esprint se repite. Con dos o tres, los personajes se "
+"turnan para esprintar en el orden del grupo."
 
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "自动拾取"
@@ -195,45 +195,3 @@ msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
 msgstr ""
 "Pulsa F repetidamente de forma automática al detectar un aviso de recogida "
 "hasta que desaparezca."
-
-msgid "按住 Shift 时自动切换角色并按 Shift，保持持续快速跑动。"
-msgstr ""
-"Mientras mantienes Shift, cambia de personaje y pulsa Shift automáticamente "
-"para seguir esprintando."
-
-msgid "切人后补按 Shift 的间隔时间（毫秒）。"
-msgstr ""
-"Tiempo en milisegundos antes de volver a pulsar Shift tras cambiar de "
-"personaje."
-
-msgid "使用独立线程"
-msgstr "Usar hilo dedicado"
-
-msgid "使用独立线程按固定节奏触发，不依赖框架轮询。"
-msgstr ""
-"Se ejecuta con una cadencia fija en un hilo dedicado sin depender del sondeo"
-" del framework."
-
-msgid "Shift冲刺模式"
-msgstr "Modo esprint con Shift"
-
-msgid "开启后按住 Shift 即自动快速跑动，不再要求按住 W/A/S/D。"
-msgstr ""
-"Al activarlo, mantener Shift inicia la carrera rápida sin tener que pulsar "
-"W/A/S/D."
-
-msgid "切换角色"
-msgstr "Cambiar de personaje"
-
-msgid "开启后在冲刺时切换角色；关闭则只连按 Shift。"
-msgstr ""
-"Cambia de personaje al esprintar; si está desactivado, solo se pulsa Shift "
-"repetidamente."
-
-msgid "快速奔跑角色数量"
-msgstr "Cantidad de personajes para correr"
-
-msgid "参与快速跑动的角色数量（1–4）。设为 1 等同于只连按 Shift。"
-msgstr ""
-"Cuántos personajes participan al correr rápido (1–4). Con 1 equivale a solo "
-"pulsar Shift."

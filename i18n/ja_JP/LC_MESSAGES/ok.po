@@ -157,16 +157,16 @@ msgid "自动冲刺"
 msgstr "自動ダッシュ"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "当键盘按住 W/A/S/D 任意按键满 0.2 秒后，按设定间隔自动按下 Shift 冲刺。"
-msgstr "W/A/S/D のいずれかを 0.2 秒間押し続けた後、設定した間隔で自動的に Shift キーを押してダッシュします。"
+msgid "按住 Shift 半秒后自动冲刺，松开即停止。"
+msgstr "Shift を半秒間押し続けるとダッシュを開始し、離すと停止します。"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "冲刺间隔 (ms)"
-msgstr "ダッシュ間隔 (ms)"
+msgid "快速奔跑角色数量"
+msgstr "ダッシュに参加する人数"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。"
-msgstr "W/A/S/D 押下中に自動で Shift を押す間隔（ミリ秒）。"
+msgid "1 人时只冲刺，2–3 人时按队伍顺序切人冲刺。"
+msgstr "1 人のときはダッシュを繰り返し、2～3 人のときは編成順にキャラクターを切り替えてダッシュします。"
 
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "自动拾取"
@@ -175,33 +175,3 @@ msgstr "自動採取"
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
 msgstr "採取アイコンを検出した際、消えるまで自動的に F キーを連打します。"
-
-msgid "按住 Shift 时自动切换角色并按 Shift，保持持续快速跑动。"
-msgstr "Shift を押している間、自動でキャラクターを切り替えて Shift を押し、走り続けます。"
-
-msgid "切人后补按 Shift 的间隔时间（毫秒）。"
-msgstr "キャラクター切り替え後に Shift を押し直すまでの間隔（ミリ秒）。"
-
-msgid "使用独立线程"
-msgstr "専用スレッドを使用"
-
-msgid "使用独立线程按固定节奏触发，不依赖框架轮询。"
-msgstr "専用スレッドで一定のリズムで実行し、フレームワークのポーリングに依存しません。"
-
-msgid "Shift冲刺模式"
-msgstr "Shift ダッシュモード"
-
-msgid "开启后按住 Shift 即自动快速跑动，不再要求按住 W/A/S/D。"
-msgstr "有効にすると Shift を押すだけで高速移動を開始し、W/A/S/D を押す必要がありません。"
-
-msgid "切换角色"
-msgstr "キャラクター切り替え"
-
-msgid "开启后在冲刺时切换角色；关闭则只连按 Shift。"
-msgstr "有効にするとダッシュ中にキャラクターを切り替えます。無効なら Shift の連打のみ行います。"
-
-msgid "快速奔跑角色数量"
-msgstr "高速移動に使うキャラクター数"
-
-msgid "参与快速跑动的角色数量（1–4）。设为 1 等同于只连按 Shift。"
-msgstr "高速移動に参加するキャラクター数（1–4）。1 にすると Shift の連打のみになります。"

@@ -157,16 +157,16 @@ msgid "自动冲刺"
 msgstr "자동 대시"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "当键盘按住 W/A/S/D 任意按键满 0.2 秒后，按设定间隔自动按下 Shift 冲刺。"
-msgstr "W/A/S/D 키 중 하나를 0.2초 이상 누르고 있으면 설정한 간격으로 Shift 키를 자동으로 눌러 대시합니다."
+msgid "按住 Shift 半秒后自动冲刺，松开即停止。"
+msgstr "Shift 키를 0.5초 동안 누르면 자동으로 질주하며, 키를 놓으면 멈춥니다."
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "冲刺间隔 (ms)"
-msgstr "대시 간격 (ms)"
+msgid "快速奔跑角色数量"
+msgstr "질주에 참여할 캐릭터 수"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。"
-msgstr "W/A/S/D 키를 누르고 있을 때 Shift 키를 자동으로 누르는 간격(밀리초)."
+msgid "1 人时只冲刺，2–3 人时按队伍顺序切人冲刺。"
+msgstr "1명이면 질주만 반복하고, 2~3명이면 파티 순서대로 캐릭터를 교체하며 질주합니다."
 
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "自动拾取"
@@ -175,33 +175,3 @@ msgstr "자동 줍기"
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
 msgstr "수집 안내가 감지되면 사라질 때까지 F 키를 자동으로 연타합니다."
-
-msgid "按住 Shift 时自动切换角色并按 Shift，保持持续快速跑动。"
-msgstr "Shift를 누르고 있는 동안 자동으로 캐릭터를 전환하고 Shift를 눌러 계속 달립니다."
-
-msgid "切人后补按 Shift 的间隔时间（毫秒）。"
-msgstr "캐릭터 전환 후 Shift를 다시 누르기까지의 간격(밀리초)."
-
-msgid "使用独立线程"
-msgstr "전용 스레드 사용"
-
-msgid "使用独立线程按固定节奏触发，不依赖框架轮询。"
-msgstr "전용 스레드에서 일정한 주기로 실행하며 프레임워크 폴링에 의존하지 않습니다."
-
-msgid "Shift冲刺模式"
-msgstr "Shift 달리기 모드"
-
-msgid "开启后按住 Shift 即自动快速跑动，不再要求按住 W/A/S/D。"
-msgstr "활성화하면 Shift만 눌러도 빠르게 달리며 W/A/S/D를 누를 필요가 없습니다."
-
-msgid "切换角色"
-msgstr "캐릭터 전환"
-
-msgid "开启后在冲刺时切换角色；关闭则只连按 Shift。"
-msgstr "활성화하면 달리는 동안 캐릭터를 전환합니다. 비활성화하면 Shift만 반복 입력합니다."
-
-msgid "快速奔跑角色数量"
-msgstr "빠른 달리기 캐릭터 수"
-
-msgid "参与快速跑动的角色数量（1–4）。设为 1 等同于只连按 Shift。"
-msgstr "빠른 달리에 참여하는 캐릭터 수(1–4). 1로 설정하면 Shift만 반복 입력하는 것과 같습니다."

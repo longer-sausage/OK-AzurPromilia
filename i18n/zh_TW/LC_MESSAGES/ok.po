@@ -156,16 +156,16 @@ msgid "自动冲刺"
 msgstr "自動衝刺"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "当键盘按住 W/A/S/D 任意按键满 0.2 秒后，按设定间隔自动按下 Shift 冲刺。"
-msgstr "當鍵盤按住 W/A/S/D 任意按鍵滿 0.2 秒後，按設定間隔自動按下 Shift 衝刺。"
+msgid "按住 Shift 半秒后自动冲刺，松开即停止。"
+msgstr "按住 Shift 半秒後會自動衝刺，放開即停止。"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "冲刺间隔 (ms)"
-msgstr "衝刺間隔 (ms)"
+msgid "快速奔跑角色数量"
+msgstr "快速奔跑角色數量"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。"
-msgstr "按下 W/A/S/D 時自動按 Shift 衝刺的間隔時間（毫秒）。"
+msgid "1 人时只冲刺，2–3 人时按队伍顺序切人冲刺。"
+msgstr "1 人時只衝刺，2–3 人時依隊伍順序切換角色衝刺。"
 
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "自动拾取"
@@ -174,33 +174,3 @@ msgstr "自動拾取"
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
 msgstr "偵測到可拾取提示時自動連按 F，直到提示消失。"
-
-msgid "按住 Shift 时自动切换角色并按 Shift，保持持续快速跑动。"
-msgstr "按住 Shift 時自動切換角色並按 Shift，保持持續快速跑動。"
-
-msgid "切人后补按 Shift 的间隔时间（毫秒）。"
-msgstr "切換角色後補按 Shift 的間隔時間（毫秒）。"
-
-msgid "使用独立线程"
-msgstr "使用獨立執行緒"
-
-msgid "使用独立线程按固定节奏触发，不依赖框架轮询。"
-msgstr "使用獨立執行緒按固定節奏觸發，不依賴框架輪詢。"
-
-msgid "Shift冲刺模式"
-msgstr "Shift 衝刺模式"
-
-msgid "开启后按住 Shift 即自动快速跑动，不再要求按住 W/A/S/D。"
-msgstr "開啟後按住 Shift 即自動快速跑動，不再要求按住 W/A/S/D。"
-
-msgid "切换角色"
-msgstr "切換角色"
-
-msgid "开启后在冲刺时切换角色；关闭则只连按 Shift。"
-msgstr "開啟後在衝刺時切換角色；關閉則只連按 Shift。"
-
-msgid "快速奔跑角色数量"
-msgstr "快速奔跑角色數量"
-
-msgid "参与快速跑动的角色数量（1–4）。设为 1 等同于只连按 Shift。"
-msgstr "參與快速跑動的角色數量（1–4）。設為 1 等同於只連按 Shift。"
