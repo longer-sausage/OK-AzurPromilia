@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import threading
+import time
 import unittest
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
@@ -99,6 +100,9 @@ class SprintHarness:
         task.config.update(config_overrides)
         task._enabled = enabled
         task._paused = paused
+        # 用例用假时钟驱动 run()；独立线程读真实时钟并真实等待，默认关闭，
+        # 线程行为由专门的用例显式开启验证。
+        task.config[auto_sprint_task.USE_THREAD_CONFIG_KEY] = False
         task.active_time = lambda: self.now
 
         # 避免单元测试真的 sleep，记录请求的按下时长并保留停止事件语义
@@ -436,7 +440,14 @@ class TestAutoSprintTask(unittest.TestCase):
                 task.config_description,
                 task.config_type,
             )
-            self.assertEqual(list(form.config_widget_by_key.keys()), [INTERVAL_CONFIG_KEY])
+            self.assertEqual(
+                list(form.config_widget_by_key.keys()),
+                [
+                    INTERVAL_CONFIG_KEY,
+                    auto_sprint_task.USE_THREAD_CONFIG_KEY,
+                    auto_sprint_task.SHIFT_MODE_CONFIG_KEY,
+                ],
+            )
             editor = form.config_widget_by_key[INTERVAL_CONFIG_KEY]
             self.assertIsInstance(editor, NumberEditor)
             self.assertEqual(editor.spin_box.value(), DEFAULT_SPRINT_INTERVAL_MS)
@@ -446,6 +457,82 @@ class TestAutoSprintTask(unittest.TestCase):
             self.assertEqual(values[INTERVAL_CONFIG_KEY], 220)
             form.deleteLater()
             app.processEvents()
+
+    # ── 7. 独立线程 ─────────────────────────────────────────
+
+    def test_worker_thread_sprints_without_framework_run(self):
+        """独立线程在 run() 未被调用时也能按节奏触发冲刺。"""
+        harness = SprintHarness(pressed_vks={0x57})
+        task = harness.task
+        task.config[auto_sprint_task.USE_THREAD_CONFIG_KEY] = True
+        task.config[INTERVAL_CONFIG_KEY] = 10
+        task._stop_event = threading.Event()
+
+        with patch.object(auto_sprint_task.win32api, "GetAsyncKeyState", side_effect=harness.key_state):
+            with patch("ok.task.task.communicate"):
+                task._ensure_worker()
+            try:
+                deadline = time.monotonic() + 5
+                while time.monotonic() < deadline and harness.shift_press_count < 1:
+                    time.sleep(0.02)
+            finally:
+                task._stop_event.set()
+                task._stop_worker()
+
+        self.assertGreaterEqual(harness.shift_press_count, 1)
+        self.assertTrue(task._stop_event.is_set())
+
+    def test_worker_thread_does_not_start_when_disabled_by_config(self):
+        harness = SprintHarness(pressed_vks={0x57})
+        task = harness.task
+        task._ensure_worker()
+        self.assertIsNone(task._worker)
+
+    # ── 8. Shift 冲刺模式 ───────────────────────────────────
+
+    def test_shift_mode_off_by_default_and_keeps_wasd_behaviour(self):
+        harness = SprintHarness(pressed_vks={0x57})
+        self.assertFalse(harness.task.default_config[auto_sprint_task.SHIFT_MODE_CONFIG_KEY])
+        self.assertFalse(harness.task._shift_mode())
+        shift_only = SprintHarness(
+            pressed_vks={0x10}, **{auto_sprint_task.SHIFT_MODE_CONFIG_KEY: False}
+        )
+        shift_only.run(times=3, gap=0.2)
+        self.assertEqual(shift_only.interaction.events, [])
+
+    def test_shift_mode_triggers_on_held_shift_with_new_edge(self):
+        harness = SprintHarness(
+            pressed_vks={0x10}, **{auto_sprint_task.SHIFT_MODE_CONFIG_KEY: True}
+        )
+        harness.hold_until_sprint()
+        self.assertEqual(
+            harness.interaction.events,
+            [("up", "shift"), ("down", "shift", False), ("up", "shift")],
+        )
+
+    def test_shift_mode_ignores_wasd_and_requires_shift(self):
+        harness = SprintHarness(
+            pressed_vks={0x57}, **{auto_sprint_task.SHIFT_MODE_CONFIG_KEY: True}
+        )
+        harness.hold_until_sprint()
+        self.assertEqual(harness.interaction.events, [])
+
+    def test_shift_mode_respects_interval(self):
+        interval_s = DEFAULT_SPRINT_INTERVAL_MS / 1000.0
+        harness = SprintHarness(
+            pressed_vks={0x10}, **{auto_sprint_task.SHIFT_MODE_CONFIG_KEY: True}
+        )
+        harness.hold_until_sprint()
+        first = harness.shift_press_count
+        self.assertEqual(first, 1)
+
+        harness.advance(interval_s / 2)
+        harness.run()
+        self.assertEqual(harness.shift_press_count, first)
+
+        harness.advance(interval_s / 2 + 1e-6)
+        harness.run()
+        self.assertEqual(harness.shift_press_count, first + 1)
 
 
 if __name__ == "__main__":
