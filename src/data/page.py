@@ -289,7 +289,11 @@ page_active_daily.link(_click_box(0.5500, 0.0315, 0.5891, 0.0537), page_active_w
 page_active_weekly.link(_click_box(0.4104, 0.0296, 0.4500, 0.0537), page_active_daily)
 
 # big_month_card
-page_big_month_card = Page([FeatureList.big_month_card_check, FeatureList.big_month_card_task_check])
+# 中日文页签的图标横坐标不同；每个标记围绕自己的标注位置搜索。
+page_big_month_card = Page(
+    [FeatureList.big_month_card_task_check, FeatureList.big_month_card_reward_check, FeatureList.big_month_card_check],
+    check_kwargs={"horizontal_variance": 0.016, "vertical_variance": 0.005},
+)
 page_main.link(_send_key('f2'), page_big_month_card, _send_key('esc'))
 
 

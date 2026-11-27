@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-from functools import cached_property
 
 from src.core.account_override_mixin import AccountOverrideMixin
 from src.core.base_game_task import BaseGameTask
@@ -87,10 +86,6 @@ class ClaimDailyTask(BaseGameTask):
                 return AccountOverrideMixin._coerce_override_value(base, overrides.get(key))
         return self.config.get(key, declared_default)
 
-    @cached_property
-    def safe_box(self):
-        return self.box_of_screen(0.4786, 0.8722, 0.5245, 0.9120)
-
     def claim_mail(self):
         self.ui_ensure(page_mail)
 
@@ -107,9 +102,8 @@ class ClaimDailyTask(BaseGameTask):
                 self.click(box)
                 self.sleep(0.1)
                 continue
-            if self.find_one(FeatureList.claim_popup):
+            if self.handle_claim_popup():
                 end_flag = True
-                self.click(self.safe_box)
                 self.sleep(0.1)
                 continue
         if not end_flag:
@@ -160,9 +154,8 @@ class ClaimDailyTask(BaseGameTask):
                 self.click(box)
                 self.sleep(0.1)
                 continue
-            if self.find_one(FeatureList.claim_popup):
+            if self.handle_claim_popup():
                 frame_count = 0
-                self.click(self.safe_box)
                 self.sleep(0.1)
                 continue
             if self.find_one(FeatureList.shop_check):
@@ -193,9 +186,8 @@ class ClaimDailyTask(BaseGameTask):
                 self.click(box)
                 self.sleep(0.1)
                 continue
-            if self.find_one(FeatureList.claim_popup):
+            if self.handle_claim_popup():
                 frame_count = 0
-                self.click(self.safe_box)
                 self.sleep(0.1)
                 continue
             if self.find_one(FeatureList.active_daily_check) and not self.find_one(
@@ -228,9 +220,8 @@ class ClaimDailyTask(BaseGameTask):
                 self.click(box)
                 self.sleep(0.1)
                 continue
-            if self.find_one(FeatureList.claim_popup):
+            if self.handle_claim_popup():
                 frame_count = 0
-                self.click(self.safe_box)
                 self.sleep(0.1)
                 continue
             if self.find_one(FeatureList.active_weekly_check) and not self.find_one(
@@ -247,7 +238,10 @@ class ClaimDailyTask(BaseGameTask):
         self.ui_ensure(page_big_month_card)
 
         for _ in self.loop():
-            if self.find_one(FeatureList.big_month_card_task_check):
+            if self.find_one(
+                FeatureList.big_month_card_task_check,
+                box=self.box_of_screen(0.5437, 0.9519, 0.5792, 0.9898),
+            ):
                 break
             self.click(self.box_of_screen(0.6089, 0.9611, 0.6219, 0.9815))
             self.sleep(0.1)
@@ -272,11 +266,17 @@ class ClaimDailyTask(BaseGameTask):
                 self.sleep(0.1)
                 stable_time = self.active_time()
                 continue
-            if self.active_time() - stable_time >= 1 and self.find_one(FeatureList.big_month_card_task_check):
+            if self.active_time() - stable_time >= 1 and self.find_one(
+                FeatureList.big_month_card_task_check,
+                box=self.box_of_screen(0.5437, 0.9519, 0.5792, 0.9898),
+            ):
                 break
 
         for _ in self.loop():
-            if self.find_one(FeatureList.big_month_card_reward_check):
+            if self.find_one(
+                FeatureList.big_month_card_reward_check,
+                box=self.box_of_screen(0.3776, 0.9528, 0.4078, 0.9907),
+            ):
                 break
             self.click(self.box_of_screen(0.4375, 0.9611, 0.4500, 0.9815))
             self.sleep(0.1)
@@ -296,12 +296,14 @@ class ClaimDailyTask(BaseGameTask):
                 self.sleep(0.1)
                 stable_time = self.active_time()
                 continue
-            if self.find_one(FeatureList.claim_popup):
-                self.click(self.safe_box)
+            if self.handle_claim_popup():
                 self.sleep(0.1)
                 stable_time = self.active_time()
                 continue
-            if self.active_time() - stable_time >= 1 and self.find_one(FeatureList.big_month_card_reward_check):
+            if self.active_time() - stable_time >= 1 and self.find_one(
+                FeatureList.big_month_card_reward_check,
+                box=self.box_of_screen(0.3776, 0.9528, 0.4078, 0.9907),
+            ):
                 break
 
     def run(self):

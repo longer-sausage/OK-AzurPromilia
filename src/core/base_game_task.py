@@ -63,6 +63,10 @@ class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
         self._seen_executor_pause_start = getattr(self.executor, "pause_start", None)
         self._logged_in = False
 
+    @property
+    def safe_box(self):
+        return self.box_of_screen(0.4786, 0.8722, 0.5245, 0.9120)
+
     # ── 暂停感知的活动计时 ─────────────────────────────
     def active_time(self) -> float:
         """Return monotonic task time with framework pauses excluded."""
@@ -339,6 +343,13 @@ class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
             self.click(result)
             return True
         return False
+
+    def handle_claim_popup(self) -> bool:
+        """识别领奖标题下方的三枚菱形，点击底部空白处关闭弹窗。"""
+        if not self.find_one(FeatureList.claim_popup, threshold=0.97):
+            return False
+        self.click(self.safe_box)
+        return True
 
     def get_game_hwnd(self) -> int:
         """Return the game hwnd resolved from the configured window features."""

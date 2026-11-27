@@ -18,13 +18,16 @@ class UIMixin:
     def ui_page_appear(self, page: Page | str) -> bool:
         """检查当前帧是否匹配指定页面的特征。"""
         target_page = Page.get(page)
-        if target_page.check_feature is None:
+        features = target_page.check_feature
+        if features is None:
             return False
         check_kwargs = dict(target_page.check_kwargs)
         if target_page.relative_box is not None:
             # find_one 的 box 使用像素坐标，需按当前画面尺寸转换。
             check_kwargs["box"] = self.box_of_screen(*target_page.relative_box)
-        return bool(self.find_one(target_page.check_feature, **check_kwargs) is not None)
+        if isinstance(features, (list, tuple)):
+            return any(self.find_one(feature, **check_kwargs) is not None for feature in features)
+        return self.find_one(features, **check_kwargs) is not None
 
     def ui_goto(
         self,
