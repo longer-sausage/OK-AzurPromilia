@@ -176,7 +176,11 @@ class ClaimDailyTask(BaseGameTask):
         self.ui_ensure(page_active_daily)
         frame_count = 0
         for _ in self.loop():
-            if box := self.find_one(FeatureList.active_daily_claim_task, mask_function=make_hsv_isolator(HSVRange.WHITE, invert=False)):
+            if box := self.find_one(
+                FeatureList.active_daily_claim_task,
+                mask_function=make_hsv_isolator(HSVRange.WHITE, invert=False),
+                box=self.box_of_screen(0.84, 0.14, 0.91, 0.83),
+            ):
                 frame_count = 0
                 self.click(box)
                 self.sleep(0.1)
@@ -208,7 +212,11 @@ class ClaimDailyTask(BaseGameTask):
         self.ui_ensure(page_active_weekly)
         frame_count = 0
         for _ in self.loop():
-            if box := self.find_one(FeatureList.active_weekly_claim_task, mask_function=make_hsv_isolator(HSVRange.WHITE, invert=False)):
+            if box := self.find_one(
+                FeatureList.active_weekly_claim_task,
+                use_gray_scale=True,
+                box=self.box_of_screen(0.84, 0.14, 0.91, 0.83),
+            ):
                 frame_count = 0
                 self.click(box)
                 self.sleep(0.1)
