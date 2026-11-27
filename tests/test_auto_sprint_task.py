@@ -96,7 +96,9 @@ class SprintHarness:
         task = AutoSprintTask(self.executor, self.app)
         task.load_config()
         task.config.update(config_overrides)
-        task.config[USE_THREAD_CONFIG_KEY] = False
+        # 用例默认关线程（假时钟无法驱动真实线程）；显式传入时尊重用例设置。
+        if USE_THREAD_CONFIG_KEY not in config_overrides:
+            task.config[USE_THREAD_CONFIG_KEY] = False
         task._enabled = enabled
         task._paused = paused
         task._physical_keys = set(physical_keys or ())
@@ -220,7 +222,7 @@ class TestAutoSprintTask(unittest.TestCase):
     # ── 3. 切人 + Shift 节奏 ────────────────────────────────
 
     def test_switch_mode_taps_character_slot_then_shift(self):
-        harness = SprintHarness(**{SWITCH_ENABLED_CONFIG_KEY: True})
+        harness = SprintHarness(**{SWITCH_ENABLED_CONFIG_KEY: True, CHAR_COUNT_CONFIG_KEY: 2})
         harness.advance_to_quick_run()
         harness.run()
 
@@ -237,7 +239,8 @@ class TestAutoSprintTask(unittest.TestCase):
         slots = [k for k in harness.pynput.tapped if k in {"1", "2", "3", "4"}]
         self.assertEqual(slots, ["1", "2"])
 
-    def test_char_count_one_means_slot_one_only(self):
+    def test_char_count_one_means_shift_only(self):
+        """角色数量为 1 时切人无意义，应退化为纯 Shift，不发送任何角色键。"""
         harness = SprintHarness(**{CHAR_COUNT_CONFIG_KEY: 1, SWITCH_ENABLED_CONFIG_KEY: True})
         harness.advance_to_quick_run()
         harness.run()
@@ -245,7 +248,8 @@ class TestAutoSprintTask(unittest.TestCase):
         harness.run()
 
         slots = [k for k in harness.pynput.tapped if k in {"1", "2", "3", "4"}]
-        self.assertEqual(slots, ["1", "1"])
+        self.assertEqual(slots, [], f"角色数量为 1 时不应发送角色键，实际: {slots}")
+        self.assertTrue(harness.pynput.tapped)
 
     def test_switch_disabled_only_taps_shift(self):
         harness = SprintHarness(**{SWITCH_ENABLED_CONFIG_KEY: False})
@@ -333,7 +337,67 @@ class TestAutoSprintTask(unittest.TestCase):
 
     # ── 6. 界面配置 ─────────────────────────────────────────
 
-    def test_config_form_renders_all_visible_keys(self):
+    def test_release_shift_bypasses_backend_pairing_guard(self):
+        """真实后端 send_key_up 有配对保护，玩家手按的 Shift 未登记会被丢弃。
+
+        回归用例：接管所有权时必须同时走 pynput 直接释放，否则游戏侧仍认为
+        Shift 按着，后续无法产生新的按下边沿（表现为按住却不冲刺）。
+        """
+        harness = SprintHarness()
+
+        call_order: list[tuple] = []
+        harness.task._pynput.press = lambda k: call_order.append(("pynput_press", k))
+        harness.task._pynput.release = lambda k: call_order.append(("pynput_release", k))
+
+        backend = MagicMock()
+        # 模拟真实后端的配对保护：未登记的键释放被静默忽略
+        backend.send_key_up = MagicMock(
+            side_effect=lambda key: call_order.append(("backend_up", key))
+        )
+        harness.executor.interaction = backend
+
+        harness.task._release_shift_keys()
+
+        actions = [a for a, _ in call_order]
+        self.assertIn("pynput_release", actions, "必须直接走 pynput 释放，绕开配对保护")
+        self.assertIn("backend_up", actions, "同时通知后端释放，保持两边状态一致")
+
+    def test_thread_mode_run_does_not_drive_state_machine(self):
+        """启用独立线程时 run() 不得再驱动状态机，否则会重复发键。"""
+        harness = SprintHarness(**{USE_THREAD_CONFIG_KEY: True})
+        harness.advance_to_quick_run()
+        task = harness.task
+        task._ensure_worker = lambda: None
+        # 仅允许 _can_input 通过，隔离出「run() 是否驱动状态机」这一行为
+        with patch.object(AutoSprintTask, "_can_input", return_value=True):
+            driven = []
+            with patch.object(AutoSprintTask, "_handle_quick_run", side_effect=lambda now: driven.append(now)):
+                task.run()
+        self.assertEqual(driven, [], "线程模式下 run() 不应再驱动状态机")
+
+    def test_wasd_mode_keeps_620_default_interval(self):
+        """WASD 模式未显式配置间隔时沿用上游 620ms，不被快速跑动的 200ms 影响。"""
+        task = SprintHarness().task
+        task.config.pop(INTERVAL_CONFIG_KEY, None)
+        self.assertAlmostEqual(task._wasd_interval_seconds(), 0.62)
+        self.assertAlmostEqual(task._sprint_interval_seconds(), 0.2)
+
+    def test_worker_stop_uses_dedicated_event(self):
+        """关闭线程配置时用专属事件停 worker，不能污染 _stop_event。"""
+        harness = SprintHarness(**{USE_THREAD_CONFIG_KEY: False})
+        task = harness.task
+        task._ensure_worker()
+
+        self.assertFalse(task._stop_event.is_set(), "_stop_event 不应被配置关闭影响")
+        self.assertIsNone(task._worker)
+
+    def test_exclusive_owner_blocks_input(self):
+        """执行器被其他任务独占时不应继续发键。"""
+        harness = SprintHarness()
+        harness.executor.exclusive_owner = object()
+        harness.advance_to_quick_run()
+        harness.run()
+        self.assertEqual(harness.pynput.events, [])
         app = QApplication.instance() or QApplication(["test", "-platform", "offscreen"])
         harness = SprintHarness()
         task = harness.task

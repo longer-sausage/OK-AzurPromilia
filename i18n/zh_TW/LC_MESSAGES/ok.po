@@ -174,3 +174,33 @@ msgstr "自動拾取"
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
 msgstr "偵測到可拾取提示時自動連按 F，直到提示消失。"
+
+msgid "按住 Shift 时自动切换角色并按 Shift，保持持续快速跑动。"
+msgstr "按住 Shift 時自動切換角色並按 Shift，保持持續快速跑動。"
+
+msgid "切人后补按 Shift 的间隔时间（毫秒）。"
+msgstr "切換角色後補按 Shift 的間隔時間（毫秒）。"
+
+msgid "使用独立线程"
+msgstr "使用獨立執行緒"
+
+msgid "使用独立线程按固定节奏触发，不依赖框架轮询。"
+msgstr "使用獨立執行緒按固定節奏觸發，不依賴框架輪詢。"
+
+msgid "Shift冲刺模式"
+msgstr "Shift 衝刺模式"
+
+msgid "开启后按住 Shift 即自动快速跑动，不再要求按住 W/A/S/D。"
+msgstr "開啟後按住 Shift 即自動快速跑動，不再要求按住 W/A/S/D。"
+
+msgid "切换角色"
+msgstr "切換角色"
+
+msgid "开启后在冲刺时切换角色；关闭则只连按 Shift。"
+msgstr "開啟後在衝刺時切換角色；關閉則只連按 Shift。"
+
+msgid "快速奔跑角色数量"
+msgstr "快速奔跑角色數量"
+
+msgid "参与快速跑动的角色数量（1–4）。设为 1 等同于只连按 Shift。"
+msgstr "參與快速跑動的角色數量（1–4）。設為 1 等同於只連按 Shift。"

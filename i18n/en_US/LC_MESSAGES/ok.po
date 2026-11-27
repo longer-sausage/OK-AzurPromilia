@@ -114,7 +114,9 @@ msgid "宝箱开锁"
 msgstr "Treasure Unlock"
 
 msgid "进入开锁界面后启动任务，自动校准颜色条带并开锁。"
-msgstr "Start the task on the lock screen to calibrate the color bands and unlock the chest."
+msgstr ""
+"Start the task on the lock screen to calibrate the color bands and unlock "
+"the chest."
 
 msgid "家园每日"
 msgstr "Home Daily"
@@ -145,7 +147,8 @@ msgid "每日收菜"
 msgstr "Daily Claim"
 
 msgid "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡"
-msgstr "Run daily claim: mail, surprise box, daily/weekly activity, monthly card"
+msgstr ""
+"Run daily claim: mail, surprise box, daily/weekly activity, monthly card"
 
 msgid "委托每日"
 msgstr "Commission Daily"
@@ -156,7 +159,8 @@ msgstr ""
 "(auto-combat must be unlocked first)"
 
 msgid "进入音游后启动任务，自动演奏当前曲目。"
-msgstr "Start the task in the rhythm game to play the current song automatically."
+msgstr ""
+"Start the task in the rhythm game to play the current song automatically."
 
 #: src/tasks/trigger/auto_sprint_task.py
 msgid "自动冲刺"
@@ -164,7 +168,9 @@ msgstr "Auto Sprint"
 
 #: src/tasks/trigger/auto_sprint_task.py
 msgid "当键盘按住 W/A/S/D 任意按键满 0.2 秒后，按设定间隔自动按下 Shift 冲刺。"
-msgstr "After holding any of W/A/S/D for 0.2 seconds, automatically presses Shift at the configured interval."
+msgstr ""
+"After holding any of W/A/S/D for 0.2 seconds, automatically presses Shift at"
+" the configured interval."
 
 #: src/tasks/trigger/auto_sprint_task.py
 msgid "冲刺间隔 (ms)"
@@ -172,7 +178,9 @@ msgstr "Sprint Interval (ms)"
 
 #: src/tasks/trigger/auto_sprint_task.py
 msgid "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。"
-msgstr "Interval in milliseconds between automatic Shift presses while holding W/A/S/D."
+msgstr ""
+"Interval in milliseconds between automatic Shift presses while holding "
+"W/A/S/D."
 
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "自动拾取"
@@ -180,4 +188,47 @@ msgstr "Auto Pickup"
 
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
-msgstr "Automatically presses F repeatedly when a pickup prompt is detected until it disappears."
+msgstr ""
+"Automatically presses F repeatedly when a pickup prompt is detected until it"
+" disappears."
+
+msgid "按住 Shift 时自动切换角色并按 Shift，保持持续快速跑动。"
+msgstr ""
+"While Shift is held, automatically switch characters and press Shift to keep"
+" sprinting."
+
+msgid "切人后补按 Shift 的间隔时间（毫秒）。"
+msgstr ""
+"Delay in milliseconds before pressing Shift again after switching character."
+
+msgid "使用独立线程"
+msgstr "Use dedicated thread"
+
+msgid "使用独立线程按固定节奏触发，不依赖框架轮询。"
+msgstr ""
+"Trigger on a fixed cadence from a dedicated thread instead of relying on "
+"framework polling."
+
+msgid "Shift冲刺模式"
+msgstr "Shift sprint mode"
+
+msgid "开启后按住 Shift 即自动快速跑动，不再要求按住 W/A/S/D。"
+msgstr ""
+"When enabled, holding Shift starts fast running without also holding "
+"W/A/S/D."
+
+msgid "切换角色"
+msgstr "Switch characters"
+
+msgid "开启后在冲刺时切换角色；关闭则只连按 Shift。"
+msgstr ""
+"Switch characters while sprinting; when off, only Shift is pressed "
+"repeatedly."
+
+msgid "快速奔跑角色数量"
+msgstr "Characters for fast running"
+
+msgid "参与快速跑动的角色数量（1–4）。设为 1 等同于只连按 Shift。"
+msgstr ""
+"How many characters take part in fast running (1–4). Setting 1 is equivalent"
+" to only pressing Shift."
