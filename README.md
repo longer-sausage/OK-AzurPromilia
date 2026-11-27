@@ -46,6 +46,7 @@
 - [Mirror酱](https://mirrorchyan.com/zh/projects?rid=OK-AzurPromilia)
 - [夸克网盘](https://pan.quark.cn/s/5f0cb1150fc4)
 - [百度网盘](https://pan.baidu.com/s/1gz4JZyMtvcXL6lL9xIPEQQ?pwd=okap)
+- [123网盘](https://4007903710.share.123pan.cn/123pan/4tl4wh-C2DZd?pwd=okap#)
 
 也可前往 [GitHub Releases](https://github.com/longer-sausage/ok-ap/releases) 下载最新版本安装包：
 
