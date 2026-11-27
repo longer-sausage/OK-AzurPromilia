@@ -156,16 +156,16 @@ msgid "自动冲刺"
 msgstr "自動衝刺"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "当键盘按住 W/A/S/D 任意按键满 0.2 秒后，按设定间隔自动按下 Shift 冲刺。"
-msgstr "當鍵盤按住 W/A/S/D 任意按鍵滿 0.2 秒後，按設定間隔自動按下 Shift 衝刺。"
+msgid "按住 Shift 半秒后自动冲刺，松开即停止。"
+msgstr "按住 Shift 半秒後會自動衝刺，放開即停止。"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "冲刺间隔 (ms)"
-msgstr "衝刺間隔 (ms)"
+msgid "快速奔跑角色数量"
+msgstr "快速奔跑角色數量"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。"
-msgstr "按下 W/A/S/D 時自動按 Shift 衝刺的間隔時間（毫秒）。"
+msgid "1 人时只冲刺，2–3 人时按队伍顺序切人冲刺。"
+msgstr "1 人時只衝刺，2–3 人時依隊伍順序切換角色衝刺。"
 
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "自动拾取"

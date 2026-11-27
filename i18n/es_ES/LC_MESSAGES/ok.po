@@ -114,7 +114,9 @@ msgid "宝箱开锁"
 msgstr "Desbloqueo de cofres"
 
 msgid "进入开锁界面后启动任务，自动校准颜色条带并开锁。"
-msgstr "Inicia la tarea en la pantalla de la cerradura para calibrar las bandas de color y abrir el cofre."
+msgstr ""
+"Inicia la tarea en la pantalla de la cerradura para calibrar las bandas de "
+"color y abrir el cofre."
 
 msgid "家园每日"
 msgstr "Diario del hogar"
@@ -131,7 +133,9 @@ msgstr "Escalera de Zuzanka automática"
 
 #: src/tasks/onetime/auto_jenga_task.py
 msgid "进入祖赞卡之梯后启动任务，自动放置图腾。"
-msgstr "Inicia la tarea en la escalera de Zuzanka para colocar los tótems automáticamente."
+msgstr ""
+"Inicia la tarea en la escalera de Zuzanka para colocar los tótems "
+"automáticamente."
 
 #: src/tasks/onetime/auto_jenga_task.py
 msgid "正在对准图腾"
@@ -158,23 +162,29 @@ msgstr ""
 "seleccionado (requiere desbloquear antes el combate automático)"
 
 msgid "进入音游后启动任务，自动演奏当前曲目。"
-msgstr "Inicia la tarea en el juego de ritmo para tocar la canción actual automáticamente."
+msgstr ""
+"Inicia la tarea en el juego de ritmo para tocar la canción actual "
+"automáticamente."
 
 #: src/tasks/trigger/auto_sprint_task.py
 msgid "自动冲刺"
 msgstr "Esprint automático"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "当键盘按住 W/A/S/D 任意按键满 0.2 秒后，按设定间隔自动按下 Shift 冲刺。"
-msgstr "Tras mantener pulsada cualquiera de las teclas W/A/S/D durante 0.2 segundos, pulsa Shift automáticamente según el intervalo configurado."
+msgid "按住 Shift 半秒后自动冲刺，松开即停止。"
+msgstr ""
+"Mantén pulsada la tecla Mayús durante medio segundo para empezar a "
+"esprintar. Suéltala para parar."
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "冲刺间隔 (ms)"
-msgstr "Intervalo de esprint (ms)"
+msgid "快速奔跑角色数量"
+msgstr "Tamaño del grupo"
 
 #: src/tasks/trigger/auto_sprint_task.py
-msgid "按下 W/A/S/D 时自动按 Shift 冲刺的间隔时间（毫秒）。"
-msgstr "Intervalo en milisegundos entre pulsaciones automáticas de Shift al mantener W/A/S/D."
+msgid "1 人时只冲刺，2–3 人时按队伍顺序切人冲刺。"
+msgstr ""
+"Con un personaje, el esprint se repite. Con dos o tres, los personajes se "
+"turnan para esprintar en el orden del grupo."
 
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "自动拾取"
@@ -182,4 +192,6 @@ msgstr "Recogida automática"
 
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
-msgstr "Pulsa F repetidamente de forma automática al detectar un aviso de recogida hasta que desaparezca."
+msgstr ""
+"Pulsa F repetidamente de forma automática al detectar un aviso de recogida "
+"hasta que desaparezca."
