@@ -277,8 +277,7 @@ page_menu.link(_click_box(0.1401, 0.0972, 0.1563, 0.1194), page_mail, back_butto
 
 # shop
 page_shop = Page(FeatureList.shop_check, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)})
-page_main.link(_send_key('f6'), page_shop, _click_home())
-page_menu.link(_click_box(0.7448, 0.7833, 0.7589, 0.8074), page_shop)
+page_main.link(_send_key('f6'), page_shop, _send_key('esc'))
 
 # active
 page_active_daily = Page(FeatureList.active_daily_check, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=True)})
