@@ -34,7 +34,6 @@ override-dependencies = [
 [tool.ruff]
 line-length = 120
 target-version = "py312"
-extend-exclude = ["ok_templates"]
 
 [tool.ruff.lint]
 allowed-confusables = ["，", "。", "；", "：", "（", "）", "、"]
@@ -54,4 +53,3 @@ ignore = [
 
 [tool.ruff.format]
 quote-style = "double"
-exclude = ["ok_templates"]

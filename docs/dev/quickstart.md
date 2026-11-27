@@ -38,6 +38,12 @@ uv run python main_debug.py
 
 ## 5. 模板匹配
 
+普通 `git clone` 会一并取得 `ok_templates/` 下的原始截图和 `coco_annotations.json`。模板改动直接提交到本仓库。
+
+> 如果旧工作区初始化过 `ok_templates` 子模块，首次拉取这次迁移可能遇到 `would be overwritten by merge`。
+> 在主仓库根目录运行 `git -C ok_templates status --short`。若有本地改动，可先提交到自己的模板分支，或将改动另存到目录外后恢复干净工作区。
+> 等状态输出为空，执行 `git submodule deinit -- ok_templates`，再执行 `git pull`。更新后可将自己的模板改动合回。
+
 在调试版的模板页完成标注后，打开导出对话框，选择拆分模板并保存到独立应用的
 `assets`。勾选生成标签枚举，输出路径填 `FeatureList.py`。框架用输出文件名决定
 Python 类名，生成后在仓库根目录执行以下命令，即可通过 `self.wait_feature(FeatureList.xxx)` 使用新模板。
