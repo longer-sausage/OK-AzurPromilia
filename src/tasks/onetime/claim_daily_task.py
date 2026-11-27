@@ -100,7 +100,7 @@ class ClaimDailyTask(BaseGameTask):
                 if end_flag:
                     break
                 self.click(box)
-                self.sleep(0.1)
+                self.sleep(1)
                 continue
             if box := self.find_one(FeatureList.confirm_button_3):
                 end_flag = True
