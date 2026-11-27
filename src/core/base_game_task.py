@@ -275,9 +275,10 @@ class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
             self._logged_in = True
             return True
         except PageNotFoundError:
-            if (
-                self.handle_login() or
-                self.handle_confirm()
+            if any(
+                self.handle_login(),
+                self.handle_confirm(),
+                self.handle_claim_popup(),
             ):
                 self.sleep(self.once_sleep_time)
             elif esc:
