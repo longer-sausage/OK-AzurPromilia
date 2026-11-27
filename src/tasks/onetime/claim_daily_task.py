@@ -1,27 +1,43 @@
 from __future__ import annotations
 
-from functools import cached_property
+import logging
+
+from ok import Box
 
 from src.core.account_override_mixin import AccountOverrideMixin
 from src.core.base_game_task import BaseGameTask
+from src.data.feature_list import FeatureList
 from src.data.page import (
-    page_main,
-    page_mail,
-    page_shop,
     page_active_daily,
     page_active_weekly,
     page_big_month_card,
+    page_mail,
+    page_main,
+    page_shop,
 )
-from src.data.feature_list import FeatureList
 from src.icons import Icons
-from src.image.hsv_config import HSVRange
+from src.image.button_detector import ButtonThresholds
 from src.image.frame_processes import isolate_by_hsv_ranges, make_hsv_isolator
-
+from src.image.hsv_config import HSVRange
+from src.image.stability import hamming_distance, perceptual_hash
 
 # 红色感叹号 HSV 范围（提取感叹号红色底色部分，跨 0° 两端）
 EXCLAMATION_RED_HSV = (
     ((0, 60, 100), (10, 255, 255)),
     ((170, 60, 100), (180, 255, 255)),
+)
+
+SHOP_TAB_BAR = (0.332, 0.113, 0.995, 0.162)
+# 限时珍藏首格和商品详情中的领取按钮。取按钮内侧，避开付费按钮的金边和卡片底边。
+SHOP_DAILY_CARD_BOX = (0.515, 0.343, 0.608, 0.375)
+SHOP_DAILY_CONFIRM_BOX = (0.524, 0.606, 0.718, 0.647)
+SHOP_FREE_CLAIM_BUTTON = ButtonThresholds.for_button(
+    text_hsv=((8, 65, 35), (36, 255, 155)),
+    backdrop_hsv=((18, 60, 195), (35, 255, 255)),
+    name="shop_free_claim",
+    center_x_range=(0.12, 0.88),  # 日文「無料受け取り」比中文更宽
+    min_band_aspect=3.0,
+    min_backdrop_ratio=0.80,
 )
 
 
@@ -86,31 +102,28 @@ class ClaimDailyTask(BaseGameTask):
                 return AccountOverrideMixin._coerce_override_value(base, overrides.get(key))
         return self.config.get(key, declared_default)
 
-    @cached_property
-    def safe_box(self):
-        return self.box_of_screen(0.4786, 0.8722, 0.5245, 0.9120)
-
     def claim_mail(self):
         self.ui_ensure(page_mail)
 
         end_flag = False
-        for _ in self.loop():
+        for _ in self.loop(time_out=5, raise_if_time_out=False):
             if box := self.find_one(FeatureList.mail_button_claim_all, mask_function=make_hsv_isolator(HSVRange.WHITE, invert=False)):
                 if end_flag:
                     break
                 self.click(box)
-                self.sleep(0.1)
+                self.sleep(1)
                 continue
             if box := self.find_one(FeatureList.confirm_button_3):
                 end_flag = True
                 self.click(box)
                 self.sleep(0.1)
                 continue
-            if self.find_one(FeatureList.claim_popup):
+            if self.handle_claim_popup():
                 end_flag = True
-                self.click(self.safe_box)
                 self.sleep(0.1)
                 continue
+        if not end_flag:
+            logging.getLogger(__name__).warning("邮件领取未确认完成，继续执行后续任务")
 
         if self._sub_task_cfg("删除已读邮件"):
             end_flag = False
@@ -121,56 +134,109 @@ class ClaimDailyTask(BaseGameTask):
                     self.click(self.box_of_screen(0.2401, 0.7546, 0.2484, 0.7750))
                     self.sleep(0.1)
                     continue
-                if box := self.find_one(FeatureList.confirm_button_3):
+                if box := self.find_one(
+                    FeatureList.confirm_button_3,
+                    box=self.box_of_screen(0.55, 0.58, 0.65, 0.66),
+                ):
                     end_flag = True
                     self.click(box)
                     self.sleep(0.1)
                     continue
 
-    def claim_shop(self):
-        self.ui_ensure(page_shop)
+    def _find_shop_limited_tab(self, frame, bar: Box) -> tuple[Box | None, bool]:
+        tab = self.find_one(
+            FeatureList.shop_limited_tab_icon, box=bar, frame=frame, use_gray_scale=True, threshold=0.73,
+        )
+        if not tab:
+            return None, False
+        # 国服和日服的标签文字宽度不同，选中菱形都在宝箱图标的右下方。
+        below_label = Box(tab.x, tab.y + tab.height, 3 * tab.width, tab.height)
+        selected = self.find_one(FeatureList.shop_click_2_check, box=below_label, frame=frame, threshold=0.80)
+        return tab, bool(selected)
 
-        for _ in self.loop():
-            if not self.find_one(FeatureList.shop_click_1_check):
-                self.click(self.box_of_screen(0.3625, 0.9435, 0.3802, 0.9685))
-                self.sleep(0.1)
-                continue
-            if not self.find_one(FeatureList.shop_click_2_check):
-                self.click(self.box_of_screen(0.8099, 0.1315, 0.8271, 0.1509))
-                self.sleep(0.1)
-                continue
-            break
+    def _select_shop_limited_tab(self, bar: Box) -> bool:
+        for scroll_count in (-5, 5):
+            last_scroll_hash = None
+            last_clicked_x = None
+            for frame in self.loop(time_out=10, raise_if_time_out=False):
+                if not self.find_one(FeatureList.shop_check, frame=frame):
+                    continue
+                if not self.find_one(FeatureList.shop_click_1_check, frame=frame, horizontal_variance=0.01):
+                    self.click(self.box_of_screen(0.3625, 0.9435, 0.3802, 0.9685))
+                    self.sleep(0.3)
+                    continue
+                tab, selected = self._find_shop_limited_tab(frame, bar)
+                if selected:
+                    return True
+                if tab and (last_clicked_x is None or abs(tab.x - last_clicked_x) > tab.width // 2):
+                    if self.click(tab):
+                        last_clicked_x = tab.x
+                    self.sleep(0.4)
+                    continue
+
+                # 在栏内滚动，抵达一端后换向；图标或选中标记被边缘裁切时也能继续寻找。
+                strip_hash = perceptual_hash(bar.crop_frame(frame))
+                if last_scroll_hash is not None and hamming_distance(strip_hash, last_scroll_hash) <= 1:
+                    break
+                last_scroll_hash = strip_hash
+                self.scroll(*bar.center(), scroll_count)
+                self.sleep(0.3)
+        return False
+
+    def claim_shop(self):
+        if not self.ui_ensure(page_shop):
+            return
+        bar = self.box_of_screen(*SHOP_TAB_BAR)
+        if not self._select_shop_limited_tab(bar):
+            return
 
         self.sleep(0.5)
-        frame_count = 0
-        for _ in self.loop():
-            if box := self.find_one(FeatureList.shop_button_claim_daily):
-                frame_count = 0
-                self.click(box)
-                self.sleep(0.1)
+        card_box = self.box_of_screen(*SHOP_DAILY_CARD_BOX)
+        for frame in self.loop(time_out=2, raise_if_time_out=False):
+            _, selected = self._find_shop_limited_tab(frame, bar)
+            if not selected:
                 continue
-            if box := self.find_one(FeatureList.shop_button_claim_daily_confirm):
-                frame_count = 0
-                self.click(box)
-                self.sleep(0.1)
+            button = self.find_button(card_box, frame=frame, thresholds=SHOP_FREE_CLAIM_BUTTON)
+            if button and self.click(button):
+                break
+        else:
+            return  # 已领或只有付费商品
+
+        confirm_box = self.box_of_screen(*SHOP_DAILY_CONFIRM_BOX)
+        for frame in self.loop(time_out=5, raise_if_time_out=False):
+            if self.handle_claim_popup():
+                break
+            if self.find_one(FeatureList.shop_check, frame=frame):
                 continue
-            if self.find_one(FeatureList.claim_popup):
-                frame_count = 0
-                self.click(self.safe_box)
+            button = self.find_button(confirm_box, frame=frame, thresholds=SHOP_FREE_CLAIM_BUTTON)
+            if button and self.click(button):
+                break
+        else:
+            if self.ui_page_appear(page_shop):
+                return
+            # 商品详情未出现可领按钮时关闭弹窗。
+            self.send_key("esc")
+
+        shop_frames = 0
+        for frame in self.loop():
+            if self.handle_claim_popup():
+                shop_frames = 0
                 self.sleep(0.1)
-                continue
-            if self.find_one(FeatureList.shop_check):
-                frame_count += 1
-                if frame_count >= 5:
-                    break
+            elif self.find_one(FeatureList.shop_check, frame=frame):
+                shop_frames += 1
+                if shop_frames >= 5:
+                    return
             else:
-                frame_count = 0
+                shop_frames = 0
 
     def claim_active(self):
         self.ui_ensure(page_active_daily)
         frame_count = 0
         for _ in self.loop():
-            if box := self.find_one(FeatureList.active_daily_claim_task, mask_function=make_hsv_isolator(HSVRange.WHITE, invert=False)):
+            if box := self.find_one(
+                FeatureList.active_daily_claim_task,
+                box=self.box_of_screen(0.89, 0.14, 0.92, 0.83),
+            ):
                 frame_count = 0
                 self.click(box)
                 self.sleep(0.1)
@@ -184,9 +250,8 @@ class ClaimDailyTask(BaseGameTask):
                 self.click(box)
                 self.sleep(0.1)
                 continue
-            if self.find_one(FeatureList.claim_popup):
+            if self.handle_claim_popup():
                 frame_count = 0
-                self.click(self.safe_box)
                 self.sleep(0.1)
                 continue
             if self.find_one(FeatureList.active_daily_check) and not self.find_one(
@@ -202,7 +267,10 @@ class ClaimDailyTask(BaseGameTask):
         self.ui_ensure(page_active_weekly)
         frame_count = 0
         for _ in self.loop():
-            if box := self.find_one(FeatureList.active_weekly_claim_task, mask_function=make_hsv_isolator(HSVRange.WHITE, invert=False)):
+            if box := self.find_one(
+                FeatureList.active_weekly_claim_task,
+                box=self.box_of_screen(0.89, 0.14, 0.92, 0.83),
+            ):
                 frame_count = 0
                 self.click(box)
                 self.sleep(0.1)
@@ -216,9 +284,8 @@ class ClaimDailyTask(BaseGameTask):
                 self.click(box)
                 self.sleep(0.1)
                 continue
-            if self.find_one(FeatureList.claim_popup):
+            if self.handle_claim_popup():
                 frame_count = 0
-                self.click(self.safe_box)
                 self.sleep(0.1)
                 continue
             if self.find_one(FeatureList.active_weekly_check) and not self.find_one(
@@ -235,13 +302,25 @@ class ClaimDailyTask(BaseGameTask):
         self.ui_ensure(page_big_month_card)
 
         for _ in self.loop():
-            if self.find_one(FeatureList.big_month_card_task_check):
+            if self.find_one(
+                FeatureList.big_month_card_task_check,
+                box=self.box_of_screen(0.5437, 0.9519, 0.5792, 0.9898),
+            ):
                 break
             self.click(self.box_of_screen(0.6089, 0.9611, 0.6219, 0.9815))
             self.sleep(0.1)
         stable_time = self.active_time()
         for _ in self.loop():
-            if box := self.find_one(FeatureList.big_month_card_button_claim_all):
+            # 领取按钮与解锁入口的装饰相似，需同时确认领取红点。
+            box = self.find_one(
+                FeatureList.big_month_card_button_claim_all,
+                box=self.box_of_screen(0.85, 0.75, 0.99, 0.83),
+            )
+            if box and self.find_one(
+                FeatureList.active_daily_exclamation_mark,
+                mask_function=active_exclamation_mark_mask,
+                box=self.box_of_screen(0.94, 0.75, 0.99, 0.80),
+            ):
                 self.click(box)
                 self.sleep(0.1)
                 stable_time = self.active_time()
@@ -251,27 +330,44 @@ class ClaimDailyTask(BaseGameTask):
                 self.sleep(0.1)
                 stable_time = self.active_time()
                 continue
-            if self.active_time() - stable_time >= 1 and self.find_one(FeatureList.big_month_card_task_check):
+            if self.active_time() - stable_time >= 1 and self.find_one(
+                FeatureList.big_month_card_task_check,
+                box=self.box_of_screen(0.5437, 0.9519, 0.5792, 0.9898),
+            ):
                 break
 
         for _ in self.loop():
-            if self.find_one(FeatureList.big_month_card_reward_check):
+            if self.find_one(
+                FeatureList.big_month_card_reward_check,
+                box=self.box_of_screen(0.3776, 0.9528, 0.4078, 0.9907),
+            ):
                 break
             self.click(self.box_of_screen(0.4375, 0.9611, 0.4500, 0.9815))
             self.sleep(0.1)
         stable_time = self.active_time()
         for _ in self.loop():
-            if box := self.find_one(FeatureList.big_month_card_button_claim_all):
+            # 奖励页同样用红点区分领取按钮和解锁入口。
+            box = self.find_one(
+                FeatureList.big_month_card_button_claim_all,
+                box=self.box_of_screen(0.85, 0.75, 0.99, 0.83),
+            )
+            if box and self.find_one(
+                FeatureList.active_daily_exclamation_mark,
+                mask_function=active_exclamation_mark_mask,
+                box=self.box_of_screen(0.94, 0.75, 0.99, 0.80),
+            ):
                 self.click(box)
                 self.sleep(0.1)
                 stable_time = self.active_time()
                 continue
-            if self.find_one(FeatureList.claim_popup):
-                self.click(self.safe_box)
+            if self.handle_claim_popup():
                 self.sleep(0.1)
                 stable_time = self.active_time()
                 continue
-            if self.active_time() - stable_time >= 1 and self.find_one(FeatureList.big_month_card_reward_check):
+            if self.active_time() - stable_time >= 1 and self.find_one(
+                FeatureList.big_month_card_reward_check,
+                box=self.box_of_screen(0.3776, 0.9528, 0.4078, 0.9907),
+            ):
                 break
 
     def run(self):

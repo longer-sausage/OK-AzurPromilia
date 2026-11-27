@@ -215,6 +215,16 @@ class TestUIMixin(unittest.TestCase):
         Page(None, name="none_feature")
         self.assertFalse(self.task.ui_page_appear("none_feature"))
 
+    def test_ui_page_appear_scales_relative_search_box(self):
+        p = Page("feat_menu", relative_box=(0.59, 0.89, 0.61, 0.92), name="menu")
+        self.task.box_of_screen = MagicMock(return_value="scaled-box")
+        self.task.find_one = MagicMock(return_value=object())
+        self.assertTrue(self.task.ui_page_appear(p))
+        self.task.box_of_screen.assert_called_once_with(0.59, 0.89, 0.61, 0.92)
+        self.task.find_one.assert_called_once_with("feat_menu", box="scaled-box")
+        self.assertEqual(p.relative_box, (0.59, 0.89, 0.61, 0.92))
+        self.assertEqual(p.check_kwargs, {})
+
     def test_ui_goto_already_arrived(self):
         Page("feat_dest", name="dest")
         self.task.current_features.add("feat_dest")

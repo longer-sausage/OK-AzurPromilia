@@ -139,9 +139,10 @@ class Page:
             if page.check_feature is not None:
                 yield page.check_feature
 
-    def __init__(self, check_feature: Any = None, check_kwargs = None, name: str | None = None):
+    def __init__(self, check_feature: Any = None, check_kwargs = None, name: str | None = None, relative_box: tuple[float, float, float, float] | None = None):
         self.check_feature = check_feature
         self.check_kwargs = check_kwargs or {}
+        self.relative_box = relative_box
         self.links: dict[Page, Any] = {}
         self._pending_links: list[tuple[Any, Page | str, Any | None]] = []
         self.parent: Page | None = None
@@ -229,7 +230,7 @@ def _click_home():
 page_main = Page(FeatureList.char_button, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)})
 
 # menu
-page_menu = Page(FeatureList.menu_backpack, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)})
+page_menu = Page(FeatureList.menu_backpack, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)}, relative_box=(0.55, 0.85, 0.65, 0.95))
 page_main.link(_send_key('esc'), page_menu, back_button=_send_key('esc'))
 
 # home
@@ -276,8 +277,7 @@ page_menu.link(_click_box(0.1401, 0.0972, 0.1563, 0.1194), page_mail, back_butto
 
 # shop
 page_shop = Page(FeatureList.shop_check, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=False)})
-page_main.link(_send_key('f6'), page_shop, _click_home())
-page_menu.link(_click_box(0.7448, 0.7833, 0.7589, 0.8074), page_shop)
+page_main.link(_send_key('f6'), page_shop, _send_key('esc'))
 
 # active
 page_active_daily = Page(FeatureList.active_daily_check, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=True)})
@@ -288,8 +288,12 @@ page_active_daily.link(_click_box(0.5500, 0.0315, 0.5891, 0.0537), page_active_w
 page_active_weekly.link(_click_box(0.4104, 0.0296, 0.4500, 0.0537), page_active_daily)
 
 # big_month_card
-page_big_month_card = Page(FeatureList.big_month_card_check, check_kwargs={'mask_function': make_hsv_isolator(HSVRange.WHITE, invert=True)})
-page_main.link(_send_key('f2'), page_big_month_card, _click_home())
+# 中日文页签的图标横坐标不同；每个标记围绕自己的标注位置搜索。
+page_big_month_card = Page(
+    [FeatureList.big_month_card_task_check, FeatureList.big_month_card_reward_check, FeatureList.big_month_card_check],
+    check_kwargs={"horizontal_variance": 0.016, "vertical_variance": 0.005},
+)
+page_main.link(_send_key('f2'), page_big_month_card, _send_key('esc'))
 
 
 Page.build()
