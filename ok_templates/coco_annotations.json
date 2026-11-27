@@ -772,19 +772,6 @@
       "iscrowd": 0
     },
     {
-      "id": 66,
-      "image_id": 53,
-      "category_id": 54,
-      "bbox": [
-        939,
-        621,
-        22,
-        23
-      ],
-      "area": 506,
-      "iscrowd": 0
-    },
-    {
       "id": 70,
       "image_id": 54,
       "category_id": 56,
@@ -1029,6 +1016,19 @@
         14
       ],
       "area": 224,
+      "iscrowd": 0
+    },
+    {
+      "id": 91,
+      "image_id": 53,
+      "category_id": 54,
+      "bbox": [
+        848,
+        443,
+        205,
+        128
+      ],
+      "area": 26240,
       "iscrowd": 0
     }
   ],
