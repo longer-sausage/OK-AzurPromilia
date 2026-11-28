@@ -174,3 +174,195 @@ msgstr "自动拾取"
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
 msgstr "检测到可拾取提示时自动连按 F，直到提示消失。"
+
+#: src/gui/character_tab.py
+msgid "角色管理"
+msgstr "角色管理"
+
+#: src/gui/character_tab.py
+msgid "当前队伍"
+msgstr "当前队伍"
+
+#: src/gui/character_tab.py
+msgid "截图"
+msgstr "截图"
+
+#: src/gui/character_tab.py
+msgid "槽位 {number}"
+msgstr "槽位 {number}"
+
+#: src/gui/character_tab.py
+msgid "角色"
+msgstr "角色"
+
+#: src/tasks/daily/daily_summary.py
+msgid "未知"
+msgstr "未知"
+
+#: src/gui/character_tab.py
+msgid "置信度 {score}"
+msgstr "置信度 {score}"
+
+#: src/gui/character_tab.py
+msgid "编辑"
+msgstr "编辑"
+
+#: src/gui/character_tab.py
+msgid "保存"
+msgstr "保存"
+
+#: src/gui/character_tab.py
+msgid "全部模板"
+msgstr "全部模板"
+
+#: src/gui/character_tab.py
+msgid "头像"
+msgstr "头像"
+
+#: src/gui/character_tab.py
+msgid "角色名"
+msgstr "角色名"
+
+#: src/gui/character_tab.py
+msgid "模板名"
+msgstr "模板名"
+
+#: src/gui/character_tab.py
+msgid "删除"
+msgstr "删除"
+
+#: src/gui/character_tab.py
+msgid "读写角色模板失败。{error}"
+msgstr "读写角色模板失败。{error}"
+
+#: src/gui/character_tab.py
+msgid "请先连接游戏窗口，再截图。"
+msgstr "请先连接游戏窗口，再截图。"
+
+#: src/gui/character_tab.py
+msgid "正在截取队伍头像…"
+msgstr "正在截取队伍头像…"
+
+#: src/gui/character_tab.py
+msgid "请在游戏中显示队伍头像后再截图。"
+msgstr "请在游戏中显示队伍头像后再截图。"
+
+#: src/gui/character_tab.py
+msgid "截图失败。{error}"
+msgstr "截图失败。{error}"
+
+#: src/tasks/onetime/daily_task.py
+msgid "任务结束后将执行情况写入 {folder}"
+msgstr "任务结束后将执行情况写入 {folder}"
+
+#: src/combat/char_factory.py
+msgid "默认"
+msgstr "默认"
+
+#: src/combat/char_factory.py
+msgid "星临者"
+msgstr "星临者"
+
+#: src/combat/char_factory.py
+msgid "阿比"
+msgstr "阿比"
+
+#: src/combat/char_factory.py
+msgid "艾妮丝"
+msgstr "艾妮丝"
+
+#: src/combat/char_factory.py
+msgid "姬瑟贝露"
+msgstr "姬瑟贝露"
+
+#: src/combat/char_factory.py
+msgid "法兰塔"
+msgstr "法兰塔"
+
+#: src/combat/char_factory.py
+msgid "寒悠悠"
+msgstr "寒悠悠"
+
+#: src/combat/char_factory.py
+msgid "卡塔露"
+msgstr "卡塔露"
+
+#: src/combat/char_factory.py
+msgid "兰香子"
+msgstr "兰香子"
+
+#: src/combat/char_factory.py
+msgid "莉莉"
+msgstr "莉莉"
+
+#: src/combat/char_factory.py
+msgid "璐璐卡"
+msgstr "璐璐卡"
+
+#: src/combat/char_factory.py
+msgid "枫糖"
+msgstr "枫糖"
+
+#: src/combat/char_factory.py
+msgid "米砂"
+msgstr "米砂"
+
+#: src/combat/char_factory.py
+msgid "源千代"
+msgstr "源千代"
+
+#: src/combat/char_factory.py
+msgid "米蒂"
+msgstr "米蒂"
+
+#: src/combat/char_factory.py
+msgid "末音"
+msgstr "末音"
+
+#: src/combat/char_factory.py
+msgid "诺诺"
+msgstr "诺诺"
+
+#: src/combat/char_factory.py
+msgid "佩佩"
+msgstr "佩佩"
+
+#: src/combat/char_factory.py
+msgid "芃芃"
+msgstr "芃芃"
+
+#: src/combat/char_factory.py
+msgid "红宝石"
+msgstr "红宝石"
+
+#: src/combat/char_factory.py
+msgid "夏儿"
+msgstr "夏儿"
+
+#: src/combat/char_factory.py
+msgid "西芙莉雅"
+msgstr "西芙莉雅"
+
+#: src/combat/char_factory.py
+msgid "忒拉拉"
+msgstr "忒拉拉"
+
+#: src/combat/char_factory.py
+msgid "涂山小玉"
+msgstr "涂山小玉"
+
+#: src/core/game_window.py
+msgid "无法将游戏窗口置于前台，已取消截图。"
+msgstr "无法将游戏窗口置于前台，已取消截图。"
+
+#: src/core/game_window.py
+msgid "截图时游戏窗口已失去焦点，请重试。"
+msgstr "截图时游戏窗口已失去焦点，请重试。"
+
+#: src/core/game_window.py
+msgid "未能获取游戏画面，请重试。"
+msgstr "未能获取游戏画面，请重试。"
+
+#: src/tasks/test/test_screenshot_task.py
+msgid "已截图"
+msgstr "已截图"

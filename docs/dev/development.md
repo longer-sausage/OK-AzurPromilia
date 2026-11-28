@@ -14,11 +14,17 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
 |------|------|
 | `main.py` / `main_debug.py` | 正式和调试入口。框架通过 `src/globals.py` 的 `my_app` 钩子安装项目补丁，CLI 共用此入口 |
 | `src/config.py` | ok-script 应用配置：窗口、OCR、模板匹配、任务与 Tab 注册 |
-| `src/core/base_game_task.py` | **任务基类**：暂停感知计时、配置迁移、异常处理、配置分组 |
+| `src/core/base_game_task.py` | **任务基类**：暂停感知计时、临时睡眠检查、配置迁移、异常处理、配置分组 |
 | `src/core/base_mixin/runtime_mixin.py` | 通用能力库：分辨率映射、点击验证、YOLO 检测、画面稳定判定、键鼠 |
 | `src/core/base_mixin/framework_override_mixin.py` | 用"同名覆写 + `super()`"扩展框架方法（不复制框架代码） |
 | `src/core/detector/` | **识别层**：把四类识别源（模板 / YOLO / OCR / 按钮）归一成统一判据 `Hit` / `Detector`，供 Action 生命周期编排使用 |
 | `src/core/config_migration.py` | 配置键迁移工具（改键名时使用，防丢用户配置） |
+| `src/core/game_window.py` | 定位游戏窗口，手动截图时恢复窗口、确认前台焦点并获取新帧 |
+| `src/core/user_data.py` | 项目自行持久化的角色模板、账号覆盖和日常汇总路径 |
+| `src/char/` | 角色身份、专属动作 `BaseChar.do_perform()` 和切入条件 |
+| `src/combat/` | `meta.py` 的 `META` 字典声明默认调度器和三名队员。`Combat` 校验元数据与实机队伍，管理战斗生命周期和切人。`CombatState` 保存全队状态，`BaseScheduler` 决定行动和轮换，`TeamManager` 与 `CharFactory` 识别和实例化队员 |
+| `src/image/team_portraits.py` | 客户区队伍槽位裁剪、出战标记和头像相似度计算 |
+| `src/data/char_templates.py` | 本机角色头像和 UUID 绑定索引的读写 |
 | `src/interaction/` | 窗口与键鼠：`GameInteraction`（自定义后台输入）、`Mouse`、`ScreenPosition` |
 | `src/image/` | 图像算法：`rotated_template`（旋转模板匹配）、`stability`（图像指纹）、`frame_processes`、`hsv_config`、`button_detector`（固定 Box 按钮检测，无 OCR）、`glow_target_detector`（可射击光圈，HSV+圆弧拟合）、`treasure_band_detector`（开锁颜色带，HSV+连通域）、`rhythm_detector`（音游音符及长条头尾）、`jenga_detector`（祖赞卡之梯的悬挂图腾与塔顶） |
 | `src/yolo/` | YOLO 模型注册（`models.py`）与 OpenVINO 推理 |
@@ -27,7 +33,7 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
 | `src/tasks/test/` | 调试/测试任务 |
 | `src/tasks/daily/` | 多步骤任务的编排（四态统计、失败标记、分账号轮次、汇总报告） |
 | `src/tasks/account/` | 账号作用域配置存储 |
-| `src/gui/` | 自定义账号配置页 |
+| `src/gui/` | 账号配置页和角色管理页 |
 | `src/patches/` | 启动补丁。**是对框架内部实现的猴子补丁，升级 ok-script 前必须逐个复核** |
 | `src/data/feature_list.py` | 模板名枚举（**由标注自动生成**，代码里不要写裸字符串模板名） |
 | `src/data/lang/` | `assets/lang/*.json` 的读取器 |
@@ -36,6 +42,115 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
 | `i18n/` | gettext 目录（**UI 文案**） |
 | `scripts/` `tools/` | 语言同步、PO 修复、lang 类型桩生成等工具 |
 | `tests/` | unittest 测试 |
+
+## 用户数据与实机配队
+
+只有本项目功能自行读写的持久化用户数据放入 `./user_data/`。角色头像和绑定在 `char/`，账号覆盖在
+`configs/account_scoped_overrides.json`，日常任务生成的汇总在 `reports/`。首次访问账号覆盖时，如果新文件尚未建立，
+存储层会迁入原先的 `./configs/account_scoped_overrides.json`。两个文件都存在时优先使用新文件，旧文件保留在原位。
+
+ok-script 维护安装根目录的 `configs/`（任务参数和界面设置）、`logs/`、`screenshots/`、`ok_tasks/` 和 `ok_import/`。
+任务参数的键迁移跟随框架的 `Config.config_folder`。可再生成的主题图标使用 `cache/icons/`。
+
+首次访问默认头像库时，如果 `user_data/char/` 尚未建立，会将旧目录 `user_data/chara/` 整体改名。
+两个目录并存时优先使用 `user_data/char/`。其中的 `<uuid>.png` 保存头像，`bindings.json` 的每项绑定使用如下格式。
+
+```json
+{
+  "4ff317f4-0464-4da6-9332-38103d631c6f": "Starborn",
+  "b37628cb-ad7f-430a-8bc9-90ea93613c76": "BaseChar"
+}
+```
+
+新截图里未识别的角色和用户选择的「默认」都绑定到 `BaseChar`。旧索引中的 `null`、`unknown` 和旧基类名
+都按基类读取，下一次保存索引时统一写为 `BaseChar`。
+同一角色可以对应多个外观，也可以在任一槽位出现。
+新增角色时，在 `src/char/` 下的角色模块中定义公开、可实例化的 `BaseChar` 子类，例如 `starborn.py` 中的 `Starborn`。
+`CharFactory` 启动时发现这些类。角色管理的下拉框、新绑定和战斗实例化共用这份名单，类名作为跨语言的稳定标识写入 JSON。
+将类名与中文显示名加入 `src/combat/char_factory.py` 的 `CHAR_DISPLAY_NAMES` 并补齐六种语言的 gettext 翻译。
+如果旧模板绑定的角色缺少内置专属类，「全部模板」仍显示原绑定，默认战斗使用 `BaseChar`。用户可以重新截图并编辑该槽位，保存新的绑定。
+角色名可对照[国服角色公告](https://azurpromilia.manjuu.com/home/news/detail/912772234182004736)和[日服角色介绍](https://azurpromilia.jp/character)。
+
+角色管理页和 `Combat.load_chars()` 共用 `TeamManager`。它从同一帧按游戏客户区比例裁剪三个槽位，
+用 OpenCV 逐槽比较本机模板。只有用户点击截图才会录入新模板。专属角色模板的识别阈值为 0.82，基类模板的复用阈值为 0.98。
+截图相似度达到 0.98 时复用已有头像文件，其他新外观单独分配 UUID。基类槽位统一显示「默认」，角色识别置信度为 0。
+每个 `Combat` 独立持有队员实例。游戏内切换队伍后，下一次加载重新读取三个槽位和当前绑定。
+
+用户点击截图或使用截图快捷键时，在实际执行采集的线程调用 `capture_manual_frame(device_manager)`。
+它会先将当前连接的游戏窗口置前并读取新帧，取帧期间失焦会取消保存。框架连接面板、诊断工具和模板页的手动入口在
+`src/patches/manual_screenshot_patch.py` 接入这一规则。任务自动识别和异常留图沿用当时的帧。
+
+## 战斗状态与调度
+
+一次性任务和触发式任务从 `src.combat` 导入 `Combat` 和内置的 `META`，通过 `Combat(self, META)` 创建默认战斗。默认使用任务的 `detect_in_combat()` 判定战斗，也可给构造函数传入 `detect_in_combat` 回调。
+调用 `combat.combat_once()` 执行一场战斗，传入 `wait_combat_time` 可先等待入战。入战确认并完成实机配队校验后，`Combat` 调用 `META["scheduler"](combat)` 创建本场调度器，再调用它的 `run()`。
+调度和角色收尾期间，`combat.scheduler` 可读取本场实例。退出后该属性恢复为 `None`。同一个 `Combat` 下一次成功入战时会创建新的调度器。
+取帧、暂停感知计时和键鼠输入使用传入的任务。战斗期间，框架的睡眠检查也能中断正在执行的动作。
+
+`combat.state` 是本队唯一的战斗状态，每个队员的 `char.state` 都指向它。`current_index` 标记出战槽位，
+`slots[i]` 记录该槽位最近的切出、切入和 `perform()` 开始时间，动画冻结记录由全队共用。
+`combat.frames()` 在每个调度帧同步队伍 HUD 并检查脱战。需要在动作中途读取最新出战角色时，可用新帧调用
+`combat.update_state(frame)`。一次确认会用同一时刻更新切出和切入双方，HUD 短暂消失时保留上次确认的槽位。
+`combat.switch_to(target)` 负责按键、等待和确认，返回时全队已能读到切换结果。
+
+默认 `BaseScheduler` 调用出战角色的 `perform()`，动作返回后选择下一位。
+它排除优先级为 `SwitchPriority.NO` 的队员，在最高优先级中优先选择切人冷却已结束、最久未上场的角色。
+可以按需要覆写以下方法。
+
+| 调度器方法 | 适用场景 |
+|------------|----------|
+| `choose_switch_target(current)` | 调整轮换顺序，保留角色的专属动作 |
+| `step()` | 每个战斗帧自行选择技能、按键、切人或角色动作 |
+| `run()` | 接管整场流程，按需迭代 `self.combat.frames()` 获取有效战斗帧 |
+
+迁移已有打法时，把战前直接赋给 `combat.scheduler` 的实例改为在 `META["scheduler"]` 中配置类或工厂。移除调度方法原有的 `combat` 形参，方法内通过 `self.combat` 访问当前战斗。
+
+### 自定义战斗元数据
+
+自定义战斗的 `meta.py` 只声明一个 `META` 字典。调用 `Combat(task, META)` 时会校验两个必填键。
+
+- `scheduler` 填写 `BaseScheduler` 子类，或接收一个 `combat` 参数并为它返回全新调度器的工厂，例如 `lambda combat: ComboScheduler(combat, skill="e")`。自定义构造函数调用 `super().__init__(combat)` 后，可以通过 `self.combat` 读取已就绪的队伍，在实例中保存本场角色引用和连招进度。
+- `chars` 包含三项。具名项可以是内置角色类或该角色的自定义子类。直接继承 `BaseChar` 的独立实现按类名匹配已有头像绑定。每个 `None` 接受任意队员，使用识别出的内置类，未知头像使用 `BaseChar`。一人或两人队伍包含所有具名队员时也可使用这份元数据。
+
+同一稳定角色只能声明一次，包括为同一角色编写的不同子类。加载队伍时，缺少必需队员、重复识别同一角色或两个槽位命中同一未命名头像模板，都会在调度开始前抛出 `CombatTeamError`。
+调度器用 `combat.require_char(角色类或稳定名)` 取得队员，再用 `combat.switch_to(队员)` 切换。角色的 `index` 始终对应实机 HUD 槽位，队伍换序后仍可复用同一份调度。
+
+例如，在自定义战斗包的 `rotation.py` 中实现动作与调度器。
+
+```python
+from src.char.starborn import Starborn
+from src.combat import BaseScheduler
+
+
+class SkillStarborn(Starborn):
+    def cast_skill(self):
+        self.task.send_key("e")
+
+
+class SkillScheduler(BaseScheduler):
+    def __init__(self, combat):
+        super().__init__(combat)
+        self.actor = combat.require_char(SkillStarborn)
+
+    def step(self):
+        if not self.actor.is_current_char:
+            self.combat.switch_to(self.actor)
+        elif self.combat.task.skill_ready():
+            self.actor.cast_skill()
+```
+
+同包的 `meta.py` 导入这两个类。
+
+```python
+from .rotation import SkillScheduler, SkillStarborn
+
+META = {
+    "scheduler": SkillScheduler,
+    "chars": (SkillStarborn, None, None),
+}
+```
+
+在实现了 `detect_in_combat()` 和 `skill_ready()` 的任务中，导入这份 `META`，调用 `Combat(self, META).combat_once()` 即可执行。
 
 ## 花瓣音游：自动演奏
 

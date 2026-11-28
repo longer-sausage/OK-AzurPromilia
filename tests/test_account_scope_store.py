@@ -14,6 +14,7 @@ class TestAccountScopeStore(unittest.TestCase):
         self._store_path = str(Path(self._tmpdir) / "account_scoped_overrides.json")
         self._patcher = mock.patch.object(store, "_STORE_PATH", self._store_path)
         self._patcher.start()
+        self.enterContext(mock.patch.object(store, "_LEGACY_STORE_PATH", str(Path(self._tmpdir) / "old.json")))
 
     def tearDown(self):
         self._patcher.stop()

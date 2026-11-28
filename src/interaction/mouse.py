@@ -183,8 +183,8 @@ def active_and_send_mouse_delta(
                     win32gui.ShowWindow(hwnd, 5)  # SW_SHOW
                     time.sleep(0.15)
 
-                # 再次恢复窗口（比单纯 SetForegroundWindow 更可靠）
-                win32gui.ShowWindow(hwnd, 9)
+                # 以现有大小激活，置前截图时保留最大化窗口的客户区尺寸。
+                win32gui.ShowWindow(hwnd, 5)  # SW_SHOW
                 time.sleep(0.05)
 
                 # 尝试设置前台窗口

@@ -43,6 +43,17 @@ into any process, and does not alter any game data**.
 built around “screenshot → image recognition → simulated keyboard and mouse input”. On top of it, `ok-ap`
 provides the application configuration, tasks, and game-specific implementation that this particular game requires.
 
+### Character management and user data
+
+With the party portraits visible in the game, open **Character Management** and select **Capture**.
+Choose **Edit** on a slot, select a character with a dedicated class, and save. Unrecognized portraits use the
+base class (`BaseChar`). Select **Default** to restore that binding. Multiple portraits can share one character
+across UI languages and party positions.
+To back up character templates, keep the PNG files and `bindings.json` together in `./user_data/char/`.
+
+`./user_data/` holds character templates, per-account overrides, and daily reports created by this project.
+ok-script stores task and UI settings in `configs/`, logs in `logs/`, and diagnostic screenshots in `screenshots/` at the installation root.
+
 ## 📥 Download & Install
 
 Installers and portable archives are available on [GitHub Releases](https://github.com/longer-sausage/ok-ap/releases).

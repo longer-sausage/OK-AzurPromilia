@@ -174,7 +174,7 @@ def create_task_summary_report(
 
     Args:
         task: 任务实例（需要 ``.name``，可选 ``.tr``）。
-        base_dir: 基础目录，通常是 ``tempfile.gettempdir()``。
+        base_dir: 报告根目录，默认从任务传入 ``user_data/reports``。
         summary_info: ``DailyTaskRunner.final_summary``。
         keep_days: 保留历史文件的天数。
 

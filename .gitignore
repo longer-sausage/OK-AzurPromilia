@@ -267,6 +267,7 @@ ok-lang-hints
 /click_screenshots/
 /items_process/
 /configs/
+/user_data/
 /tests/configs
 /tests/logs
 label_class
