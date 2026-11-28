@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import unittest
+from itertools import permutations
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
@@ -9,17 +10,20 @@ from ok.task.TaskExecutor import TaskExecutor
 
 from src.char.starborn import Starborn
 from src.combat import (
+    META,
     BaseChar,
     BaseScheduler,
     CharDeadException,
     CharFactory,
     Combat,
     CombatScene,
+    CombatTeamError,
     NotInCombatException,
     SlotState,
     SwitchPriority,
     TeamManager,
 )
+from src.combat.team_manager import TeamSlot
 from src.core.base_game_task import BaseGameTask
 
 
@@ -55,13 +59,12 @@ class GameTask(BaseGameTask):
             self.hud = (True, int(key) - 1, self.hud[2])
 
 
-def make_combat(task=None, scheduler=None):
+def make_combat(task=None, *, meta=META):
     if task is None:
         task = GameTask()
-    combat = Combat(task, scheduler)
-    combat.team_manager = TeamManager()
-    combat.team_manager.team_state = lambda frame: task.hud
-    return combat
+    manager = TeamManager()
+    manager.team_state = lambda frame: task.hud
+    return Combat(task, meta, team_manager=manager)
 
 
 class TestCombatState(unittest.TestCase):
@@ -194,7 +197,7 @@ class TestCombatState(unittest.TestCase):
     def test_explicit_detector_can_replace_host_detection(self):
         task = GameTask()
         detector = Mock(return_value=False)
-        combat = Combat(task, detect_in_combat=detector)
+        combat = Combat(task, META, detect_in_combat=detector)
         self.assertFalse(combat.in_combat())
         detector.assert_called_once_with()
 
@@ -298,6 +301,134 @@ class TestCharFactory(unittest.TestCase):
                         < SwitchPriority.HIGH < SwitchPriority.MUST)
 
 
+class TestMetadataDictionary(unittest.TestCase):
+    def test_creation_requires_metadata_and_validates_its_declarations(self):
+        task = GameTask()
+        self.assertEqual(META, {"scheduler": BaseScheduler, "chars": (None, None, None)})
+        with self.assertRaises(TypeError):
+            Combat(task)
+        for invalid in (None, (), BaseScheduler):
+            with self.subTest(meta=invalid), self.assertRaisesRegex(TypeError, "dictionary"):
+                Combat(task, meta=invalid)
+        for key in ("scheduler", "chars"):
+            incomplete = META.copy()
+            del incomplete[key]
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError, key):
+                Combat(task, incomplete)
+        with self.assertRaisesRegex(TypeError, "chars"):
+            Combat(task, META | {"chars": None})
+        for entries in ((), (Starborn, None), (None,) * 4):
+            with self.subTest(entries=entries), self.assertRaisesRegex(ValueError, "exactly 3"):
+                Combat(task, META | {"chars": entries})
+        with self.assertRaisesRegex(TypeError, "BaseChar"):
+            Combat(task, META | {"chars": (object, None, None)})
+        with self.assertRaisesRegex(ValueError, "None"):
+            Combat(task, META | {"chars": (BaseChar, None, None)})
+        for invalid in (None, object, lambda: None):
+            with self.subTest(scheduler=invalid), self.assertRaisesRegex(TypeError, "BaseScheduler"):
+                Combat(task, META | {"scheduler": invalid})
+
+        class BurstStarborn(Starborn):
+            pass
+
+        class SupportStarborn(Starborn):
+            pass
+
+        scheduler_factory = Mock(return_value=BaseScheduler())
+        task.detect_in_combat = Mock()
+        for pair in ((Starborn, Starborn), (Starborn, BurstStarborn), (BurstStarborn, SupportStarborn)):
+            with self.subTest(pair=pair), self.assertRaisesRegex(ValueError, "Duplicate.*Starborn"):
+                Combat(task, {"scheduler": scheduler_factory, "chars": (*pair, None)})
+        scheduler_factory.assert_not_called()
+        task.detect_in_combat.assert_not_called()
+
+    def test_same_meta_creates_independent_schedulers_and_wildcards_use_builtin_classes(self):
+        class Scheduler(BaseScheduler):
+            def __init__(self, skill):
+                self.skill = skill
+
+        entries = [None, None, None]
+        meta = {"scheduler": lambda: Scheduler("e"), "chars": entries}
+        first, second = make_combat(meta=meta), make_combat(meta=meta)
+        self.assertIs(meta["chars"], entries)
+        entries[0] = Starborn
+        meta["scheduler"] = BaseScheduler
+        self.assertEqual(first.meta["chars"], (None, None, None))
+        self.assertIsNot(first.scheduler, second.scheduler)
+        self.assertEqual(first.scheduler.skill, "e")
+        third = make_combat(meta=meta)
+        self.assertIs(type(third.scheduler), BaseScheduler)
+        self.assertEqual(third.char_overrides, {"Starborn": Starborn})
+        first.team_manager.observe = Mock(return_value=(TeamSlot(), TeamSlot(char_name="Starborn"), TeamSlot()))
+        self.assertTrue(first.load_chars())
+        self.assertEqual([type(char) for char in first.chars], [BaseChar, Starborn, BaseChar])
+        with self.assertRaisesRegex(CombatTeamError, "ambiguous.*BaseChar"):
+            first.require_char(BaseChar)
+
+    def test_custom_scheduler_finds_roles_and_switches_in_all_six_hud_orders(self):
+        class Support(Starborn):
+            pass
+
+        class Healer(BaseChar):
+            pass
+
+        class BurstStarborn(Starborn):
+            pass
+
+        class FastSupport(Support):
+            pass
+
+        class ComboScheduler(BaseScheduler):
+            def run(self, combat):
+                combat.switch_to(combat.require_char(BurstStarborn))
+                combat.task.send_key("e")
+                combat.switch_to(combat.require_char("Support"))
+
+        meta = {"scheduler": ComboScheduler, "chars": (FastSupport, None, BurstStarborn)}
+        with patch("src.combat.char_factory._char_classes", return_value=(Starborn, Support, Healer)):
+            combat = make_combat(meta=meta)
+        for order in permutations(("Starborn", "Support", "Healer")):
+            with self.subTest(order=order):
+                combat.team_manager.observe = Mock(return_value=tuple(
+                    TeamSlot(char_name=name, similarity=0.93) for name in order
+                ))
+                combat.task.hud = (True, order.index("Healer"), 3)
+                combat.task.sent_keys.clear()
+                with patch.object(BaseChar, "perform", side_effect=AssertionError("unexpected perform")):
+                    self.assertTrue(combat.combat_once())
+                self.assertEqual([char.char_name for char in combat.chars], list(order))
+                self.assertIs(combat.require_char(Starborn), combat.require_char(BurstStarborn))
+                for cls, name in ((BurstStarborn, "Starborn"), (FastSupport, "Support"), (Healer, "Healer")):
+                    char = combat.require_char(name)
+                    self.assertIs(type(char), cls)
+                    self.assertEqual((char.index, char.confidence), (order.index(name), 0.93))
+                self.assertEqual(combat.task.sent_keys, [
+                    str(order.index("Starborn") + 1), "e", str(order.index("Support") + 1),
+                ])
+
+    def test_missing_or_ambiguous_roles_error_before_dispatch_and_can_retry(self):
+        combat = make_combat(meta=META | {"chars": (None, Starborn, None)})
+        combat.scheduler.run = Mock()
+        named = TeamSlot(char_name="Starborn")
+        portrait = TeamSlot(template_id="26c91f8d-6b06-48bb-8740-ea7873dc117c")
+        for slots, message in (((TeamSlot(),) * 3, "missing.*Starborn"),
+                               ((named, TeamSlot(), named), "Duplicate.*Starborn"),
+                               ((portrait, named, portrait), "Duplicate.*26c91f8d")):
+            with self.subTest(message=message), self.assertRaisesRegex(CombatTeamError, message):
+                combat.team_manager.observe = Mock(return_value=slots)
+                combat.combat_once(raise_if_not_found=False)
+        combat.scheduler.run.assert_not_called()
+        self.assertEqual(combat.task.sent_keys, [])
+        self.assertEqual(combat.chars, [])
+        self.assertFalse(combat.state.active)
+
+        combat.task.hud = (True, 1, 2)
+        combat.team_manager.observe = Mock(return_value=(TeamSlot(), named, TeamSlot()))
+        self.assertTrue(combat.combat_once())
+        combat.scheduler.run.assert_called_once_with(combat)
+        self.assertEqual(combat.require_char(Starborn).index, 1)
+
+
 class TestCombatScheduling(unittest.TestCase):
     def test_default_scheduler_rotates_after_each_perform_and_cleans_up(self):
         events = []
@@ -384,7 +515,7 @@ class TestCombatScheduling(unittest.TestCase):
                 if len(events) == 3:
                     self.task.battle_visible = False
 
-        combat = make_combat(scheduler=ReverseScheduler())
+        combat = make_combat(meta=META | {"scheduler": ReverseScheduler})
         combat.team_manager.factory.default_char_cls = RecordingChar
         self.assertTrue(combat.combat_once())
         self.assertEqual(events, [0, 2, 1])
@@ -423,7 +554,7 @@ class TestCombatScheduling(unittest.TestCase):
                 combat.switch_to(combat.chars[1])
                 combat.task.send_key("q")
 
-        combat = make_combat(scheduler=ScriptedScheduler())
+        combat = make_combat(meta=META | {"scheduler": ScriptedScheduler})
         for _ in range(2):
             combat.task.hud = (True, 0, 2)
             with patch.object(BaseChar, "perform", side_effect=AssertionError("unexpected perform")):

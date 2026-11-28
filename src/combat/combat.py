@@ -1,21 +1,29 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Iterator, Mapping, Sequence
+from inspect import isabstract
 from math import inf
-from typing import TYPE_CHECKING, NoReturn
+from types import MappingProxyType
+from typing import TYPE_CHECKING, Any, NoReturn, overload
 
 from ok import BaseScene, TaskDisabledException, WaitFailedException
 
+from src.char import BASE_CHAR_NAME, normalize_binding_name
+from src.char.base_char import BaseChar
 from src.combat.base_scheduler import BaseScheduler
 from src.combat.combat_state import CombatState, SlotState
-from src.combat.team_manager import team_manager
+from src.combat.team_manager import TeamManager, TeamSlot
+from src.combat.team_manager import team_manager as default_team_manager
 from src.image.team_portraits import SLOT_COUNT
 
 if TYPE_CHECKING:
     import numpy as np
 
-    from src.char.base_char import BaseChar
     from src.core.base_game_task import BaseGameTask
+
+
+class CombatTeamError(ValueError):
+    """识别到的队伍无法为调度器唯一确定所需角色。"""
 
 
 class NotInCombatException(Exception):
@@ -44,15 +52,26 @@ class Combat:
     def __init__(
         self,
         task: BaseGameTask,
-        scheduler: BaseScheduler | None = None,
+        meta: dict[str, Any],
         *,
+        team_manager: TeamManager | None = None,
         detect_in_combat: Callable[[], bool] | None = None,
     ) -> None:
         self.task = task
-        self.scheduler = scheduler if scheduler is not None else BaseScheduler()
+        self.team_manager = team_manager if team_manager is not None else default_team_manager
+        if not isinstance(meta, dict):
+            raise TypeError("Combat metadata must be a dictionary")
+        self.meta = meta.copy()
+        if missing := {"scheduler", "chars"} - self.meta.keys():
+            raise ValueError(f"Missing combat metadata keys: {', '.join(sorted(missing))}")
+        try:
+            self.meta["chars"] = tuple(self.meta["chars"])
+        except TypeError as exc:
+            raise TypeError("Combat metadata 'chars' must be an iterable of character entries") from exc
+        self.char_overrides = self._resolve_chars(self.meta["chars"])
+        self.scheduler = self._create_scheduler(self.meta["scheduler"])
         self.state = CombatState()
         self.chars: list[BaseChar] = []
-        self.team_manager = team_manager
         self._detector = detect_in_combat if detect_in_combat is not None else getattr(task, "detect_in_combat", None)
         self.combat_end_condition: Callable[[], bool] | None = None
         self.sleep_check_interval = 0.4
@@ -61,6 +80,48 @@ class Combat:
         self.switch_poll_interval = 0.1
         self.switch_cd = 1.0
         self.wait_combat_interval = 0.02
+
+    def _resolve_chars(self, chars: tuple[type[BaseChar] | None, ...]) -> Mapping[str, type[BaseChar]]:
+        if len(chars) != SLOT_COUNT:
+            raise ValueError(f"Combat metadata requires exactly {SLOT_COUNT} character entries")
+        overrides = {}
+        for char in chars:
+            if char is None:
+                continue
+            if not isinstance(char, type) or not issubclass(char, BaseChar) or isabstract(char):
+                raise TypeError("A combat character must be a concrete BaseChar subclass or None")
+            if normalize_binding_name(char.__name__) == BASE_CHAR_NAME:
+                raise ValueError("Use None for an unrestricted character")
+            name = self.team_manager.factory.name_for_behavior(char)
+            if name in overrides:
+                raise ValueError(f"Duplicate character in combat metadata: {name}")
+            overrides[name] = char
+        return MappingProxyType(overrides)
+
+    @staticmethod
+    def _create_scheduler(factory: Callable[[], BaseScheduler]) -> BaseScheduler:
+        if not callable(factory):
+            raise TypeError("scheduler must be a BaseScheduler class or factory")
+        if isinstance(factory, type) and (not issubclass(factory, BaseScheduler) or isabstract(factory)):
+            raise TypeError("scheduler must be a concrete BaseScheduler class")
+        scheduler = factory()
+        if not isinstance(scheduler, BaseScheduler):
+            raise TypeError("scheduler factory must return a BaseScheduler")
+        return scheduler
+
+    def validate_team(self, slots: Sequence[TeamSlot]) -> None:
+        """在实例化队员前检查实机队伍是否与元数据匹配。"""
+        recognized = set()
+        for slot in slots:
+            identity = slot.char_name if slot.char_name != BASE_CHAR_NAME else slot.template_id
+            if identity is None:
+                continue
+            if identity in recognized:
+                raise CombatTeamError(f"Duplicate character in detected team: {identity}")
+            recognized.add(identity)
+        missing = self.char_overrides.keys() - recognized
+        if missing:
+            raise CombatTeamError(f"Required character missing from detected team: {', '.join(sorted(missing))}")
 
     def detect_in_combat(self) -> bool:
         """默认使用宿主的 detect_in_combat，也可在构造时传入场景专属判据。"""
@@ -146,6 +207,25 @@ class Combat:
                 return char
         return None
 
+    @overload
+    def require_char[T: BaseChar](self, char_cls: type[T]) -> T: ...
+
+    @overload
+    def require_char(self, char_cls: str) -> BaseChar: ...
+
+    def require_char(self, char_cls: type[BaseChar] | str) -> BaseChar:
+        """供调度器按类或稳定名取得实际槽位的队员。"""
+        name = char_cls if isinstance(char_cls, str) else self.team_manager.factory.name_for_behavior(char_cls)
+        matches = [char for char in self.chars if char.char_name == name]
+        if not matches:
+            raise CombatTeamError(f"Character missing from combat team: {name}")
+        if len(matches) > 1:
+            raise CombatTeamError(f"Character is ambiguous in combat team: {name}")
+        char = matches[0]
+        if isinstance(char_cls, type) and not isinstance(char, char_cls):
+            raise CombatTeamError(f"{name} uses {char.name}, expected {char_cls.__name__}")
+        return char
+
     def update_state(self, frame: np.ndarray | None = None) -> BaseChar | None:
         """将 HUD 确认的出战槽位同步到全队。HUD 暂时不可读时保留上一次确认值。"""
         in_team, index, count = self.team_manager.team_state(self.task.frame if frame is None else frame)
@@ -195,7 +275,7 @@ class Combat:
         self.task.in_sleep_check = True
         try:
             return self._check_in_combat()
-        except (TaskDisabledException, NotInCombatException, NotImplementedError):
+        except (TaskDisabledException, NotInCombatException, NotImplementedError, CombatTeamError):
             raise
         except Exception as exc:
             self.task.logger.error("combat detection failed", exc)

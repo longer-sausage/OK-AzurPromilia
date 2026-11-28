@@ -100,6 +100,14 @@ class CharFactory:
         spec = self.get_spec(name)
         return spec.canonical_name if spec else BASE_CHAR_NAME
 
+    def name_for_behavior(self, cls: type[BaseChar]) -> str:
+        """专属打法沿用其内置角色的绑定名，独立实现用自己的稳定类名。"""
+        for base in cls.__mro__:
+            spec = self.get_spec(base.__name__)
+            if spec is not None and spec.cls is base:
+                return spec.canonical_name
+        return cls.__name__
+
     def display_msgid(self, name: str | None) -> str:
         if spec := self.get_spec(name):
             return spec.display_msgid
@@ -107,11 +115,11 @@ class CharFactory:
         return CHAR_DISPLAY_NAMES.get(name, name)
 
     def create(self, combat: Combat, index: int, name: str | None, confidence: float,
-               previous: BaseChar | None = None) -> BaseChar:
+               previous: BaseChar | None = None, *, behavior: type[BaseChar] | None = None) -> BaseChar:
         spec = self.get_spec(name)
-        cls = spec.cls if spec else self.default_char_cls
-        key = spec.canonical_name if spec else BASE_CHAR_NAME
-        score = confidence if spec else 0.0
+        cls = behavior or (spec.cls if spec else self.default_char_cls)
+        key = name if name and (spec or behavior) else BASE_CHAR_NAME
+        score = confidence if key != BASE_CHAR_NAME else 0.0
         if type(previous) is cls and previous.combat is combat and previous.index == index and previous.char_name == key:
             previous.confidence = score
             return previous

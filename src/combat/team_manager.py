@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Collection
 from dataclasses import dataclass, replace
 from threading import RLock
 from typing import TYPE_CHECKING
@@ -49,12 +50,15 @@ class TeamManager:
         current = min(range(count), key=contrasts.__getitem__)
         return True, current, count
 
-    def _match(self, portrait: np.ndarray, templates: tuple[CharTemplate, ...], capture: bool) -> TeamSlot:
+    def _match(self, portrait: np.ndarray, templates: tuple[CharTemplate, ...], capture: bool,
+               extra_names: Collection[str]) -> TeamSlot:
         best = TeamSlot(portrait)
         for template in templates:
             if template.image is None:
                 continue
-            name = self.factory.resolve_name(template.char_name)
+            name = template.char_name
+            if name not in extra_names:
+                name = self.factory.resolve_name(name)
             threshold = self.REUSE_THRESHOLD if name == BASE_CHAR_NAME else self.MATCH_THRESHOLD
             score = portrait_score(portrait, template.image)
             if score >= threshold and score > best.similarity:
@@ -63,18 +67,22 @@ class TeamManager:
                 best = TeamSlot(portrait, key, name, score)
         return best
 
+    def _read_slots(self, frame: np.ndarray | None, *, capture: bool = False,
+                    extra_names: Collection[str] = ()) -> list[TeamSlot]:
+        if not valid_frame(frame):
+            return [TeamSlot()] * SLOT_COUNT
+        templates = self.store.templates()
+        slots = []
+        for i, contrast in enumerate(read_team_hud(frame)):
+            slot = self._match(slot_portrait(frame, i), templates, capture, extra_names)
+            # 徽标只用于判断能否收录新头像。已有模板也可在按键提示隐藏时识别。
+            slots.append(slot if contrast or slot.similarity > 0 else TeamSlot())
+        return slots
+
     def observe(self, frame: np.ndarray | None, *, capture: bool = False) -> tuple[TeamSlot, ...]:
         """仅在用户截图时收录新头像，已有匹配可预填角色名。"""
         with self._lock:
-            if not valid_frame(frame):
-                self.current_team = (TeamSlot(),) * SLOT_COUNT
-                return self.current_team
-            templates = self.store.templates()
-            slots = []
-            for i, contrast in enumerate(read_team_hud(frame)):
-                slot = self._match(slot_portrait(frame, i), templates, capture)
-                # 徽标只用于判断能否收录新头像。已有模板也可在按键提示隐藏时识别。
-                slots.append(slot if contrast or slot.similarity > 0 else TeamSlot())
+            slots = self._read_slots(frame, capture=capture)
             if capture:
                 pending = [i for i, slot in enumerate(slots) if slot.portrait is not None and slot.template_id is None]
                 keys = self.store.add([(slots[i].portrait, slots[i].char_name) for i in pending])
@@ -102,10 +110,16 @@ class TeamManager:
 
     def instantiate(self, combat: Combat, frame: np.ndarray | None, count: int,
                     previous: list[BaseChar]) -> list[BaseChar]:
-        slots = self.observe(frame)
+        local_names = {name for name in combat.char_overrides if self.factory.get_spec(name) is None}
+        # 独立实现也能匹配同名的已有绑定，只在声明了它的战斗中使用。
+        observed = self._read_slots(frame, extra_names=local_names) if local_names else self.observe(frame)
+        slots = observed[:count]
+        combat.validate_team(slots)
+
         return [
-            self.factory.create(combat, i, slot.char_name, slot.confidence, previous[i] if i < len(previous) else None)
-            for i, slot in enumerate(slots[:count])
+            self.factory.create(combat, i, slot.char_name, slot.confidence, previous[i] if i < len(previous) else None,
+                                behavior=combat.char_overrides.get(slot.char_name))
+            for i, slot in enumerate(slots)
         ]
 
 

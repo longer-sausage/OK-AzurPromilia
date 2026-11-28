@@ -20,6 +20,7 @@ from src.char.base_char import BaseChar
 from src.char.starborn import Starborn
 from src.combat.char_factory import CHAR_DISPLAY_NAMES
 from src.combat.combat import Combat
+from src.combat.meta import META
 from src.combat.team_manager import TeamManager
 from src.config import config
 from src.core.base_game_task import BaseGameTask
@@ -45,6 +46,27 @@ class TestCharacterManagement(unittest.TestCase):
         self.folder = Path(tmp.name) / "角色模板"
         self.store = CharTemplateStore(self.folder)
         self.manager = TeamManager(self.store)
+
+    def test_meta_behavior_follows_bound_portrait_between_real_hud_slots(self):
+        class SkillStarborn(Starborn):
+            pass
+
+        old_frame = game_frame("20260918_224930")
+        captured = self.manager.observe(old_frame, capture=True)
+        self.manager.bind(captured[0].template_id, "Starborn")
+        task = BaseGameTask(SimpleNamespace(frame=old_frame, scene=None), SimpleNamespace(tr=str))
+        custom = Combat(task, META | {"chars": (None, None, SkillStarborn)}, team_manager=self.manager)
+        default = Combat(task, META, team_manager=self.manager)
+        for frame, slot in ((old_frame, 0), (self.frame, 1)):
+            with self.subTest(slot=slot):
+                task.executor.frame = frame
+                self.assertTrue(custom.load_chars())
+                actor = custom.require_char(SkillStarborn)
+                self.assertIs(custom.chars[slot], actor)
+                self.assertEqual((actor.char_name, actor.index), ("Starborn", slot))
+                self.assertGreaterEqual(actor.confidence, self.manager.MATCH_THRESHOLD)
+                self.assertTrue(default.load_chars())
+                self.assertIs(type(default.chars[slot]), Starborn)
 
     def test_three_slots_restart_resize_swap_and_real_combat_entry(self):
         modules = self.folder.parent / "char_modules"
@@ -91,8 +113,7 @@ class TestCharacterManagement(unittest.TestCase):
         fixture_cls = manager.factory.get_spec("PortraitFixture").cls
         manager.factory.register("PortraitFixture", fixture_cls, tag="test")
         task = BaseGameTask(SimpleNamespace(frame=self.frame, scene=None, debug=False), SimpleNamespace(tr=str))
-        combat = Combat(task)
-        combat.team_manager = manager
+        combat = Combat(task, META, team_manager=manager)
         task.find_best_match_in_box = task.find_one = Mock(side_effect=AssertionError("FeatureSet used"))
         task.info_set = Mock()
         # The same blue-haired portrait has moved from slot 1 in the CN screenshot to slot 2 in JP.
@@ -136,10 +157,23 @@ class TestCharacterManagement(unittest.TestCase):
         manager = TeamManager(CharTemplateStore(self.folder))
         with self.assertRaises(ValueError):
             manager.bind(key, "RetiredChar")
-        combat = Combat(BaseGameTask(SimpleNamespace(frame=self.frame, scene=None), SimpleNamespace(tr=str)))
+        task = BaseGameTask(SimpleNamespace(frame=self.frame, scene=None), SimpleNamespace(tr=str))
+        combat = Combat(task, META, team_manager=manager)
         current = manager.instantiate(combat, self.frame, 3, [])[0]
         self.assertIs(type(current), BaseChar)
         self.assertEqual((current.char_name, current.confidence), ("BaseChar", 0))
+
+        class RetiredChar(BaseChar):
+            pass
+
+        custom = Combat(task, META | {"chars": (None, RetiredChar, None)}, team_manager=manager)
+        self.assertTrue(custom.load_chars())
+        actor = custom.require_char(RetiredChar)
+        self.assertEqual((actor.char_name, actor.index), ("RetiredChar", 0))
+        self.assertGreaterEqual(actor.confidence, manager.MATCH_THRESHOLD)
+        self.assertEqual(manager.current_team[0].char_name, "BaseChar")
+        self.assertTrue(combat.load_chars())
+        self.assertIs(type(combat.chars[0]), BaseChar)
         slot = manager.observe(self.frame, capture=True)[0]
         self.assertEqual((slot.template_id, slot.char_name, slot.confidence), (key, "BaseChar", 0))
         self.assertEqual(self.store.index.read_bytes(), index)
