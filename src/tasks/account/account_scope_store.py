@@ -8,7 +8,10 @@ from typing import Any
 
 from ok.util.file import ensure_dir_for_file, get_relative_path
 
-_STORE_PATH = get_relative_path("configs", "account_scoped_overrides.json")
+from src.core.user_data import ACCOUNT_OVERRIDES_FILE
+
+_STORE_PATH = get_relative_path(ACCOUNT_OVERRIDES_FILE)
+_LEGACY_STORE_PATH = get_relative_path("configs", ACCOUNT_OVERRIDES_FILE.name)
 _LOCK = threading.Lock()
 _CACHE_MTIME = object()
 _EMPTY_STORE: dict[str, Any] = {
@@ -21,6 +24,18 @@ _CACHE_DATA: dict[str, Any] = copy.deepcopy(_EMPTY_STORE)
 
 def get_store_path() -> str:
     return _STORE_PATH
+
+
+def _migrate_legacy_overrides() -> None:
+    """仅迁移项目自己的旧账号覆盖文件。调用方持有存储锁。"""
+    if os.path.exists(_STORE_PATH) or not os.path.isfile(_LEGACY_STORE_PATH):
+        return
+    ensure_dir_for_file(_STORE_PATH)
+    try:
+        os.rename(_LEGACY_STORE_PATH, _STORE_PATH)
+    except (FileExistsError, FileNotFoundError):
+        if not os.path.isfile(_STORE_PATH):
+            raise
 
 
 def _new_store() -> dict[str, Any]:
@@ -320,6 +335,7 @@ def load_overrides(force: bool = False) -> dict[str, Any]:
     global _CACHE_DATA
 
     with _LOCK:
+        _migrate_legacy_overrides()
         if os.path.exists(_STORE_PATH):
             current_mtime: Any = os.path.getmtime(_STORE_PATH)
         else:
@@ -346,6 +362,7 @@ def save_overrides(data: dict[str, Any]) -> dict[str, Any]:
     normalized = _normalize(data)
 
     with _LOCK:
+        _migrate_legacy_overrides()
         _CACHE_MTIME = _atomic_write_json(normalized)
         _CACHE_DATA = normalized
 
@@ -357,6 +374,7 @@ def update_overrides(updater: Callable[[dict[str, Any]], dict[str, Any]]) -> dic
     global _CACHE_DATA
 
     with _LOCK:
+        _migrate_legacy_overrides()
         if os.path.exists(_STORE_PATH):
             current, current_mtime = _load_store_json()
             current = _normalize(current)

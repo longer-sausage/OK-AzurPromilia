@@ -1,20 +1,21 @@
 from __future__ import annotations
 
 import unittest
-from enum import Enum
 from types import SimpleNamespace
 from unittest.mock import Mock
 
 from ok import TaskDisabledException, TriggerTask, WaitFailedException
 
+from src.chara.starborn import Starborn
 from src.combat import (
-    BaseChar,
+    BaseChara,
     BaseCombatTask,
-    CharDeadException,
-    CharFactory,
+    CharaDeadException,
+    CharaFactory,
     CombatScene,
     NotInCombatException,
     SwitchPriority,
+    TeamManager,
 )
 
 
@@ -29,29 +30,17 @@ class FakeClock:
         return self.now
 
 
-class FakeMatch:
-    def __init__(self, name: str, confidence: float = 0.95) -> None:
-        self.name = name
-        self.confidence = confidence
-
-
-class DummyTemplate(Enum):
-    CHAR_A = "char_a"
-    CHAR_A_ALT = "char_a_alt"
-    CHAR_B = "char_b"
-
-
-class CharA(BaseChar):
+class CharA(BaseChara):
     def __init__(self, task, index, char_name=None, confidence=1.0, tag="default"):
         super().__init__(task, index, char_name=char_name, confidence=confidence)
         self.tag = tag
 
 
-class CharB(BaseChar):
+class CharB(BaseChara):
     pass
 
 
-class CharC(BaseChar):
+class CharC(BaseChara):
     pass
 
 
@@ -63,7 +52,7 @@ class DummyCombatTask(BaseCombatTask):
         self.combat_detected = True
         self.enter_combat_detected: bool | None = None
         self.dead = False
-        self.slot_boxes: dict[int, object] = {}
+        self.team_manager = TeamManager()
         self.sent_keys: list[str] = []
         self.frame_advances = 0
         self.wait_ticks = 0
@@ -103,9 +92,6 @@ class DummyCombatTask(BaseCombatTask):
     def is_char_dead(self) -> bool:
         return self.dead
 
-    def get_char_slot_box(self, index: int):
-        return self.slot_boxes.get(index)
-
     def on_wait_combat_tick(self) -> None:
         self.wait_ticks += 1
 
@@ -117,6 +103,7 @@ def make_task(
 ) -> DummyCombatTask:
     scene = CombatScene() if with_scene else None
     executor = SimpleNamespace(
+        frame=None,
         scene=scene,
         debug=False,
         pause_start=None,
@@ -131,13 +118,13 @@ def make_task(
     return DummyCombatTask(executor, app, clock=clock)
 
 
-class TestBaseChar(unittest.TestCase):
+class TestBaseChara(unittest.TestCase):
     def test_perform_updates_last_perform_and_calls_do_perform(self):
         clock = FakeClock(10.0)
         task = make_task(clock=clock)
         called = []
 
-        class RecordingChar(BaseChar):
+        class RecordingChar(BaseChara):
             def do_perform(self):
                 called.append(self.last_perform)
 
@@ -150,7 +137,7 @@ class TestBaseChar(unittest.TestCase):
     def test_switch_in_out_and_reset_state(self):
         clock = FakeClock(20.0)
         task = make_task(clock=clock)
-        char = BaseChar(task, 1)
+        char = BaseChara(task, 1)
 
         char.switch_in()
         self.assertTrue(char.is_current_char)
@@ -168,7 +155,7 @@ class TestBaseChar(unittest.TestCase):
 
     def test_sleep_restores_skip_combat_check_on_exception_and_nesting(self):
         task = make_task()
-        char = BaseChar(task, 0)
+        char = BaseChara(task, 0)
 
         for previous in (False, True):
             for check_combat in (False, True):
@@ -209,69 +196,33 @@ class TestBaseChar(unittest.TestCase):
         self.assertLess(SwitchPriority.HIGH, SwitchPriority.MUST)
 
 
-class TestCharFactory(unittest.TestCase):
-    def test_register_alias_templates_normalizes_canonical_name_and_fast_recheck(self):
-        factory = CharFactory()
-        factory.register((DummyTemplate.CHAR_A, DummyTemplate.CHAR_A_ALT), CharA, tag="hero")
-        factory.register(DummyTemplate.CHAR_B, CharB)
+class TestCharaFactory(unittest.TestCase):
+    def test_create_by_discovered_class_name_and_reuse_instance(self):
+        factory = CharaFactory()
+        spec = factory.get_spec("Starborn")
+        self.assertIs(spec.cls, Starborn)
+        self.assertEqual(spec.display_msgid, "星临者")
+        task = make_task()
+        char = factory.create(task, 0, spec.canonical_name, 0.94)
+        self.assertIsInstance(char, Starborn)
+        self.assertEqual(char.char_name, "Starborn")
+        self.assertIs(factory.create(task, 0, "Starborn", 0.92, char), char)
+        self.assertEqual(char.confidence, 0.92)
+        self.assertIsNone(factory.get_spec("星临者"))
+        self.assertIsNot(factory.create(make_task(), 0, "Starborn", 0.95, char), char)
+        for name in (None, "BaseChara", "unknown", "MissingChara"):
+            with self.subTest(name=name):
+                unknown = factory.create(task, 0, name, 0.99, char)
+                self.assertIs(type(unknown), BaseChara)
+                self.assertEqual(unknown.char_name, "BaseChara")
+                self.assertEqual(unknown.confidence, 0.0)
 
-        searches: list[tuple[str, ...]] = []
-        task = SimpleNamespace(
-            find_one=Mock(return_value=None),
-            find_best_match_in_box=Mock(
-                side_effect=lambda box, names, threshold=0.6: (
-                    searches.append(tuple(names)) or FakeMatch("char_a_alt", 0.99)
-                )
-            ),
-        )
-
-        char = factory.get_char_by_pos(task, "slot_0", 0, None)
-        self.assertIsInstance(char, CharA)
-        self.assertEqual(char.char_name, "char_a")
-        self.assertEqual(char.tag, "hero")
-        self.assertEqual(searches[-1], ("char_a", "char_a_alt", "char_b"))
-
-        # Second lookup rechecks only the cached character's own templates and reuses instance.
-        rechecked = factory.get_char_by_pos(task, "slot_0", 0, char)
-        self.assertIs(rechecked, char)
-        self.assertEqual(searches[-1], ("char_a", "char_a_alt"))
-
-    def test_resolution_suffix_lookup_and_fallbacks(self):
-        factory = CharFactory()
-        factory.register("char_a", CharA)
-
-        task = SimpleNamespace(
-            find_one=Mock(return_value=None),
-            find_best_match_in_box=Mock(return_value=FakeMatch("char_a_2k", 0.88)),
-        )
-        char = factory.get_char_by_pos(task, "slot_0", 0, None)
-        self.assertIsInstance(char, CharA)
-        self.assertEqual(char.char_name, "char_a")
-
-        # Obscured portrait preserves old_char; without old_char falls back to BaseChar("unknown").
-        task.find_best_match_in_box.return_value = None
-        kept = factory.get_char_by_pos(task, "slot_0", 1, char)
-        self.assertIs(kept, char)
-        self.assertEqual(kept.index, 1)
-
-        unknown = factory.get_char_by_pos(task, "slot_0", 2, None)
-        self.assertIs(type(unknown), BaseChar)
-        self.assertEqual(unknown.char_name, "unknown")
-        self.assertEqual(unknown.confidence, 0.0)
-
-    def test_empty_registry_and_invalid_register(self):
-        factory = CharFactory()
-        with self.assertRaises(ValueError):
-            factory.register((), CharA)
-        with self.assertRaises(ValueError):
-            factory.register("", CharA)
-
-        task = SimpleNamespace(
-            find_one=Mock(side_effect=AssertionError("should not be called")),
-            find_best_match_in_box=Mock(side_effect=AssertionError("should not be called")),
-        )
-        unknown = factory.get_char_by_pos(task, "slot_0", 0, None)
-        self.assertEqual(unknown.char_name, "unknown")
+    def test_invalid_register(self):
+        factory = CharaFactory()
+        for name, cls in (("", CharA), ((), CharA), ("CharA", CharA), ("Starborn", CharA),
+                          ("OtherName", Starborn), ("BaseChara", BaseChara)):
+            with self.subTest(name=name, cls=cls), self.assertRaises(ValueError):
+                factory.register(name, cls)
 
 
 class TestCombatStateAndFreeze(unittest.TestCase):
@@ -351,7 +302,7 @@ class TestCombatStateAndFreeze(unittest.TestCase):
         task.combat_detected = False
         task.dead = True
         task.scene.reset()
-        with self.assertRaises(CharDeadException):
+        with self.assertRaises(CharaDeadException):
             task.check_combat()
         self.assertFalse(task._in_combat)
 
@@ -485,7 +436,7 @@ class TestSwitchingAndCombatLoop(unittest.TestCase):
         self.assertTrue(task.chars[0].is_current_char)
         self.assertFalse(task.chars[1].is_current_char)
         chars_updates = [item for item in info_sets if item[0] == "Chars"]
-        self.assertEqual(len(chars_updates), 1)
+        self.assertEqual(chars_updates, [("Chars", "默认, 默认")])
 
         # Reloading same team does not re-emit info_set("Chars", ...).
         self.assertTrue(task.load_chars())
@@ -512,7 +463,7 @@ class TestSwitchingAndCombatLoop(unittest.TestCase):
         # Full combat_once flow: enter -> perform -> exit -> combat_end.
         events = []
 
-        class FightingChar(BaseChar):
+        class FightingChar(BaseChara):
             def do_perform(self):
                 events.append(f"perform_{self.index}")
                 self.task.combat_detected = False
@@ -521,7 +472,7 @@ class TestSwitchingAndCombatLoop(unittest.TestCase):
             def on_combat_end(self, chars):
                 events.append(f"end_{self.index}_{len(chars)}")
 
-        task.char_factory.default_char_cls = FightingChar
+        task.team_manager.factory.default_chara_cls = FightingChar
         task.team_state = (True, 0, 1)
         task.combat_detected = True
 
@@ -534,14 +485,14 @@ class TestSwitchingAndCombatLoop(unittest.TestCase):
         task = make_task()
         end_called = []
 
-        class DisabledChar(BaseChar):
+        class DisabledChar(BaseChara):
             def do_perform(self):
                 raise TaskDisabledException()
 
             def on_combat_end(self, chars):
                 end_called.append(True)
 
-        task.char_factory.default_char_cls = DisabledChar
+        task.team_manager.factory.default_chara_cls = DisabledChar
         task.team_state = (True, 0, 1)
         task.combat_detected = True
 
@@ -551,8 +502,8 @@ class TestSwitchingAndCombatLoop(unittest.TestCase):
         self.assertEqual(task.chars, [])
         self.assertFalse(task._in_combat)
 
-        # CharDeadException propagates without calling on_combat_end.
-        class DyingChar(BaseChar):
+        # CharaDeadException propagates without calling on_combat_end.
+        class DyingChar(BaseChara):
             def do_perform(self):
                 self.task.dead = True
                 self.task.raise_not_in_combat("char died")
@@ -560,8 +511,8 @@ class TestSwitchingAndCombatLoop(unittest.TestCase):
             def on_combat_end(self, chars):
                 end_called.append(True)
 
-        task.char_factory.default_char_cls = DyingChar
-        with self.assertRaises(CharDeadException):
+        task.team_manager.factory.default_chara_cls = DyingChar
+        with self.assertRaises(CharaDeadException):
             task.combat_once(wait_combat_time=0.0)
         self.assertEqual(end_called, [])
         self.assertFalse(task._in_combat)

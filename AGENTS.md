@@ -15,6 +15,23 @@
 - 日志：`logs/ok-script.log`（配置历史、任务执行、OCR 均可在此排查）；历史日志位于同目录的
   `ok-script.YYYY-MM-DD.log` 文件中。
 
+## 用户数据
+
+- 只有本项目功能自行持久化的用户数据放在安装目录的 `./user_data/`，路径常量在 `src/core/user_data.py`。
+  账号覆盖保存在 `user_data/configs/account_scoped_overrides.json`，用户生成的日常汇总保存在 `user_data/reports/`。
+- 角色模板使用 `user_data/chara/<uuid>.png`，同目录 `bindings.json` 将 UUID 映射到稳定 Chara 名。
+  各语言的角色显示名走 gettext。实机三槽位由 `TeamManager` 直接匹配用户头像，不经过 `FeatureList`。
+- 角色管理只列出 `src/chara/` 中定义的专属 `BaseChara` 子类以及「默认」。类名是跨语言的稳定标识，例如 `Starborn`。
+  未识别的头像和手动选择的「默认」都绑定到 `BaseChara`，战斗时使用基类实例，角色识别置信度为 0。
+- ok-script 自带的数据使用框架原有路径。任务参数和界面设置由框架写入根目录的 `configs/`，日志、诊断截图、脚本和插件分别使用
+  `logs/`、`screenshots/`、`ok_tasks/` 和 `ok_import/`。可再生成的图标缓存使用 `cache/icons/`。项目用户数据排除在 Git 和发布包之外。
+
+## 手动截图
+
+- 所有由用户点击或快捷键发起的游戏截图都必须先将当前连接的游戏窗口置于前台。窗口最小化时先恢复，确认前台窗口属于当前游戏后才请求新帧。
+- 角色管理、模板标注、连接面板、诊断截图、手动 OCR 截图和截图测试任务统一调用 `src/core/game_window.py` 的 `capture_manual_frame(device_manager)`。取帧返回时再次核对窗口和焦点。置前失败或焦点已切走时，取消本次截图并提示用户，禁止保存或绑定旧帧。
+- 后台识别、任务异常留图和已保存图片的查看继续使用各自的画面，这些操作不应抢占前台焦点。
+
 ## 代码风格
 
 - Python 模块文件用 `snake_case.py`，`tests/` 下用 `test_*.py`；类名仍用 `PascalCase`。
@@ -23,13 +40,13 @@
 - 任务字符串国际化：UI 文案走 `self.tr()` + `i18n/*/LC_MESSAGES/ok.po`；
   OCR 匹配文本走 `assets/lang/*.json` + `self.lang.<模块>.<key>`。两者**不要混用**。
 - 新增任务后必须在 `src/config.py` 的 `onetime_tasks` / `trigger_tasks` 中注册。
-- **改动本仓库代码前**：先看上面 `src/` 的目录职责表，确认这段逻辑该放哪一层哪个目录；
+- **改动本仓库代码前**：先看[开发指南中的目录职责表](docs/dev/development.md#目录职责)，确认这段逻辑该放哪一层哪个目录；
   不要顺手重构、不要为凑数量拆文件。若本机有 `.claude/skills/azurpromilia-project-architecture`，
   它以更细的粒度记录了目录职责、分层判断与已有能力清单（记得同步更新，见 `AGENTS.md` 顶部说明）。
 
 ## 配置键名修改（重要）
 
-`configs/` 目录下的 JSON 是用户运行数据，修改 `default_config` 中的配置键名时必须遵守以下顺序，否则会丢失用户配置：
+`configs/` 中由框架管理的任务 JSON 是用户运行数据，修改 `default_config` 中的配置键名时必须遵守以下顺序，否则会丢失用户配置：
 
 1. **先加迁移表，再改键名**：在同一个任务类中先添加 `config_key_migrations = {旧键: 新键}`，再修改 `default_config` / 键名常量 / 键生成函数。二者必须在同一提交中完成，禁止分步部署。
 2. **迁移表生效前禁止运行程序**：改完键名后不要直接启动应用验证；先用 `migrate_config_file_keys(<任务名>, migrations)`（见 `src/core/config_migration.py`）跑迁移测试，确认旧值已复制到新键。

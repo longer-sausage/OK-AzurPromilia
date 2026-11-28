@@ -109,6 +109,7 @@ config = {
         ["src.tasks.test.test_ui_navigate_task", "TestUINavigateTask"],
     ],
     "custom_tabs": [
+        ["src.gui.character_tab", "CharacterTab"],
         ["src.gui.account_config_tab", "AccountConfigTab"],
     ],
     "trigger_tasks": [  # 不断执行的触发式任务

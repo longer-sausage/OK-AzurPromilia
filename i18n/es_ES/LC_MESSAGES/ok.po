@@ -195,3 +195,195 @@ msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
 msgstr ""
 "Pulsa F repetidamente de forma automática al detectar un aviso de recogida "
 "hasta que desaparezca."
+
+#: src/gui/character_tab.py
+msgid "角色管理"
+msgstr "Gestión de personajes"
+
+#: src/gui/character_tab.py
+msgid "当前队伍"
+msgstr "Equipo actual"
+
+#: src/gui/character_tab.py
+msgid "截图"
+msgstr "Capturar"
+
+#: src/gui/character_tab.py
+msgid "槽位 {number}"
+msgstr "Puesto {number}"
+
+#: src/gui/character_tab.py
+msgid "角色"
+msgstr "Personaje"
+
+#: src/tasks/daily/daily_summary.py
+msgid "未知"
+msgstr "Desconocido"
+
+#: src/gui/character_tab.py
+msgid "置信度 {score}"
+msgstr "Confianza {score}"
+
+#: src/gui/character_tab.py
+msgid "编辑"
+msgstr "Editar"
+
+#: src/gui/character_tab.py
+msgid "保存"
+msgstr "Guardar"
+
+#: src/gui/character_tab.py
+msgid "全部模板"
+msgstr "Todas las plantillas"
+
+#: src/gui/character_tab.py
+msgid "头像"
+msgstr "Retrato"
+
+#: src/gui/character_tab.py
+msgid "角色名"
+msgstr "Nombre del personaje"
+
+#: src/gui/character_tab.py
+msgid "模板名"
+msgstr "Nombre de la plantilla"
+
+#: src/gui/character_tab.py
+msgid "删除"
+msgstr "Eliminar"
+
+#: src/gui/character_tab.py
+msgid "读写角色模板失败。{error}"
+msgstr "No se pudieron leer o guardar las plantillas de personajes. {error}"
+
+#: src/gui/character_tab.py
+msgid "请先连接游戏窗口，再截图。"
+msgstr "Conecta la ventana del juego antes de capturar."
+
+#: src/gui/character_tab.py
+msgid "正在截取队伍头像…"
+msgstr "Capturando los retratos del equipo…"
+
+#: src/gui/character_tab.py
+msgid "请在游戏中显示队伍头像后再截图。"
+msgstr "Captura cuando los retratos del equipo estén visibles en el juego."
+
+#: src/gui/character_tab.py
+msgid "截图失败。{error}"
+msgstr "Error al capturar. {error}"
+
+#: src/tasks/onetime/daily_task.py
+msgid "任务结束后将执行情况写入 {folder}"
+msgstr "Guarda el informe de la tarea en {folder} al finalizar."
+
+#: src/combat/chara_factory.py
+msgid "默认"
+msgstr "Predeterminado"
+
+#: src/combat/chara_factory.py
+msgid "星临者"
+msgstr "Starborn"
+
+#: src/combat/chara_factory.py
+msgid "阿比"
+msgstr "Abby"
+
+#: src/combat/chara_factory.py
+msgid "艾妮丝"
+msgstr "Anais"
+
+#: src/combat/chara_factory.py
+msgid "姬瑟贝露"
+msgstr "Cathbelle"
+
+#: src/combat/chara_factory.py
+msgid "法兰塔"
+msgstr "Faridah"
+
+#: src/combat/chara_factory.py
+msgid "寒悠悠"
+msgstr "Han Youyou"
+
+#: src/combat/chara_factory.py
+msgid "卡塔露"
+msgstr "Katalua"
+
+#: src/combat/chara_factory.py
+msgid "兰香子"
+msgstr "Lan Xiangzi"
+
+#: src/combat/chara_factory.py
+msgid "莉莉"
+msgstr "Lily"
+
+#: src/combat/chara_factory.py
+msgid "璐璐卡"
+msgstr "Luruka"
+
+#: src/combat/chara_factory.py
+msgid "枫糖"
+msgstr "Maple"
+
+#: src/combat/chara_factory.py
+msgid "米砂"
+msgstr "Metsa"
+
+#: src/combat/chara_factory.py
+msgid "源千代"
+msgstr "Minamoto Chiyo"
+
+#: src/combat/chara_factory.py
+msgid "米蒂"
+msgstr "Mitty"
+
+#: src/combat/chara_factory.py
+msgid "末音"
+msgstr "Morwyn"
+
+#: src/combat/chara_factory.py
+msgid "诺诺"
+msgstr "Nono"
+
+#: src/combat/chara_factory.py
+msgid "佩佩"
+msgstr "Peipei"
+
+#: src/combat/chara_factory.py
+msgid "芃芃"
+msgstr "Pengpeng"
+
+#: src/combat/chara_factory.py
+msgid "红宝石"
+msgstr "Ruby"
+
+#: src/combat/chara_factory.py
+msgid "夏儿"
+msgstr "Shalle"
+
+#: src/combat/chara_factory.py
+msgid "西芙莉雅"
+msgstr "Symphoria"
+
+#: src/combat/chara_factory.py
+msgid "忒拉拉"
+msgstr "Terara"
+
+#: src/combat/chara_factory.py
+msgid "涂山小玉"
+msgstr "Tushan Xiaoyu"
+
+#: src/core/game_window.py
+msgid "无法将游戏窗口置于前台，已取消截图。"
+msgstr "No se pudo poner la ventana del juego en primer plano. Se canceló la captura."
+
+#: src/core/game_window.py
+msgid "截图时游戏窗口已失去焦点，请重试。"
+msgstr "La ventana del juego perdió el foco durante la captura. Inténtalo de nuevo."
+
+#: src/core/game_window.py
+msgid "未能获取游戏画面，请重试。"
+msgstr "No se pudo capturar la pantalla del juego. Inténtalo de nuevo."
+
+#: src/tasks/test/test_screenshot_task.py
+msgid "已截图"
+msgstr "Captura realizada"

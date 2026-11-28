@@ -175,3 +175,195 @@ msgstr "自動採取"
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
 msgstr "採取アイコンを検出した際、消えるまで自動的に F キーを連打します。"
+
+#: src/gui/character_tab.py
+msgid "角色管理"
+msgstr "キャラクター管理"
+
+#: src/gui/character_tab.py
+msgid "当前队伍"
+msgstr "現在の編成"
+
+#: src/gui/character_tab.py
+msgid "截图"
+msgstr "撮影"
+
+#: src/gui/character_tab.py
+msgid "槽位 {number}"
+msgstr "編成枠 {number}"
+
+#: src/gui/character_tab.py
+msgid "角色"
+msgstr "キャラクター"
+
+#: src/tasks/daily/daily_summary.py
+msgid "未知"
+msgstr "不明"
+
+#: src/gui/character_tab.py
+msgid "置信度 {score}"
+msgstr "一致度 {score}"
+
+#: src/gui/character_tab.py
+msgid "编辑"
+msgstr "編集"
+
+#: src/gui/character_tab.py
+msgid "保存"
+msgstr "保存"
+
+#: src/gui/character_tab.py
+msgid "全部模板"
+msgstr "すべてのテンプレート"
+
+#: src/gui/character_tab.py
+msgid "头像"
+msgstr "アイコン"
+
+#: src/gui/character_tab.py
+msgid "角色名"
+msgstr "キャラクター名"
+
+#: src/gui/character_tab.py
+msgid "模板名"
+msgstr "テンプレート名"
+
+#: src/gui/character_tab.py
+msgid "删除"
+msgstr "削除"
+
+#: src/gui/character_tab.py
+msgid "读写角色模板失败。{error}"
+msgstr "キャラクターテンプレートを読み書きできませんでした。{error}"
+
+#: src/gui/character_tab.py
+msgid "请先连接游戏窗口，再截图。"
+msgstr "ゲームウィンドウに接続してから撮影してください。"
+
+#: src/gui/character_tab.py
+msgid "正在截取队伍头像…"
+msgstr "編成アイコンを撮影中…"
+
+#: src/gui/character_tab.py
+msgid "请在游戏中显示队伍头像后再截图。"
+msgstr "ゲーム内に編成アイコンを表示してから撮影してください。"
+
+#: src/gui/character_tab.py
+msgid "截图失败。{error}"
+msgstr "撮影に失敗しました。{error}"
+
+#: src/tasks/onetime/daily_task.py
+msgid "任务结束后将执行情况写入 {folder}"
+msgstr "タスクの終了時に実行結果を {folder} に保存します。"
+
+#: src/combat/chara_factory.py
+msgid "默认"
+msgstr "デフォルト"
+
+#: src/combat/chara_factory.py
+msgid "星临者"
+msgstr "星臨者"
+
+#: src/combat/chara_factory.py
+msgid "阿比"
+msgstr "アビィ"
+
+#: src/combat/chara_factory.py
+msgid "艾妮丝"
+msgstr "アニス"
+
+#: src/combat/chara_factory.py
+msgid "姬瑟贝露"
+msgstr "キャスベル"
+
+#: src/combat/chara_factory.py
+msgid "法兰塔"
+msgstr "ファランタ"
+
+#: src/combat/chara_factory.py
+msgid "寒悠悠"
+msgstr "寒悠悠"
+
+#: src/combat/chara_factory.py
+msgid "卡塔露"
+msgstr "カタル"
+
+#: src/combat/chara_factory.py
+msgid "兰香子"
+msgstr "蘭香子"
+
+#: src/combat/chara_factory.py
+msgid "莉莉"
+msgstr "リリィ"
+
+#: src/combat/chara_factory.py
+msgid "璐璐卡"
+msgstr "ルルカ"
+
+#: src/combat/chara_factory.py
+msgid "枫糖"
+msgstr "メイプル"
+
+#: src/combat/chara_factory.py
+msgid "米砂"
+msgstr "メーツァ"
+
+#: src/combat/chara_factory.py
+msgid "源千代"
+msgstr "源千代"
+
+#: src/combat/chara_factory.py
+msgid "米蒂"
+msgstr "ミィティ"
+
+#: src/combat/chara_factory.py
+msgid "末音"
+msgstr "モーレン"
+
+#: src/combat/chara_factory.py
+msgid "诺诺"
+msgstr "ノノ"
+
+#: src/combat/chara_factory.py
+msgid "佩佩"
+msgstr "ペイペイ"
+
+#: src/combat/chara_factory.py
+msgid "芃芃"
+msgstr "ポンポン"
+
+#: src/combat/chara_factory.py
+msgid "红宝石"
+msgstr "ルビーナ"
+
+#: src/combat/chara_factory.py
+msgid "夏儿"
+msgstr "シャル"
+
+#: src/combat/chara_factory.py
+msgid "西芙莉雅"
+msgstr "シンフォーリア"
+
+#: src/combat/chara_factory.py
+msgid "忒拉拉"
+msgstr "テララ"
+
+#: src/combat/chara_factory.py
+msgid "涂山小玉"
+msgstr "塗山小玉"
+
+#: src/core/game_window.py
+msgid "无法将游戏窗口置于前台，已取消截图。"
+msgstr "ゲームウィンドウを最前面に表示できなかったため、撮影を中止しました。"
+
+#: src/core/game_window.py
+msgid "截图时游戏窗口已失去焦点，请重试。"
+msgstr "撮影中にゲームウィンドウからフォーカスが外れました。もう一度お試しください。"
+
+#: src/core/game_window.py
+msgid "未能获取游戏画面，请重试。"
+msgstr "ゲーム画面を取得できませんでした。もう一度お試しください。"
+
+#: src/tasks/test/test_screenshot_task.py
+msgid "已截图"
+msgstr "スクリーンショットを撮影しました"

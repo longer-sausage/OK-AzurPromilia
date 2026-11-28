@@ -6,16 +6,17 @@ from typing import Any, NoReturn
 
 from ok import BaseScene, TaskDisabledException, WaitFailedException
 
-from src.combat.base_char import BaseChar, SwitchPriority
-from src.combat.char_factory import CharFactory
+from src.chara.base_chara import BaseChara, SwitchPriority
+from src.combat.team_manager import team_manager
 from src.core.base_game_task import BaseGameTask
+from src.image.team_portraits import SLOT_COUNT
 
 
 class NotInCombatException(Exception):
     """已脱离战斗状态时抛出，用于立即中断当前角色行动并退回战斗主循环。"""
 
 
-class CharDeadException(NotInCombatException):
+class CharaDeadException(NotInCombatException):
     """战斗中检测到角色阵亡时抛出。"""
 
 
@@ -44,15 +45,15 @@ class BaseCombatTask(BaseGameTask):
     """战斗任务底层基类：管理战斗状态机、队伍加载、角色切换调度与冻结计时。
 
     具体游戏的战斗任务应继承本类（触发式任务继承 ``BaseCombatTask, TriggerTask``），
-    至少实现 ``in_team`` 与 ``detect_in_combat``，并按需覆写其余钩子方法。
+    实现 ``detect_in_combat``，并按需覆写其余钩子方法。
     """
 
     FREEZE_HISTORY_WINDOW = 60.0
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.char_factory = CharFactory()
-        self.chars: list[BaseChar | None] = []
+        self.team_manager = team_manager
+        self.chars: list[BaseChara | None] = []
         self._in_combat = False
         self.skip_combat_check = False
         self.sleep_check_interval = 0.4
@@ -75,7 +76,7 @@ class BaseCombatTask(BaseGameTask):
             ``(in_team, current_index, team_size)``：是否在编队界面/世界可控态、
             当前出战角色槽位索引（0 起始）、队伍人数。
         """
-        raise NotImplementedError("Subclasses of BaseCombatTask must implement in_team()")
+        return self.team_manager.team_state(self.frame)
 
     def detect_in_combat(self) -> bool:
         """检测当前画面是否处于战斗状态。"""
@@ -90,24 +91,10 @@ class BaseCombatTask(BaseGameTask):
         return True
 
     def is_char_dead(self) -> bool:
-        """脱战中断时判定是否为角色阵亡，返回 ``True`` 时抛出 ``CharDeadException``。"""
+        """脱战中断时判定是否为角色阵亡，返回 ``True`` 时抛出 ``CharaDeadException``。"""
         return False
 
-    def get_char_slot_box(self, index: int) -> Any:
-        """返回第 ``index`` 个队伍槽位（0 起始）的识别区域 Box；返回 ``None`` 时使用默认回退角色。"""
-        return None
-
-    def resolve_char(self, index: int, old_char: BaseChar | None = None) -> BaseChar:
-        """解析第 ``index`` 个槽位对应的角色实例。"""
-        box = self.get_char_slot_box(index)
-        if box is None:
-            if old_char is not None:
-                old_char.index = index
-                return old_char
-            return self.char_factory.default_char_cls(self, index, char_name="unknown", confidence=0.0)
-        return self.char_factory.get_char_by_pos(self, box, index, old_char)
-
-    def send_switch_char_key(self, target_char: BaseChar) -> None:
+    def send_switch_char_key(self, target_char: BaseChara) -> None:
         """发送切换到目标角色的按键输入；默认按 1-based 数字键。"""
         self.send_key(str(target_char.index + 1))
 
@@ -236,47 +223,41 @@ class BaseCombatTask(BaseGameTask):
         dead = self.is_char_dead()
         self.reset_to_false(reason=message)
         if dead:
-            raise CharDeadException(message)
+            raise CharaDeadException(message)
         raise NotInCombatException(message)
 
     # ── 队伍加载与查询 ──────────────────────────────────
 
     @staticmethod
-    def _char_identity(chars: list[BaseChar | None]) -> tuple[tuple[str, str] | None, ...]:
+    def _char_identity(chars: list[BaseChara | None]) -> tuple[tuple[str, str] | None, ...]:
         return tuple((c.char_name, c.name) if c is not None else None for c in chars)
 
     def load_chars(self) -> bool:
         """读取当前队伍并刷新角色实例与出战标记。"""
         in_team, current_index, count = self.in_team()
-        if not in_team or count <= 0 or not (0 <= current_index < count):
+        if not in_team or not (0 <= current_index < count <= SLOT_COUNT):
             return False
 
         previous_identity = self._char_identity(self.chars)
-        old_chars = self.chars
         now = self.combat_time()
-        new_chars: list[BaseChar | None] = []
-
-        for index in range(count):
-            old_char = old_chars[index] if index < len(old_chars) else None
-            char = self.resolve_char(index, old_char)
-            char.index = index
+        new_chars = self.team_manager.instantiate(self, self.frame, count, self.chars)
+        for char in new_chars:
             char.reset_state()
-            char.is_current_char = index == current_index
+            char.is_current_char = char.index == current_index
             if char.is_current_char:
                 char.last_switch_in_time = now
-            new_chars.append(char)
 
         self.chars = new_chars
         self.combat_start = now
         if self._char_identity(self.chars) != previous_identity:
-            names = [c.char_name for c in self.chars if c is not None]
+            names = [self.tr(self.team_manager.factory.display_msgid(char.char_name)) for char in new_chars]
             self.info_set("Chars", ", ".join(names))
             for char in self.chars:
                 if char is not None:
                     self.log_info(f"loaded char[{char.index}]={char.char_name} conf={char.confidence:.2f}")
         return True
 
-    def get_current_char(self, raise_exception: bool = False) -> BaseChar | None:
+    def get_current_char(self, raise_exception: bool = False) -> BaseChara | None:
         for char in self.chars:
             if char is not None and char.is_current_char:
                 return char
@@ -284,29 +265,33 @@ class BaseCombatTask(BaseGameTask):
             self.raise_not_in_combat("cannot find current char")
         return None
 
-    def has_char(self, char_cls: type[BaseChar]) -> BaseChar | None:
+    def has_char(self, char_cls: type[BaseChara] | str) -> BaseChara | None:
+        """可按行为类或稳定 Chara 名查找当前队员。"""
         for char in self.chars:
-            if isinstance(char, char_cls):
+            if isinstance(char_cls, str):
+                if char is not None and char.char_name == char_cls:
+                    return char
+            elif isinstance(char, char_cls):
                 return char
         return None
 
     # ── 角色切换调度 ────────────────────────────────────
 
-    def _target_has_switch_cd(self, char: BaseChar) -> bool:
+    def _target_has_switch_cd(self, char: BaseChara) -> bool:
         if self.switch_cd <= 0 or char.last_switch_time < 0:
             return False
         return self.time_elapsed_accounting_for_freeze(char.last_switch_time) <= self.switch_cd
 
-    def _select_switch_candidate(self, current_char: BaseChar, candidates: list[BaseChar]) -> BaseChar:
+    def _select_switch_candidate(self, current_char: BaseChara, candidates: list[BaseChara]) -> BaseChara:
         """在最高优先级且同档的候选中选出切人目标；默认按最久未上场轮转。"""
         return min(candidates, key=lambda char: (char.last_switch_in_time, char.index))
 
-    def _choose_switch_target(self, current_char: BaseChar) -> BaseChar | None:
+    def _choose_switch_target(self, current_char: BaseChara) -> BaseChara | None:
         candidates = [char for char in self.chars if char is not None and char != current_char]
         if not candidates:
             return None
 
-        prioritized: list[tuple[int, BaseChar]] = []
+        prioritized: list[tuple[int, BaseChara]] = []
         for char in candidates:
             priority = char.get_switch_priority(current_char=current_char)
             if priority > SwitchPriority.NO:
@@ -323,9 +308,9 @@ class BaseCombatTask(BaseGameTask):
 
     def switch_next_char(
         self,
-        current_char: BaseChar,
-        post_action: Callable[[BaseChar], Any] | None = None,
-    ) -> BaseChar | None:
+        current_char: BaseChara,
+        post_action: Callable[[BaseChara], Any] | None = None,
+    ) -> BaseChara | None:
         """按优先级选择下一个角色并持续发送切人输入，直到确认切人成功或超时脱战。"""
         switch_to = self._choose_switch_target(current_char)
         if switch_to is None or switch_to == current_char:
@@ -391,7 +376,7 @@ class BaseCombatTask(BaseGameTask):
         except TaskDisabledException:
             self.reset_combat_state(reason="task disabled")
             raise
-        except CharDeadException:
+        except CharaDeadException:
             self._reset_char_states()
             raise
         except NotInCombatException as e:

@@ -22,7 +22,7 @@ class SwitchPriority(IntEnum):
     MUST = 400
 
 
-class BaseChar:
+class BaseChara:
     """战斗角色基类，定义角色生命周期、切人调度钩子与战斗安全延时。
 
     具体角色子类通常只需覆写 ``do_perform``，按需覆写 ``get_switch_priority``、
@@ -57,8 +57,8 @@ class BaseChar:
         return self.name
 
     def __eq__(self, other: object) -> bool:
-        if isinstance(other, BaseChar):
-            return self.name == other.name and self.index == other.index
+        if isinstance(other, BaseChara):
+            return self.char_name == other.char_name and self.name == other.name and self.index == other.index
         return False
 
     def _now(self) -> float:
@@ -89,7 +89,7 @@ class BaseChar:
         self.is_current_char = False
         self.last_switch_time = self._now()
 
-    def switch_next_char(self, post_action: Callable[[BaseChar], Any] | None = None) -> BaseChar | None:
+    def switch_next_char(self, post_action: Callable[[BaseChara], Any] | None = None) -> BaseChara | None:
         """委托战斗任务切换到下一个候选角色。"""
         if self.task is None:
             return None
@@ -118,14 +118,14 @@ class BaseChar:
         self.last_switch_in_time = -1.0
         self.last_perform = -1.0
 
-    def on_combat_end(self, chars: list[BaseChar | None]) -> None:
+    def on_combat_end(self, chars: list[BaseChara | None]) -> None:
         """战斗结束时在当前出战角色上触发的清理钩子。"""
 
     def skip_combat_check(self) -> bool:
         """返回 ``True`` 可在特殊动画/状态期间跳过脱战判定。"""
         return False
 
-    def get_switch_priority(self, current_char: BaseChar | None = None) -> int:
+    def get_switch_priority(self, current_char: BaseChara | None = None) -> int:
         """返回作为切人目标的优先级，返回 ``SwitchPriority.NO`` 表示禁止切入。"""
         return SwitchPriority.NORMAL
 

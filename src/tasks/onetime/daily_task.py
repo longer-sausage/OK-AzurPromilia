@@ -10,10 +10,8 @@
 4. 生成执行汇总报告
 """
 
-import tempfile
-from pathlib import Path
-
 from src.core.base_game_task import BaseGameTask
+from src.core.user_data import REPORTS_DIR
 from src.icons import Icons
 from src.tasks.daily.account_mixin import AccountMixin
 from src.tasks.daily.daily_feature import DailyFeature
@@ -73,10 +71,7 @@ class DailyTask(AccountMixin, BaseGameTask):
             "家园每日": "执行家园每日：收菜、做饭、喂饭",
             "委托每日": "执行委托每日：消耗体力刷选定的每日委托（需先解锁自动战斗）",
             "每日收菜": "执行每日收菜：邮件、惊喜盒子、日常/周常活跃、大月卡",
-            "生成汇总文件": (
-                "任务结束后把执行情况写成 txt 汇总\n"
-                "目录：系统临时目录/ok-ap/一键日常/"
-            ),
+            "生成汇总文件": self.tr("任务结束后将执行情况写入 {folder}").format(folder=REPORTS_DIR.as_posix() + "/"),
             "自动打开汇总文件": "生成汇总后自动用系统默认程序打开它",
         })
 
@@ -117,7 +112,7 @@ class DailyTask(AccountMixin, BaseGameTask):
                 return True
 
             summary_path = create_task_summary_report(
-                self, Path(tempfile.gettempdir()), self.daily_runner.final_summary
+                self, REPORTS_DIR, self.daily_runner.final_summary
             )
             if self.config.get("自动打开汇总文件", False):
                 open_local_path_with_default_app(summary_path)

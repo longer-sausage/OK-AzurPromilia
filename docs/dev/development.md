@@ -19,7 +19,12 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
 | `src/core/base_mixin/framework_override_mixin.py` | 用"同名覆写 + `super()`"扩展框架方法（不复制框架代码） |
 | `src/core/detector/` | **识别层**：把四类识别源（模板 / YOLO / OCR / 按钮）归一成统一判据 `Hit` / `Detector`，供 Action 生命周期编排使用 |
 | `src/core/config_migration.py` | 配置键迁移工具（改键名时使用，防丢用户配置） |
-| `src/combat/` | **战斗底层框架**：角色基类与切人优先级（`BaseChar`、`SwitchPriority`）、角色模板工厂（`CharFactory`）、战斗任务基类与单帧缓存（`BaseCombatTask`、`CombatScene`、`NotInCombatException`、`CharDeadException`） |
+| `src/core/game_window.py` | 定位游戏窗口，手动截图时恢复窗口、确认前台焦点并获取新帧 |
+| `src/core/user_data.py` | 项目自行持久化的角色模板、账号覆盖和日常汇总路径 |
+| `src/chara/` | 战斗角色行为基类 `BaseChara`、切人优先级 `SwitchPriority` 和各角色的专属实现 |
+| `src/combat/` | 实机配队管理 `TeamManager`、按稳定名实例化角色的 `CharaFactory`、战斗任务基类 `BaseCombatTask` 和单帧缓存 `CombatScene` |
+| `src/image/team_portraits.py` | 客户区队伍槽位裁剪、出战标记和头像相似度计算 |
+| `src/data/chara_templates.py` | 本机角色头像和 UUID 绑定索引的读写 |
 | `src/interaction/` | 窗口与键鼠：`GameInteraction`（自定义后台输入）、`Mouse`、`ScreenPosition` |
 | `src/image/` | 图像算法：`rotated_template`（旋转模板匹配）、`stability`（图像指纹）、`frame_processes`、`hsv_config`、`button_detector`（固定 Box 按钮检测，无 OCR）、`glow_target_detector`（可射击光圈，HSV+圆弧拟合）、`treasure_band_detector`（开锁颜色带，HSV+连通域）、`rhythm_detector`（音游音符及长条头尾）、`jenga_detector`（祖赞卡之梯的悬挂图腾与塔顶） |
 | `src/yolo/` | YOLO 模型注册（`models.py`）与 OpenVINO 推理 |
@@ -28,7 +33,7 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
 | `src/tasks/test/` | 调试/测试任务 |
 | `src/tasks/daily/` | 多步骤任务的编排（四态统计、失败标记、分账号轮次、汇总报告） |
 | `src/tasks/account/` | 账号作用域配置存储 |
-| `src/gui/` | 自定义账号配置页 |
+| `src/gui/` | 账号配置页和角色管理页 |
 | `src/patches/` | 启动补丁。**是对框架内部实现的猴子补丁，升级 ok-script 前必须逐个复核** |
 | `src/data/feature_list.py` | 模板名枚举（**由标注自动生成**，代码里不要写裸字符串模板名） |
 | `src/data/lang/` | `assets/lang/*.json` 的读取器 |
@@ -37,6 +42,42 @@ Python 模块文件统一用 `snake_case.py`，`tests/` 中的测试文件用 `t
 | `i18n/` | gettext 目录（**UI 文案**） |
 | `scripts/` `tools/` | 语言同步、PO 修复、lang 类型桩生成等工具 |
 | `tests/` | unittest 测试 |
+
+## 用户数据与实机配队
+
+只有本项目功能自行读写的持久化用户数据放入 `./user_data/`。角色头像和绑定在 `chara/`，账号覆盖在
+`configs/account_scoped_overrides.json`，日常任务生成的汇总在 `reports/`。首次访问账号覆盖时，如果新文件尚未建立，
+存储层会迁入原先的 `./configs/account_scoped_overrides.json`。两个文件都存在时优先使用新文件，旧文件保留在原位。
+
+ok-script 维护安装根目录的 `configs/`（任务参数和界面设置）、`logs/`、`screenshots/`、`ok_tasks/` 和 `ok_import/`。
+任务参数的键迁移跟随框架的 `Config.config_folder`。可再生成的主题图标使用 `cache/icons/`。
+
+`user_data/chara/<uuid>.png` 保存头像，`user_data/chara/bindings.json` 的每项绑定使用如下格式。
+
+```json
+{
+  "4ff317f4-0464-4da6-9332-38103d631c6f": "Starborn",
+  "b37628cb-ad7f-430a-8bc9-90ea93613c76": "BaseChara"
+}
+```
+
+新截图里未识别的角色和用户选择的「默认」都绑定到 `BaseChara`。旧索引中的 `null`、`unknown` 和旧基类名
+都按基类读取，下一次保存索引时统一写为 `BaseChara`。
+一个 Chara 可以对应多个外观，也可以在任一槽位出现。
+新增角色时，在 `src/chara/` 下的角色模块中定义公开、可实例化的 `BaseChara` 子类，例如 `starborn.py` 中的 `Starborn`。
+`CharaFactory` 启动时发现这些类。角色管理的下拉框、新绑定和战斗实例化共用这份名单，类名作为跨语言的稳定标识写入 JSON。
+将类名与中文显示名加入 `src/combat/chara_factory.py` 的 `CHARA_DISPLAY_NAMES` 并补齐六种语言的 gettext 翻译。
+如果旧模板绑定的角色缺少专属类，「全部模板」仍显示原绑定，战斗时使用 `BaseChara`。用户可以重新截图并编辑该槽位，保存新的绑定。
+角色名可对照[国服角色公告](https://azurpromilia.manjuu.com/home/news/detail/912772234182004736)和[日服角色介绍](https://azurpromilia.jp/character)。
+
+角色管理页和 `BaseCombatTask.load_chars()` 共用 `TeamManager`。它从同一帧按游戏客户区比例裁剪三个槽位，
+用 OpenCV 逐槽比较本机模板。只有用户点击截图才会录入新模板。专属角色模板的识别阈值为 0.82，基类模板的复用阈值为 0.98。
+截图相似度达到 0.98 时复用已有头像文件，其他新外观单独分配 UUID。基类槽位统一显示「默认」，角色识别置信度为 0。
+战斗任务独立持有本场的角色实例。游戏内切换队伍后，下一次加载重新读取三个槽位和当前绑定。
+
+用户点击截图或使用截图快捷键时，在实际执行采集的线程调用 `capture_manual_frame(device_manager)`。
+它会先将当前连接的游戏窗口置前并读取新帧，取帧期间失焦会取消保存。框架连接面板、诊断工具和模板页的手动入口在
+`src/patches/manual_screenshot_patch.py` 接入这一规则。任务自动识别和异常留图沿用当时的帧。
 
 ## 花瓣音游：自动演奏
 

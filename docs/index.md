@@ -20,6 +20,16 @@
   - **自动跳过剧情 (`SkipDialogTask`)**：基于中央文本带特征的快速跳过与确认。
   - **星结契约辅助 (`StarLinkAssistTask`)**：屏幕中心准心光圈圆弧拟合与自动命中。
 
+## 角色管理
+
+在游戏中显示右侧的队伍头像，打开侧栏「角色管理」并点击「截图」。程序会先将游戏窗口置前，再采集三个槽位的头像并显示角色名和识别置信度。
+点击某个槽位的「编辑」，在下拉框中选择角色并「保存」。可选角色均有专属角色类。未识别的头像显示为「默认」，编辑时选择「默认」可恢复基类绑定。
+多个外观可以绑定同一角色，切换界面语言后绑定依然有效。
+下方「全部模板」可独立滚动，按 UUID 文件名查看或删除单张头像。
+
+备份角色模板时复制整个 `user_data/chara/`，其中的 PNG 和 `bindings.json` 共同保存头像与角色的对应关系。
+`./user_data/` 还保存本项目的账号覆盖和日常汇总。框架任务参数和界面设置在 `./configs/`，日志在 `./logs/`，诊断截图在 `./screenshots/`。
+
 ## 快速导航
 
 - [从源码运行 / 快速上手](dev/quickstart.md)
@@ -48,7 +58,9 @@
 │   │   ├── test/               调试与测试任务（Screenshot、Interaction、TreasureBand、UINavigate）
 │   │   ├── daily/              多步骤任务编排与汇总（DailyFeature、步骤统计）
 │   │   └── account/            账号作用域配置存储
-│   ├── gui/                    自定义账号配置页
+│   ├── chara/                  角色基类和各角色的专属实现
+│   ├── combat/                 配队识别、角色实例化与战斗调度
+│   ├── gui/                    账号配置与角色管理
 │   ├── interaction/            游戏交互（GameInteraction 模拟键鼠、ScreenPosition）
 │   ├── image/                  图像算法（旋转模板匹配、连通域、圆弧拟合、音游/叠叠乐检测等）
 │   ├── yolo/                   YOLO 模型注册与 OpenVINO 推理
@@ -59,6 +71,7 @@
 ├── assets/coco_annotations.json 模板标注（COCO 格式）
 ├── assets/lang/                OCR 语言匹配 JSON（6 种语言）
 ├── i18n/*/LC_MESSAGES/ok.po    UI 文案 gettext 国际化目录
+├── user_data/                  项目持久化数据（角色模板、账号覆盖、日常汇总）
 ├── tests/                      unittest 单元测试
 ├── scripts/ tools/             编译、检查、多语言维护等工具脚本
 ├── docs/                       项目与开发文档

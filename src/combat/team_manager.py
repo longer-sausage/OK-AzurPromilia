@@ -1,0 +1,113 @@
+from __future__ import annotations
+
+from dataclasses import dataclass, replace
+from threading import RLock
+from typing import TYPE_CHECKING
+
+import numpy as np
+
+from src.chara import BASE_CHARA_NAME, normalize_binding_name
+from src.chara.base_chara import BaseChara
+from src.combat.chara_factory import CharaFactory
+from src.data.chara_templates import CharaTemplate, CharaTemplateStore
+from src.image.team_portraits import SLOT_COUNT, portrait_score, read_team_hud, slot_portrait, valid_frame
+
+if TYPE_CHECKING:
+    from src.combat.base_combat_task import BaseCombatTask
+
+
+@dataclass(frozen=True, eq=False)
+class TeamSlot:
+    portrait: np.ndarray | None = None
+    template_id: str | None = None
+    char_name: str = BASE_CHARA_NAME
+    similarity: float = 0.0
+
+    @property
+    def confidence(self) -> float:
+        return self.similarity if self.char_name != BASE_CHARA_NAME else 0.0
+
+
+class TeamManager:
+    """读取当前设备的一帧，独立匹配三个槽位。战斗实例由各自的任务持有。"""
+
+    MATCH_THRESHOLD = 0.82
+    REUSE_THRESHOLD = 0.98
+
+    def __init__(self, store: CharaTemplateStore | None = None, factory: CharaFactory | None = None):
+        self.store = store or CharaTemplateStore()
+        self.factory = factory or CharaFactory()
+        self.current_team = (TeamSlot(),) * SLOT_COUNT
+        self._lock = RLock()
+
+    @staticmethod
+    def team_state(frame: np.ndarray | None) -> tuple[bool, int, int]:
+        contrasts = read_team_hud(frame)
+        count = next((i for i, contrast in enumerate(contrasts) if not contrast), SLOT_COUNT)
+        if not count or any(contrasts[count:]):
+            return False, -1, 0
+        current = min(range(count), key=contrasts.__getitem__)
+        return True, current, count
+
+    def _match(self, portrait: np.ndarray, templates: tuple[CharaTemplate, ...], capture: bool) -> TeamSlot:
+        best = TeamSlot(portrait)
+        for template in templates:
+            if template.image is None:
+                continue
+            name = self.factory.resolve_name(template.char_name)
+            threshold = self.REUSE_THRESHOLD if name == BASE_CHARA_NAME else self.MATCH_THRESHOLD
+            score = portrait_score(portrait, template.image)
+            if score >= threshold and score > best.similarity:
+                # 截图中的新外观有独立 UUID，用户改绑时只影响该头像。
+                key = None if capture and score < self.REUSE_THRESHOLD else template.uuid
+                best = TeamSlot(portrait, key, name, score)
+        return best
+
+    def observe(self, frame: np.ndarray | None, *, capture: bool = False) -> tuple[TeamSlot, ...]:
+        """仅在用户截图时收录新头像，已有匹配可预填角色名。"""
+        with self._lock:
+            if not valid_frame(frame):
+                self.current_team = (TeamSlot(),) * SLOT_COUNT
+                return self.current_team
+            templates = self.store.templates()
+            slots = []
+            for i, contrast in enumerate(read_team_hud(frame)):
+                slot = self._match(slot_portrait(frame, i), templates, capture)
+                # 徽标只用于判断能否收录新头像。已有模板也可在按键提示隐藏时识别。
+                slots.append(slot if contrast or slot.similarity > 0 else TeamSlot())
+            if capture:
+                pending = [i for i, slot in enumerate(slots) if slot.portrait is not None and slot.template_id is None]
+                keys = self.store.add([(slots[i].portrait, slots[i].char_name) for i in pending])
+                for i, key in zip(pending, keys, strict=True):
+                    slots[i] = replace(slots[i], template_id=key, similarity=slots[i].similarity or 1.0)
+            self.current_team = tuple(slots)
+            return self.current_team
+
+    def bind(self, key: str, name: str | None) -> None:
+        name = normalize_binding_name(name)
+        if name != BASE_CHARA_NAME and self.factory.get_spec(name) is None:
+            raise ValueError(f"Unknown Chara: {name}")
+        with self._lock:
+            self.store.bind(key, name)
+            self.current_team = tuple(
+                replace(slot, char_name=name)
+                if slot.template_id == key else slot for slot in self.current_team
+            )
+
+    def delete(self, key: str) -> None:
+        with self._lock:
+            self.store.delete(key)
+            self.current_team = tuple(TeamSlot(slot.portrait) if slot.template_id == key else slot
+                                      for slot in self.current_team)
+
+    def instantiate(self, task: BaseCombatTask, frame: np.ndarray | None, count: int,
+                    previous: list[BaseChara | None]) -> list[BaseChara]:
+        slots = self.observe(frame)
+        return [
+            self.factory.create(task, i, slot.char_name, slot.confidence, previous[i] if i < len(previous) else None)
+            for i, slot in enumerate(slots[:count])
+        ]
+
+
+team_manager = TeamManager()
+

@@ -175,3 +175,195 @@ msgstr "자동 줍기"
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
 msgstr "수집 안내가 감지되면 사라질 때까지 F 키를 자동으로 연타합니다."
+
+#: src/gui/character_tab.py
+msgid "角色管理"
+msgstr "캐릭터 관리"
+
+#: src/gui/character_tab.py
+msgid "当前队伍"
+msgstr "현재 파티"
+
+#: src/gui/character_tab.py
+msgid "截图"
+msgstr "캡처"
+
+#: src/gui/character_tab.py
+msgid "槽位 {number}"
+msgstr "슬롯 {number}"
+
+#: src/gui/character_tab.py
+msgid "角色"
+msgstr "캐릭터"
+
+#: src/tasks/daily/daily_summary.py
+msgid "未知"
+msgstr "알 수 없음"
+
+#: src/gui/character_tab.py
+msgid "置信度 {score}"
+msgstr "일치도 {score}"
+
+#: src/gui/character_tab.py
+msgid "编辑"
+msgstr "편집"
+
+#: src/gui/character_tab.py
+msgid "保存"
+msgstr "저장"
+
+#: src/gui/character_tab.py
+msgid "全部模板"
+msgstr "전체 템플릿"
+
+#: src/gui/character_tab.py
+msgid "头像"
+msgstr "초상화"
+
+#: src/gui/character_tab.py
+msgid "角色名"
+msgstr "캐릭터 이름"
+
+#: src/gui/character_tab.py
+msgid "模板名"
+msgstr "템플릿 이름"
+
+#: src/gui/character_tab.py
+msgid "删除"
+msgstr "삭제"
+
+#: src/gui/character_tab.py
+msgid "读写角色模板失败。{error}"
+msgstr "캐릭터 템플릿을 읽거나 쓸 수 없습니다. {error}"
+
+#: src/gui/character_tab.py
+msgid "请先连接游戏窗口，再截图。"
+msgstr "게임 창을 연결한 후 캡처하세요."
+
+#: src/gui/character_tab.py
+msgid "正在截取队伍头像…"
+msgstr "파티 초상화 캡처 중…"
+
+#: src/gui/character_tab.py
+msgid "请在游戏中显示队伍头像后再截图。"
+msgstr "게임에 파티 초상화가 보일 때 캡처하세요."
+
+#: src/gui/character_tab.py
+msgid "截图失败。{error}"
+msgstr "캡처하지 못했습니다. {error}"
+
+#: src/tasks/onetime/daily_task.py
+msgid "任务结束后将执行情况写入 {folder}"
+msgstr "작업이 끝나면 실행 결과를 {folder}에 저장합니다."
+
+#: src/combat/chara_factory.py
+msgid "默认"
+msgstr "기본"
+
+#: src/combat/chara_factory.py
+msgid "星临者"
+msgstr "성림자"
+
+#: src/combat/chara_factory.py
+msgid "阿比"
+msgstr "아비"
+
+#: src/combat/chara_factory.py
+msgid "艾妮丝"
+msgstr "애니스"
+
+#: src/combat/chara_factory.py
+msgid "姬瑟贝露"
+msgstr "캐스벨"
+
+#: src/combat/chara_factory.py
+msgid "法兰塔"
+msgstr "파리다"
+
+#: src/combat/chara_factory.py
+msgid "寒悠悠"
+msgstr "한요요"
+
+#: src/combat/chara_factory.py
+msgid "卡塔露"
+msgstr "카타루"
+
+#: src/combat/chara_factory.py
+msgid "兰香子"
+msgstr "난향자"
+
+#: src/combat/chara_factory.py
+msgid "莉莉"
+msgstr "릴리"
+
+#: src/combat/chara_factory.py
+msgid "璐璐卡"
+msgstr "루루카"
+
+#: src/combat/chara_factory.py
+msgid "枫糖"
+msgstr "메이플"
+
+#: src/combat/chara_factory.py
+msgid "米砂"
+msgstr "멧사"
+
+#: src/combat/chara_factory.py
+msgid "源千代"
+msgstr "미나모토 치요"
+
+#: src/combat/chara_factory.py
+msgid "米蒂"
+msgstr "미티"
+
+#: src/combat/chara_factory.py
+msgid "末音"
+msgstr "모르윈"
+
+#: src/combat/chara_factory.py
+msgid "诺诺"
+msgstr "노노"
+
+#: src/combat/chara_factory.py
+msgid "佩佩"
+msgstr "페페"
+
+#: src/combat/chara_factory.py
+msgid "芃芃"
+msgstr "펭펭"
+
+#: src/combat/chara_factory.py
+msgid "红宝石"
+msgstr "루비"
+
+#: src/combat/chara_factory.py
+msgid "夏儿"
+msgstr "샬레"
+
+#: src/combat/chara_factory.py
+msgid "西芙莉雅"
+msgstr "심포리아"
+
+#: src/combat/chara_factory.py
+msgid "忒拉拉"
+msgstr "테라라"
+
+#: src/combat/chara_factory.py
+msgid "涂山小玉"
+msgstr "도산소옥"
+
+#: src/core/game_window.py
+msgid "无法将游戏窗口置于前台，已取消截图。"
+msgstr "게임 창을 맨 앞으로 가져올 수 없어 캡처를 취소했습니다."
+
+#: src/core/game_window.py
+msgid "截图时游戏窗口已失去焦点，请重试。"
+msgstr "캡처 도중 게임 창이 포커스를 잃었습니다. 다시 시도해 주세요."
+
+#: src/core/game_window.py
+msgid "未能获取游戏画面，请重试。"
+msgstr "게임 화면을 캡처할 수 없습니다. 다시 시도해 주세요."
+
+#: src/tasks/test/test_screenshot_task.py
+msgid "已截图"
+msgstr "스크린샷을 찍었습니다"

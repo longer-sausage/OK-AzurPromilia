@@ -1,19 +1,21 @@
-from src.combat.base_char import BaseChar, SwitchPriority
+from src.chara.base_chara import BaseChara, SwitchPriority
 from src.combat.base_combat_task import (
     BaseCombatTask,
-    CharDeadException,
+    CharaDeadException,
     CombatScene,
     NotInCombatException,
 )
-from src.combat.char_factory import CharFactory, CharSpec
+from src.combat.chara_factory import CharaFactory, CharaSpec
+from src.combat.team_manager import TeamManager
 
 __all__ = [
-    "BaseChar",
+    "BaseChara",
     "BaseCombatTask",
-    "CharDeadException",
-    "CharFactory",
-    "CharSpec",
+    "CharaDeadException",
+    "CharaFactory",
+    "CharaSpec",
     "CombatScene",
     "NotInCombatException",
     "SwitchPriority",
+    "TeamManager",
 ]
