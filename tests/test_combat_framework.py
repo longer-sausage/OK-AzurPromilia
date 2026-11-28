@@ -3,7 +3,7 @@ from __future__ import annotations
 import unittest
 from itertools import permutations
 from types import SimpleNamespace
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, call, patch
 
 from ok import TaskDisabledException, TriggerTask, WaitFailedException
 from ok.task.TaskExecutor import TaskExecutor
@@ -164,7 +164,9 @@ class TestCombatState(unittest.TestCase):
         self.assertAlmostEqual(second.chars[2].time_elapsed_accounting_for_freeze(start), 1.1)
         self.assertEqual(second.time_elapsed_accounting_for_freeze(-1.0), 10000.0)
         self.assertEqual(first.state.freeze_durations, [])
-        self.assertIsNot(first.scheduler, second.scheduler)
+        self.assertIsNot(first.state, second.state)
+        self.assertIsNone(first.scheduler)
+        self.assertIsNone(second.scheduler)
 
         no_scene = make_combat(GameTask(with_scene=False))
         no_scene.detect_in_combat = Mock(return_value=True)
@@ -324,9 +326,11 @@ class TestMetadataDictionary(unittest.TestCase):
             Combat(task, META | {"chars": (object, None, None)})
         with self.assertRaisesRegex(ValueError, "None"):
             Combat(task, META | {"chars": (BaseChar, None, None)})
-        for invalid in (None, object, lambda: None):
+        for invalid in (None, object):
             with self.subTest(scheduler=invalid), self.assertRaisesRegex(TypeError, "BaseScheduler"):
                 Combat(task, META | {"scheduler": invalid})
+        with self.assertRaisesRegex(TypeError, "Combat argument"):
+            Combat(task, META | {"scheduler": lambda: None})
 
         class BurstStarborn(Starborn):
             pass
@@ -334,7 +338,7 @@ class TestMetadataDictionary(unittest.TestCase):
         class SupportStarborn(Starborn):
             pass
 
-        scheduler_factory = Mock(return_value=BaseScheduler())
+        scheduler_factory = Mock(side_effect=BaseScheduler)
         task.detect_in_combat = Mock()
         for pair in ((Starborn, Starborn), (Starborn, BurstStarborn), (BurstStarborn, SupportStarborn)):
             with self.subTest(pair=pair), self.assertRaisesRegex(ValueError, "Duplicate.*Starborn"):
@@ -343,24 +347,34 @@ class TestMetadataDictionary(unittest.TestCase):
         task.detect_in_combat.assert_not_called()
 
     def test_same_meta_creates_independent_schedulers_and_wildcards_use_builtin_classes(self):
+        runs = []
+
         class Scheduler(BaseScheduler):
-            def __init__(self, skill):
+            def __init__(self, combat, skill):
+                super().__init__(combat)
                 self.skill = skill
 
+            def run(self):
+                runs.append(self)
+
         entries = [None, None, None]
-        meta = {"scheduler": lambda: Scheduler("e"), "chars": entries}
+        factory = Mock(side_effect=lambda combat: Scheduler(combat, "e"))
+        meta = {"scheduler": factory, "chars": entries}
         first, second = make_combat(meta=meta), make_combat(meta=meta)
+        factory.assert_not_called()
         self.assertIs(meta["chars"], entries)
         entries[0] = Starborn
         meta["scheduler"] = BaseScheduler
         self.assertEqual(first.meta["chars"], (None, None, None))
-        self.assertIsNot(first.scheduler, second.scheduler)
-        self.assertEqual(first.scheduler.skill, "e")
         third = make_combat(meta=meta)
-        self.assertIs(type(third.scheduler), BaseScheduler)
+        self.assertIs(third.meta["scheduler"], BaseScheduler)
         self.assertEqual(third.char_overrides, {"Starborn": Starborn})
         first.team_manager.observe = Mock(return_value=(TeamSlot(), TeamSlot(char_name="Starborn"), TeamSlot()))
-        self.assertTrue(first.load_chars())
+        self.assertTrue(first.combat_once())
+        self.assertTrue(second.combat_once())
+        self.assertEqual(factory.call_args_list, [call(first), call(second)])
+        self.assertIsNot(runs[0], runs[1])
+        self.assertEqual([(s.combat, s.skill) for s in runs], [(first, "e"), (second, "e")])
         self.assertEqual([type(char) for char in first.chars], [BaseChar, Starborn, BaseChar])
         with self.assertRaisesRegex(CombatTeamError, "ambiguous.*BaseChar"):
             first.require_char(BaseChar)
@@ -379,10 +393,15 @@ class TestMetadataDictionary(unittest.TestCase):
             pass
 
         class ComboScheduler(BaseScheduler):
-            def run(self, combat):
-                combat.switch_to(combat.require_char(BurstStarborn))
-                combat.task.send_key("e")
-                combat.switch_to(combat.require_char("Support"))
+            def __init__(self, combat):
+                super().__init__(combat)
+                self.starborn = combat.require_char(BurstStarborn)
+                self.support = combat.require_char("Support")
+
+            def run(self):
+                self.combat.switch_to(self.starborn)
+                self.combat.task.send_key("e")
+                self.combat.switch_to(self.support)
 
         meta = {"scheduler": ComboScheduler, "chars": (FastSupport, None, BurstStarborn)}
         with patch("src.combat.char_factory._char_classes", return_value=(Starborn, Support, Healer)):
@@ -407,8 +426,8 @@ class TestMetadataDictionary(unittest.TestCase):
                 ])
 
     def test_missing_or_ambiguous_roles_error_before_dispatch_and_can_retry(self):
-        combat = make_combat(meta=META | {"chars": (None, Starborn, None)})
-        combat.scheduler.run = Mock()
+        factory = Mock(side_effect=BaseScheduler)
+        combat = make_combat(meta={"scheduler": factory, "chars": (None, Starborn, None)})
         named = TeamSlot(char_name="Starborn")
         portrait = TeamSlot(template_id="26c91f8d-6b06-48bb-8740-ea7873dc117c")
         for slots, message in (((TeamSlot(),) * 3, "missing.*Starborn"),
@@ -417,34 +436,43 @@ class TestMetadataDictionary(unittest.TestCase):
             with self.subTest(message=message), self.assertRaisesRegex(CombatTeamError, message):
                 combat.team_manager.observe = Mock(return_value=slots)
                 combat.combat_once(raise_if_not_found=False)
-        combat.scheduler.run.assert_not_called()
+        factory.assert_not_called()
         self.assertEqual(combat.task.sent_keys, [])
         self.assertEqual(combat.chars, [])
         self.assertFalse(combat.state.active)
 
         combat.task.hud = (True, 1, 2)
         combat.team_manager.observe = Mock(return_value=(TeamSlot(), named, TeamSlot()))
-        self.assertTrue(combat.combat_once())
-        combat.scheduler.run.assert_called_once_with(combat)
+        with patch.object(BaseScheduler, "run", autospec=True) as run:
+            self.assertTrue(combat.combat_once())
+        factory.assert_called_once_with(combat)
+        run.assert_called_once()
+        self.assertIs(run.call_args.args[0].combat, combat)
         self.assertEqual(combat.require_char(Starborn).index, 1)
 
 
 class TestCombatScheduling(unittest.TestCase):
     def test_default_scheduler_rotates_after_each_perform_and_cleans_up(self):
         events = []
+        schedulers = []
 
         class RecordingChar(BaseChar):
             def do_perform(self):
+                schedulers.append(self.combat.scheduler)
                 events.append(self.index)
                 if len(events) == 4:
                     self.task.battle_visible = False
 
             def on_combat_end(self, chars):
+                schedulers.append(self.combat.scheduler)
                 events.append(("end", self.index, len(chars)))
 
         combat = make_combat()
         combat.team_manager.factory.default_char_cls = RecordingChar
         self.assertTrue(combat.combat_once(wait_combat_time=1))
+        self.assertIs(type(schedulers[0]), BaseScheduler)
+        self.assertTrue(all(scheduler is schedulers[0] for scheduler in schedulers))
+        self.assertIsNone(combat.scheduler)
         self.assertEqual(events, [0, 1, 2, 0, ("end", 0, 3)])
         self.assertEqual(combat.task.sent_keys, ["2", "3", "1"])
         self.assertFalse(combat.state.active)
@@ -455,21 +483,21 @@ class TestCombatScheduling(unittest.TestCase):
         combat = make_combat()
         combat.load_chars()
         first, second, third = combat.chars
-        choose = combat.scheduler.choose_switch_target
+        choose = BaseScheduler(combat).choose_switch_target
         for index, expected in enumerate((second, third, first)):
             combat.task.hud = (True, index, 3)
             combat.task.now += 2
             current = combat.update_state()
-            self.assertIs(choose(combat, current), expected)
+            self.assertIs(choose(current), expected)
         slots = combat.state.slots
         slots[0].last_switch_time = combat.task.now - 0.2
         slots[1].last_switch_time = combat.task.now - 5
-        self.assertIs(choose(combat, third), second)
+        self.assertIs(choose(third), second)
         first.get_switch_priority = lambda current_char: SwitchPriority.HIGH + 1
         second.get_switch_priority = lambda current_char: SwitchPriority.HIGH
-        self.assertIs(choose(combat, third), first)
+        self.assertIs(choose(third), first)
         first.get_switch_priority = second.get_switch_priority = lambda current_char: SwitchPriority.NO
-        self.assertIsNone(choose(combat, third))
+        self.assertIsNone(choose(third))
 
     def test_explicit_switch_handles_hud_gap_wait_switch_and_post_action(self):
         combat = make_combat()
@@ -506,8 +534,8 @@ class TestCombatScheduling(unittest.TestCase):
         events = []
 
         class ReverseScheduler(BaseScheduler):
-            def choose_switch_target(self, combat, current):
-                return combat.chars[current.index - 1]
+            def choose_switch_target(self, current):
+                return self.combat.chars[current.index - 1]
 
         class RecordingChar(BaseChar):
             def do_perform(self):
@@ -521,11 +549,13 @@ class TestCombatScheduling(unittest.TestCase):
         self.assertEqual(events, [0, 2, 1])
         self.assertEqual(combat.task.sent_keys, ["3", "2"])
 
-    def test_replacement_scheduler_can_act_directly_and_observe_external_switch(self):
+    def test_custom_scheduler_can_act_directly_and_observe_external_switch(self):
         observed = []
+        last_switch = []
 
         class SkillScheduler(BaseScheduler):
-            def step(self, combat):
+            def step(self):
+                combat = self.combat
                 observed.append(combat.state.current_index)
                 if len(observed) == 1:
                     combat.task.send_key("e")
@@ -533,26 +563,30 @@ class TestCombatScheduling(unittest.TestCase):
                     observed.append(combat.state.current_index)
                     combat.task.send_key("2")
                 else:
-                    self.last_switch = combat.state.slots[2].last_switch_time
+                    last_switch.append(combat.state.slots[2].last_switch_time)
                     combat.task.battle_visible = False
 
-        combat = make_combat()
-        scheduler = SkillScheduler()
-        combat.scheduler = scheduler
+        combat = make_combat(meta=META | {"scheduler": SkillScheduler})
         with patch.object(BaseChar, "perform", side_effect=AssertionError("unexpected perform")):
             self.assertTrue(combat.combat_once())
         self.assertEqual(observed, [0, 2, 1])
-        self.assertGreater(scheduler.last_switch, 100.0)
+        self.assertGreater(last_switch[0], 100.0)
         self.assertEqual(combat.task.sent_keys, ["e", "3", "2"])
 
     def test_full_scheduler_can_finish_early_and_see_fresh_state_next_fight(self):
         calls = []
 
         class ScriptedScheduler(BaseScheduler):
-            def run(self, combat):
-                calls.append((combat.state, combat.state.slots[1].last_switch_in_time))
-                combat.switch_to(combat.chars[1])
-                combat.task.send_key("q")
+            def __init__(self, combat):
+                super().__init__(combat)
+                self.target = combat.chars[1]
+                self.phase = 0
+
+            def run(self):
+                calls.append((self, self.phase, self.target.last_switch_in_time))
+                self.phase += 1
+                self.combat.switch_to(self.target)
+                self.combat.task.send_key("q")
 
         combat = make_combat(meta=META | {"scheduler": ScriptedScheduler})
         for _ in range(2):
@@ -560,31 +594,86 @@ class TestCombatScheduling(unittest.TestCase):
             with patch.object(BaseChar, "perform", side_effect=AssertionError("unexpected perform")):
                 self.assertTrue(combat.combat_once())
             self.assertFalse(combat.state.active)
-        self.assertEqual(calls, [(combat.state, -1.0)] * 2)
+            self.assertIsNone(combat.scheduler)
+        self.assertIsNot(calls[0][0], calls[1][0])
+        self.assertEqual([(scheduler.combat, phase, last) for scheduler, phase, last in calls], [(combat, 0, -1.0)] * 2)
         self.assertEqual(combat.task.sent_keys, ["2", "q", "2", "q"])
 
     def test_wait_timeout_and_no_entry_do_not_dispatch(self):
-        combat = make_combat()
+        factory = Mock(side_effect=BaseScheduler)
+        combat = make_combat(meta=META | {"scheduler": factory})
         combat.task.battle_visible = False
         combat.on_wait_combat_tick = Mock()
-        combat.scheduler.run = Mock()
         self.assertFalse(combat.combat_once(wait_combat_time=0.15, raise_if_not_found=False))
         combat.on_wait_combat_tick.assert_called()
         self.assertFalse(combat.combat_once(raise_if_not_found=False))
         for wait in (0.0, 0.15):
             with self.assertRaises(WaitFailedException):
                 combat.combat_once(wait_combat_time=wait)
-        combat.scheduler.run.assert_not_called()
+        combat.task.battle_visible = True
+        combat.task.hud = (False, -1, 0)
+        self.assertFalse(combat.combat_once(raise_if_not_found=False))
+        factory.assert_not_called()
+        self.assertIsNone(combat.scheduler)
+
+    def test_factory_failure_cleans_up_and_allows_another_fight(self):
+        factory = Mock()
+        combat = make_combat(meta=META | {"scheduler": factory})
+        factory.side_effect = [None, BaseScheduler(make_combat()), RuntimeError("construction failed")]
+        for error, message in ((TypeError, "BaseScheduler"), (ValueError, "bound"), (RuntimeError, "construction failed")):
+            with self.subTest(error=error):
+                with self.assertRaisesRegex(error, message):
+                    combat.combat_once()
+                self.assertIsNone(combat.scheduler)
+                self.assertFalse(combat.state.active)
+                self.assertEqual(combat.chars, [])
+                self.assertEqual(combat.task.sleep_check_interval, -1)
+        factory.side_effect = BaseScheduler
+        with patch.object(BaseScheduler, "run"):
+            self.assertTrue(combat.combat_once())
+        self.assertEqual(factory.call_args_list, [call(combat)] * 4)
+
+    def test_factory_cannot_reuse_the_previous_fights_scheduler(self):
+        factory = Mock(side_effect=BaseScheduler)
+        combat = make_combat(meta=META | {"scheduler": factory})
+        with patch.object(BaseScheduler, "run", autospec=True) as run:
+            self.assertTrue(combat.combat_once())
+            factory.side_effect = None
+            factory.return_value = run.call_args.args[0]
+            with self.assertRaisesRegex(ValueError, "new instance"):
+                combat.combat_once()
+            run.assert_called_once()
+        self.assertIsNone(combat.scheduler)
+
+    def test_nested_combat_once_cannot_replace_the_running_scheduler(self):
+        def factory(combat):
+            with self.assertRaisesRegex(RuntimeError, "already running"):
+                combat.combat_once()
+            return BaseScheduler(combat)
+
+        def run(scheduler):
+            with self.assertRaisesRegex(RuntimeError, "already running"):
+                scheduler.combat.combat_once()
+            self.assertIs(scheduler.combat.scheduler, scheduler)
+
+        combat = make_combat(meta=META | {"scheduler": factory})
+        with patch.object(BaseScheduler, "run", run):
+            self.assertTrue(combat.combat_once())
+        self.assertIsNone(combat.scheduler)
 
     def test_errors_clear_shared_state_and_restore_host_without_normal_end_hook(self):
         for error in (TaskDisabledException(), CharDeadException("char died"), RuntimeError("action failed")):
             with self.subTest(error=type(error)):
                 combat = make_combat()
                 combat.task.sleep_check_interval = 0.75
-                combat.scheduler.run = Mock(side_effect=error)
-                with patch.object(BaseChar, "on_combat_end") as end, self.assertRaises(type(error)):
+                with (
+                    patch.object(BaseScheduler, "run", side_effect=error),
+                    patch.object(BaseChar, "on_combat_end") as end,
+                    self.assertRaises(type(error)),
+                ):
                     combat.combat_once()
                 end.assert_not_called()
+                self.assertIsNone(combat.scheduler)
                 self.assertFalse(combat.state.active)
                 self.assertIsNone(combat.state.current_index)
                 self.assertEqual(combat.state.freeze_durations, [])
@@ -594,8 +683,11 @@ class TestCombatScheduling(unittest.TestCase):
                     self.assertEqual(combat.chars, [])
 
     def test_frame_driven_scheduler_propagates_death_without_a_switch_or_sleep(self):
-        combat = make_combat()
-        combat.scheduler.step = lambda combat: setattr(combat.task, "battle_visible", False)
+        class DeathScheduler(BaseScheduler):
+            def step(self):
+                self.combat.task.battle_visible = False
+
+        combat = make_combat(meta=META | {"scheduler": DeathScheduler})
         combat.is_char_dead = lambda: True
         with patch.object(BaseChar, "on_combat_end") as end, self.assertRaises(CharDeadException):
             combat.combat_once()
@@ -605,8 +697,8 @@ class TestCombatScheduling(unittest.TestCase):
 
     def test_task_disabled_during_end_hook_clears_the_team(self):
         combat = make_combat()
-        combat.scheduler.run = Mock()
         with (
+            patch.object(BaseScheduler, "run"),
             patch.object(BaseChar, "on_combat_end", side_effect=TaskDisabledException()),
             self.assertRaises(TaskDisabledException),
         ):
@@ -615,13 +707,21 @@ class TestCombatScheduling(unittest.TestCase):
         self.assertFalse(combat.state.active)
         self.assertEqual(combat.state.slots, ())
         self.assertEqual(combat.state.end_reason, "task disabled")
+        self.assertIsNone(combat.scheduler)
 
     def test_framework_sleep_during_direct_scheduler_input_detects_exit(self):
         class TriggerGameTask(GameTask, TriggerTask):
             pass
 
+        class SleepScheduler(BaseScheduler):
+            def run(self):
+                task = self.combat.task
+                task.battle_visible = False
+                task.sleep(10)
+                raise AssertionError("scheduler continued after combat ended")
+
         task = TriggerGameTask()
-        combat = make_combat(task)
+        combat = make_combat(task, meta=META | {"scheduler": SleepScheduler})
         executor = task.executor
         executor.debug_mode = False
         executor.current_task = task
@@ -632,12 +732,6 @@ class TestCombatScheduling(unittest.TestCase):
         task.sleep = BaseGameTask.sleep.__get__(task)
         host_check = Mock()
 
-        def run(combat):
-            task.battle_visible = False
-            task.sleep(10)
-            self.fail("scheduler continued after combat ended")
-
-        combat.scheduler.run = run
         with task.use_sleep_check(host_check, 0.8):
             self.assertTrue(combat.combat_once())
             self.assertEqual(task.sleep_check_interval, 0.8)

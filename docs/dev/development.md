@@ -83,7 +83,8 @@ ok-script 维护安装根目录的 `configs/`（任务参数和界面设置）�
 ## 战斗状态与调度
 
 一次性任务和触发式任务从 `src.combat` 导入 `Combat` 和内置的 `META`，通过 `Combat(self, META)` 创建默认战斗。默认使用任务的 `detect_in_combat()` 判定战斗，也可给构造函数传入 `detect_in_combat` 回调。
-调用 `combat.combat_once()` 执行一场战斗，传入 `wait_combat_time` 可先等待入战。
+调用 `combat.combat_once()` 执行一场战斗，传入 `wait_combat_time` 可先等待入战。入战确认并完成实机配队校验后，`Combat` 调用 `META["scheduler"](combat)` 创建本场调度器，再调用它的 `run()`。
+调度和角色收尾期间，`combat.scheduler` 可读取本场实例。退出后该属性恢复为 `None`。同一个 `Combat` 下一次成功入战时会创建新的调度器。
 取帧、暂停感知计时和键鼠输入使用传入的任务。战斗期间，框架的睡眠检查也能中断正在执行的动作。
 
 `combat.state` 是本队唯一的战斗状态，每个队员的 `char.state` 都指向它。`current_index` 标记出战槽位，
@@ -98,15 +99,17 @@ ok-script 维护安装根目录的 `configs/`（任务参数和界面设置）�
 
 | 调度器方法 | 适用场景 |
 |------------|----------|
-| `choose_switch_target(combat, current)` | 调整轮换顺序，保留角色的专属动作 |
-| `step(combat)` | 每个战斗帧自行选择技能、按键、切人或角色动作 |
-| `run(combat)` | 接管整场流程，用局部变量保存连招阶段，按需迭代 `combat.frames()` 获取有效战斗帧 |
+| `choose_switch_target(current)` | 调整轮换顺序，保留角色的专属动作 |
+| `step()` | 每个战斗帧自行选择技能、按键、切人或角色动作 |
+| `run()` | 接管整场流程，按需迭代 `self.combat.frames()` 获取有效战斗帧 |
+
+迁移已有打法时，把战前直接赋给 `combat.scheduler` 的实例改为在 `META["scheduler"]` 中配置类或工厂。移除调度方法原有的 `combat` 形参，方法内通过 `self.combat` 访问当前战斗。
 
 ### 自定义战斗元数据
 
 自定义战斗的 `meta.py` 只声明一个 `META` 字典。调用 `Combat(task, META)` 时会校验两个必填键。
 
-- `scheduler` 接受调度器类或返回新调度器的无参工厂。每个战斗实例单独创建调度器。
+- `scheduler` 填写 `BaseScheduler` 子类，或接收一个 `combat` 参数并为它返回全新调度器的工厂，例如 `lambda combat: ComboScheduler(combat, skill="e")`。自定义构造函数调用 `super().__init__(combat)` 后，可以通过 `self.combat` 读取已就绪的队伍，在实例中保存本场角色引用和连招进度。
 - `chars` 包含三项。具名项可以是内置角色类或该角色的自定义子类。直接继承 `BaseChar` 的独立实现按类名匹配已有头像绑定。每个 `None` 接受任意队员，使用识别出的内置类，未知头像使用 `BaseChar`。一人或两人队伍包含所有具名队员时也可使用这份元数据。
 
 同一稳定角色只能声明一次，包括为同一角色编写的不同子类。加载队伍时，缺少必需队员、重复识别同一角色或两个槽位命中同一未命名头像模板，都会在调度开始前抛出 `CombatTeamError`。
@@ -125,12 +128,15 @@ class SkillStarborn(Starborn):
 
 
 class SkillScheduler(BaseScheduler):
-    def step(self, combat):
-        actor = combat.require_char(SkillStarborn)
-        if not actor.is_current_char:
-            combat.switch_to(actor)
-        elif combat.task.skill_ready():
-            actor.cast_skill()
+    def __init__(self, combat):
+        super().__init__(combat)
+        self.actor = combat.require_char(SkillStarborn)
+
+    def step(self):
+        if not self.actor.is_current_char:
+            self.combat.switch_to(self.actor)
+        elif self.combat.task.skill_ready():
+            self.actor.cast_skill()
 ```
 
 同包的 `meta.py` 导入这两个类。

@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterator, Mapping, Sequence
-from inspect import isabstract
+from inspect import isabstract, signature
 from math import inf
+from threading import Lock
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Any, NoReturn, overload
 
@@ -69,7 +70,10 @@ class Combat:
         except TypeError as exc:
             raise TypeError("Combat metadata 'chars' must be an iterable of character entries") from exc
         self.char_overrides = self._resolve_chars(self.meta["chars"])
-        self.scheduler = self._create_scheduler(self.meta["scheduler"])
+        self._scheduler_factory: Callable[[Combat], BaseScheduler] = self.meta["scheduler"]
+        self._validate_scheduler_factory()
+        self._scheduler: BaseScheduler | None = None
+        self._dispatch_lock = Lock()
         self.state = CombatState()
         self.chars: list[BaseChar] = []
         self._detector = detect_in_combat if detect_in_combat is not None else getattr(task, "detect_in_combat", None)
@@ -98,15 +102,36 @@ class Combat:
             overrides[name] = char
         return MappingProxyType(overrides)
 
-    @staticmethod
-    def _create_scheduler(factory: Callable[[], BaseScheduler]) -> BaseScheduler:
+    @property
+    def scheduler(self) -> BaseScheduler | None:
+        """本场调度器，从开始调度到收尾结束期间可用。"""
+        return self._scheduler
+
+    def _validate_scheduler_factory(self) -> None:
+        factory = self._scheduler_factory
         if not callable(factory):
             raise TypeError("scheduler must be a BaseScheduler class or factory")
         if isinstance(factory, type) and (not issubclass(factory, BaseScheduler) or isabstract(factory)):
             raise TypeError("scheduler must be a concrete BaseScheduler class")
-        scheduler = factory()
+        try:
+            factory_signature = signature(factory)
+        except (TypeError, ValueError):
+            # 部分扩展类型不公开签名，实际调用时由 Python 检查参数。
+            return
+        try:
+            factory_signature.bind(self)
+        except TypeError as exc:
+            raise TypeError("scheduler factory must accept a Combat argument") from exc
+
+    def _create_scheduler(self) -> BaseScheduler:
+        scheduler = self._scheduler_factory(self)
         if not isinstance(scheduler, BaseScheduler):
             raise TypeError("scheduler factory must return a BaseScheduler")
+        if getattr(scheduler, "combat", None) is not self:
+            raise ValueError("scheduler must be bound to the Combat passed to the factory")
+        if scheduler._dispatched:
+            raise ValueError("scheduler factory must return a new instance for each fight")
+        scheduler._dispatched = True
         return scheduler
 
     def validate_team(self, slots: Sequence[TeamSlot]) -> None:
@@ -360,6 +385,18 @@ class Combat:
                 return
 
     def combat_once(self, wait_combat_time: float = 0.0, raise_if_not_found: bool = True) -> bool:
+        if not self._dispatch_lock.acquire(blocking=False):
+            raise RuntimeError("combat_once is already running for this Combat")
+        try:
+            entered = self._dispatch_combat(wait_combat_time, raise_if_not_found)
+            if entered:
+                self.combat_end()
+            return entered
+        finally:
+            self._scheduler = None
+            self._dispatch_lock.release()
+
+    def _dispatch_combat(self, wait_combat_time: float, raise_if_not_found: bool) -> bool:
         entered = False
         try:
             with self.task.use_sleep_check(self.sleep_check, self.sleep_check_interval):
@@ -370,7 +407,8 @@ class Combat:
                     if not entered and raise_if_not_found:
                         raise WaitFailedException("not in combat")
                 if entered:
-                    self.scheduler.run(self)
+                    self._scheduler = self._create_scheduler()
+                    self._scheduler.run()
         except TaskDisabledException:
             self.reset_combat_state("task disabled")
             raise
@@ -386,8 +424,6 @@ class Combat:
                 self.reset_combat_state("combat interrupted")
             raise
 
-        if entered:
-            self.combat_end()
         return entered
 
     def combat_end(self) -> None:
