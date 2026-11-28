@@ -6,6 +6,7 @@ import threading
 from dataclasses import dataclass, field
 from functools import partial
 from time import monotonic
+from typing import ClassVar
 
 import win32con
 import win32gui
@@ -20,10 +21,13 @@ logger = Logger.get_logger(__name__)
 
 CHAR_COUNT_CONFIG_KEY = "快速奔跑角色数量"
 MAX_CHAR_COUNT = 3
+DEFAULT_CHAR_COUNT = 2
 HOLD_SECONDS = 0.5
-SWITCH_INTERVAL = 0.7
+SPRINT_GAP = "Shift 连按间隔 (ms)"
+SWITCH_GAP = "切换角色间隔 (ms)"
+# 至少保留切人后 250ms 的首次冲刺等待。
+INTERVALS = {SPRINT_GAP: (150, 50, 10000), SWITCH_GAP: (1000, 300, 10000)}
 SPRINT_AFTER_SWITCH = 0.25
-SPRINT_INTERVAL = 0.2
 KEY_DOWN_SECONDS = 0.02
 
 KEY_DOWN = (win32con.WM_KEYDOWN, win32con.WM_SYSKEYDOWN)
@@ -46,18 +50,18 @@ class _ShiftHold:
     def next_at(self, count: int) -> float:
         return min(self.switch_at, self.sprint_at) if count > 1 else self.sprint_at
 
-    def next_key(self, count: int, now: float) -> Key | KeyCode:
+    def next_key(self, count: int, now: float, sprint_interval: float, switch_interval: float) -> Key | KeyCode:
         if count > 1 and self.switch_at <= self.sprint_at:
             slot = self.slot_index % count
             self.slot_index = slot + 1
-            self.switch_at = now + SWITCH_INTERVAL
+            self.switch_at = now + switch_interval
             self.sprint_at = now + SPRINT_AFTER_SWITCH
             # 游戏绑定的是键盘顶排数字键，使用虚拟键可兼容不同键盘布局。
             return KeyCode.from_vk(ord("1") + slot)
         if count > 1:
             # 调度延迟时保留冲刺到下一次切人的间距，避免集中补发过期动作。
             self.switch_at += now - self.sprint_at
-        self.sprint_at = now + SPRINT_INTERVAL
+        self.sprint_at = now + sprint_interval
         return Key.shift_l
 
 
@@ -152,7 +156,7 @@ class _SprintInput:
             count = self.task.char_count()
             now = monotonic()
             if now >= hold.next_at(count):
-                key = hold.next_key(count, now)
+                key = hold.next_key(count, now, self.task.interval_ms(SPRINT_GAP) / 1000, self.task.interval_ms(SWITCH_GAP) / 1000)
                 if not self._can_send(hold):
                     return
                 try:
@@ -170,27 +174,40 @@ class _SprintInput:
 
 class AutoSprintTask(BaseGameTask, TriggerTask):
     needs_frame = False
+    config_key_migrations: ClassVar[dict[str, str]] = {"冲刺间隔 (ms)": SPRINT_GAP}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = self.tr("自动冲刺")
         self.description = self.tr("按住 Shift 半秒后自动冲刺，松开即停止。")
         self.icon = Icons.Trigger
-        self.default_config[CHAR_COUNT_CONFIG_KEY] = MAX_CHAR_COUNT
+        self.default_config[CHAR_COUNT_CONFIG_KEY] = DEFAULT_CHAR_COUNT
         self.config_type[CHAR_COUNT_CONFIG_KEY] = {"min": 1, "max": MAX_CHAR_COUNT, "step": 1}
         self.config_description[CHAR_COUNT_CONFIG_KEY] = self.tr("1 人时只冲刺，2–3 人时按队伍顺序切人冲刺。")
+        for key, (default, low, high) in INTERVALS.items():
+            self.default_config[key] = default
+            self.config_type[key] = {"min": low, "max": high, "step": 10}
+        self.config_description[SPRINT_GAP] = self.tr("连续两次冲刺按键的目标间隔（毫秒）。")
+        self.config_description[SWITCH_GAP] = self.tr("连续两次切换角色的目标间隔（毫秒），单人时不生效。")
         self.trigger_interval = 1  # 框架仅检查监听器是否存活，冲刺节奏由 Handler 驱动。
         self._lifecycle_lock = threading.Lock()
         self._input: _SprintInput | None = None
         self._destroyed = False
 
     def char_count(self) -> int:
-        count = (self.config or self.default_config).get(CHAR_COUNT_CONFIG_KEY, MAX_CHAR_COUNT)
-        return max(1, min(MAX_CHAR_COUNT, count)) if type(count) is int else MAX_CHAR_COUNT
+        count = (self.config or self.default_config).get(CHAR_COUNT_CONFIG_KEY, DEFAULT_CHAR_COUNT)
+        return max(1, min(MAX_CHAR_COUNT, count)) if type(count) is int else DEFAULT_CHAR_COUNT
+
+    def interval_ms(self, key: str) -> int:
+        default, low, high = INTERVALS[key]
+        value = (self.config or self.default_config).get(key, default)
+        return max(low, min(high, value)) if type(value) is int else default
 
     def load_config(self):
         super().load_config()
         self.config[CHAR_COUNT_CONFIG_KEY] = self.char_count()
+        for key in INTERVALS:
+            self.config[key] = self.interval_ms(key)
 
     def can_sprint(self) -> bool:
         executor = self.executor

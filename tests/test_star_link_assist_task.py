@@ -6,6 +6,9 @@
 """
 
 import unittest
+from tempfile import TemporaryDirectory
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
 
 import cv2
 import numpy as np
@@ -107,6 +110,23 @@ class TaskHarness:
 
 
 class TestStarLinkAssistTask(unittest.TestCase):
+    def test_trigger_setting_survives_reloading_task(self):
+        from ok.util.config import Config
+
+        def reload_task():
+            task = StarLinkAssistTask(SimpleNamespace(scene=None), Mock())
+            task.after_init()
+            return task
+
+        with TemporaryDirectory() as folder, patch.object(Config, "config_folder", folder):
+            task = reload_task()
+            self.assertFalse(task.enabled)
+            task.config["_enabled"] = True
+            restored = reload_task()
+            self.assertTrue(restored.enabled)
+            restored.config["_enabled"] = False
+            self.assertFalse(reload_task().enabled)
+
     # ── 1. 星结界面前置闸门 ─────────────────────────────────
 
     def test_no_click_when_star_link_icon_absent(self):

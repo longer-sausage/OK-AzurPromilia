@@ -80,6 +80,10 @@ uv run python main.py
 uv run python main_debug.py
 ```
 
+## 游戏画面 UID 遮挡（OLED）
+
+在「设置 → 基本设置 → 模糊」中打开「启用模糊遮挡」（Enable Blur）。游戏窗口连接并取得画面后，前景遮罩会盖住左下角 UID；不需要打开调试框。可在同一处选择模糊算法和刷新间隔。关闭此项只影响屏幕遮罩，不会关闭保存截图时的 UID 黑框。
+
 ## ⌨️ 命令行参数
 
 参数定义在框架的 `ok/util/process.py:571`：
