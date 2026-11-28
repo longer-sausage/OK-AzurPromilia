@@ -12,15 +12,15 @@
 import unittest
 from unittest import mock
 
-from src.tasks.test.test_screenshot_task import TestScreenshotTask
+from src.tasks.onetime.treasure_unlock_task import TreasureUnlockTask
 from src.tasks.test.test_interaction_task import TestInteractionTask
+from src.tasks.test.test_screenshot_task import TestScreenshotTask
 from src.tasks.test.test_treasure_band_task import TestTreasureBandTask
 from src.tasks.test.test_ui_navigate_task import TestUINavigateTask
 from src.tasks.trigger.auto_pickup_task import AutoPickupTask
 from src.tasks.trigger.auto_sprint_task import AutoSprintTask
 from src.tasks.trigger.skip_dialog_task import SkipDialogTask
 from src.tasks.trigger.star_link_assist_task import StarLinkAssistTask
-from src.tasks.onetime.treasure_unlock_task import TreasureUnlockTask
 
 #: 纯调试任务：应满足 visible == debug
 DEBUG_TASKS = [TestScreenshotTask, TestInteractionTask, TestTreasureBandTask, TestUINavigateTask]
@@ -30,7 +30,7 @@ BUSINESS_TASKS = [AutoPickupTask, AutoSprintTask, SkipDialogTask, StarLinkAssist
 
 #: 期望在 UI 里出现的配置键（未列出的键必须已用 _ 前缀隐藏）
 EXPECTED_VISIBLE_KEYS = {
-    AutoSprintTask: ["快速奔跑角色数量"],
+    AutoSprintTask: ["快速奔跑角色数量", "Shift 连按间隔 (ms)", "切换角色间隔 (ms)"],
     TreasureUnlockTask: ["画调试框"],
     StarLinkAssistTask: [
         "检测绿色", "检测黄色", "检测红色", "要求环形", "记录点击日志", "画调试框",

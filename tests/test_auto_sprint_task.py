@@ -74,8 +74,8 @@ class TestAutoSprintTask(unittest.TestCase):
     def presses(self):
         return [args[0] for args, _ in self.keys.press.call_args_list]
 
-    def test_settings_show_only_party_size_with_bounds_and_default(self):
-        self.assertEqual(self.task.default_config, {"_enabled": False, COUNT: 3})
+    def test_settings_show_party_size_and_intervals_with_bounds_and_default(self):
+        self.assertEqual(self.task.default_config, {"_enabled": False, COUNT: 2, sprint.SPRINT_GAP: 150, sprint.SWITCH_GAP: 1000})
         self.assertFalse(self.task.needs_frame)
         app = QApplication.instance() or QApplication(["test", "-platform", "offscreen"])
         values = InMemoryConfig(self.task.default_config, self.task.default_config)
@@ -83,10 +83,16 @@ class TestAutoSprintTask(unittest.TestCase):
             form = ConfigForm(
                 self.task, values, self.task.default_config, self.task.config_description, self.task.config_type
             )
-            self.assertEqual(list(form.config_widget_by_key), [COUNT])
+            self.assertEqual(list(form.config_widget_by_key), [COUNT, sprint.SPRINT_GAP, sprint.SWITCH_GAP])
+            for key, default, saved in ((sprint.SPRINT_GAP, 150, 350), (sprint.SWITCH_GAP, 1000, 1300)):
+                timing_editor = form.config_widget_by_key[key]
+                self.assertIsInstance(timing_editor, NumberEditor)
+                self.assertEqual(timing_editor.spin_box.value(), default)
+                timing_editor.spin_box.setValue(saved)
+                self.assertEqual(values[key], saved)
             editor = form.config_widget_by_key[COUNT]
             self.assertIsInstance(editor, NumberEditor)
-            self.assertEqual(editor.spin_box.value(), 3)
+            self.assertEqual(editor.spin_box.value(), 2)
             editor.spin_box.setValue(0)
             self.assertEqual(values[COUNT], 1)
             editor.spin_box.setValue(4)
@@ -95,16 +101,43 @@ class TestAutoSprintTask(unittest.TestCase):
             app.processEvents()
 
     def test_saved_counts_and_enabled_flag_survive_upgrade(self):
-        with tempfile.TemporaryDirectory() as folder, patch.object(Config, "config_folder", folder):
+        with tempfile.TemporaryDirectory() as folder, patch.object(Config, "config_folder", folder), patch(
+            "src.core.config_migration.get_relative_path", return_value=str(Path(folder) / "AutoSprintTask.json")
+        ):
             path = Path(folder) / "AutoSprintTask.json"
-            for saved, expected in ((1, 1), (2, 2), (3, 3), (4, 3), (0, 1), (True, 3), ("bad", 3)):
+            for saved, expected in ((1, 1), (2, 2), (3, 3), (4, 3), (0, 1), (True, 2), ("bad", 2)):
                 with self.subTest(saved=saved):
                     path.write_text(
                         json.dumps({"_enabled": True, COUNT: saved, "Shift冲刺模式": False}), encoding="utf-8"
                     )
                     self.task.load_config()
                     self.assertEqual(self.task.char_count(), expected)
-                    self.assertEqual(json.loads(path.read_text(encoding="utf-8")), {"_enabled": True, COUNT: expected})
+                    self.assertEqual(json.loads(path.read_text(encoding="utf-8")), {"_enabled": True, COUNT: expected, sprint.SPRINT_GAP: 150, sprint.SWITCH_GAP: 1000})
+
+    def test_legacy_sprint_interval_preserved(self):
+        with tempfile.TemporaryDirectory() as folder, patch.object(Config, "config_folder", folder), patch(
+            "src.core.config_migration.get_relative_path", return_value=str(Path(folder) / "AutoSprintTask.json")
+        ):
+            path = Path(folder) / "AutoSprintTask.json"
+            path.write_text(json.dumps({"冲刺间隔 (ms)": 100, COUNT: 2}), encoding="utf-8")
+            self.task.load_config()
+            self.assertEqual(self.task.interval_ms(sprint.SPRINT_GAP), 100)
+            self.assertEqual(self.task.interval_ms(sprint.SWITCH_GAP), 1000)
+
+    def test_configured_intervals_drive_independent_deadlines(self):
+        self.task.config.update({sprint.SPRINT_GAP: 350, sprint.SWITCH_GAP: 1300})
+        self.task.enable()
+        self.key(DOWN)
+        self.handler.advance_to(0.75)
+        self.assertEqual(self.presses(), [ONE, Key.shift_l])
+        self.handler.advance_to(1.09)
+        self.assertEqual(self.presses(), [ONE, Key.shift_l])
+        self.handler.advance_to(1.11)
+        self.assertEqual(self.presses(), [ONE, Key.shift_l, Key.shift_l])
+        self.handler.advance_to(1.79)
+        self.assertNotIn(TWO, self.presses())
+        self.handler.advance_to(1.81)
+        self.assertIn(TWO, self.presses())
 
     def test_short_press_other_keys_and_injected_events_pass_through(self):
         self.task.enable()
@@ -120,7 +153,8 @@ class TestAutoSprintTask(unittest.TestCase):
         self.assertFalse(self.keys.mock_calls)
         self.listeners.return_value.suppress_event.assert_not_called()
 
-    def test_default_rotates_three_slots_with_sprints_between_switches(self):
+    def test_configured_three_slots_rotate_with_sprints_between_switches(self):
+        self.task.config.update({COUNT: 3, sprint.SPRINT_GAP: 200, sprint.SWITCH_GAP: 700})
         self.task.enable()
         self.key(DOWN)
         self.handler.advance_to(0.49)
@@ -134,6 +168,7 @@ class TestAutoSprintTask(unittest.TestCase):
         self.assertEqual(self.presses(), [ONE, *shifts, TWO, *shifts, THREE, *shifts, ONE])
 
     def test_late_callback_sprints_before_switching_and_does_not_catch_up_in_a_burst(self):
+        self.task.config.update({sprint.SPRINT_GAP: 200, sprint.SWITCH_GAP: 700})
         self.task.enable()
         self.key(DOWN)
         self.handler.advance_to(0.5)
@@ -145,11 +180,10 @@ class TestAutoSprintTask(unittest.TestCase):
         self.handler.advance_to(5.46)
         self.assertEqual(self.presses(), [ONE, Key.shift_l, Key.shift_l, Key.shift_l, TWO])
 
-    def test_two_characters_and_live_count_change(self):
-        self.task.config[COUNT] = 2
+    def test_default_two_characters_and_live_count_change(self):
         self.task.enable()
         self.key(DOWN)
-        self.handler.advance_to(2)
+        self.handler.advance_to(2.51)
         self.assertEqual([key for key in self.presses() if key != Key.shift_l], [ONE, TWO, ONE])
         self.task.config[COUNT] = 1
         self.keys.reset_mock()
@@ -162,11 +196,11 @@ class TestAutoSprintTask(unittest.TestCase):
         self.task.enable()
         self.key(DOWN, RIGHT)
         self.handler.advance_to(1.01)
-        self.assertEqual(self.presses(), [Key.shift_l] * 3)
+        self.assertEqual(self.presses(), [Key.shift_l] * 4)
         self.assertEqual(self.keys.mock_calls[0], call.release(Key.shift_r))
         self.key(UP, RIGHT)
         self.handler.advance_to(2)
-        self.assertEqual(len(self.presses()), 3)
+        self.assertEqual(len(self.presses()), 4)
 
     def test_both_shift_keys_share_one_hold_and_only_physical_shift_is_suppressed(self):
         self.task.enable()

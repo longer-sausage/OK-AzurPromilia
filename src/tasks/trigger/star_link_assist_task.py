@@ -77,7 +77,8 @@ class StarLinkAssistTask(BaseGameTask, TriggerTask):
         self.icon = Icons.Trigger
         self.trigger_interval = 0  # 每轮都参与，靠自身冷却限流
 
-        self.default_config = {
+        # 保留 TriggerTask 的 _enabled，否则配置加载时会丢弃已保存的开关。
+        self.default_config.update({
             "检测绿色": True,
             "检测黄色": True,
             "检测红色": True,
@@ -89,7 +90,7 @@ class StarLinkAssistTask(BaseGameTask, TriggerTask):
             "_点击后等待(秒)": 0.0,
             "记录点击日志": True,
             "画调试框": True,
-        }
+        })
         self.config_description.update({
             "要求环形": "只认圆环形 / 弧形的彩色光效（可射击标识）；关掉后退回「最大彩色团块」模式，可匹配实心提示。",
             "_最小面积": "光效像素数下限，按 1920x1080 为基准，随分辨率自动缩放。",

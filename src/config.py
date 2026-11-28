@@ -1,12 +1,21 @@
 import os
 
-import numpy as np
+from ok.feature.Box import Box
+
 from src.interaction.game_interaction import GameInteraction
 
 version = "dev"
 
 
-# 不需要修改version, Github Action打包会自动修改
+def blur_area(width, height):
+    """Return the bottom-anchored UID region used for both overlay and screenshots."""
+    x1, y1, x2, y2 = 0.0849, 0.9750, 0.1553, 0.9972
+    w, h = int((x2 - x1) * width), int((y2 - y1) * height)
+    if w <= 0 or h <= 0:
+        return []
+    return [Box(int(x1 * width), height - h, w, h)]
+
+
 def make_bottom_left_black(frame):  # 可选. 某些游戏截图时遮挡UID使用
     """
     将图像左下角的一部分像素修改为黑色。
@@ -18,22 +27,9 @@ def make_bottom_left_black(frame):  # 可选. 某些游戏截图时遮挡UID使�
         左下角被遮挡后的图像。如果发生错误（例如无效图像），则返回原始图像。
     """
     try:
-        height, width = frame.shape[:2]  # 获取高度和宽度
-        # 定义左下角矩形的坐标 (x1, y1, x2, y2)
-        x1, y1, x2, y2 = 0.0849, 0.9750, 0.1553, 0.9972
-        # 计算黑色矩形的大小
-        black_width = int((x2 - x1) * width)
-        black_height = int((y2 - y1) * height)
-
-        # 计算左下角矩形的起始坐标
-        start_x = int(x1 * width)
-        start_y = height - black_height
-
-        # 创建黑色矩形 (NumPy 0 数组)
-        black_rect = np.zeros((black_height, black_width, frame.shape[2]), dtype=frame.dtype)  # 确保数据类型一致
-
-        # 用黑色矩形替换图像的左下角部分
-        frame[start_y:height, start_x:start_x + black_width] = black_rect
+        height, width = frame.shape[:2]
+        for box in blur_area(width, height):
+            frame[box.y:box.y + box.height, box.x:box.x + box.width] = 0
 
         return frame
     except Exception as e:
@@ -48,6 +44,7 @@ config = {
     # The CLI supplies its own gui mapping and also reads this shared window size.
     "window_size": {"width": 1200, "height": 800, "min_width": 600, "min_height": 450},
     "config_folder": "configs",  # 最好不要修改
+    "blur_area": blur_area,  # 实时 OLED 遮挡；在基础选项中独立开关。
     "screenshot_processor": make_bottom_left_black,  # 在截图的时候对frame进行修改, 可选
     "gui_icon": "icons/icon.png",  # 窗口图标, 最好不需要修改文件名
     "wait_until_before_delay": 0,
