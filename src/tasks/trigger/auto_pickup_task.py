@@ -9,6 +9,7 @@ import numpy as np
 import win32con
 import win32gui
 from ok import Handler, Logger, TriggerTask
+from ok.task.exceptions import ExecutorBusyException, FinishedException, TaskDisabledException
 from pynput import keyboard
 from pynput.keyboard import Controller, KeyCode
 
@@ -124,6 +125,7 @@ class AutoPickupTask(BaseGameTask, TriggerTask):
         }
         self._burst = None
         self._burst_lock = Lock()
+        self._manual_setting_seen = False
         self._full_frame_path = False
 
     @property
@@ -152,9 +154,15 @@ class AutoPickupTask(BaseGameTask, TriggerTask):
         if (frame is not None and 0 <= now - executor._last_frame_time <= 0.075
                 and frame.shape[:2] == (method.last_size.Height, method.last_size.Width)):
             return self.find_one(FeatureList.interact_collect, frame=frame)
-        region_hit = self._match_pickup_region(method)
-        if region_hit is not None:
-            return region_hit
+        try:
+            region_hit = self._match_pickup_region(method)
+        except (ExecutorBusyException, FinishedException, TaskDisabledException):
+            raise
+        except Exception as error:
+            logger.debug(f'Pickup region unavailable; falling back to full frame: {error}')
+        else:
+            if region_hit is not None:
+                return region_hit
         self._full_frame_path = True
         try:
             # Force a fresh frame: a previous round's frame may have expired.
@@ -194,6 +202,13 @@ class AutoPickupTask(BaseGameTask, TriggerTask):
         return max(MIN_BURST_INTERVAL_MS, min(MAX_BURST_INTERVAL_MS, value)) / 1000
 
     def should_trigger(self):
+        opted_in = bool((self.config or {}).get(MANUAL_BURST, False))
+        if opted_in != self._manual_setting_seen:
+            self._manual_setting_seen = opted_in
+            if opted_in:
+                self._start_burst_listener()
+            else:
+                self._stop_burst_listener()
         # 在执行器为本任务准备截图之前跳过，其他触发任务仍可照常取帧。
         return not self._burst_active() and super().should_trigger()
 
@@ -209,7 +224,8 @@ class AutoPickupTask(BaseGameTask, TriggerTask):
 
     def _start_burst_listener(self):
         with self._burst_lock:
-            if self._burst is not None or not self.enabled or self.executor.exit_event.is_set():
+            if (self._burst is not None or not self.enabled or self.executor.exit_event.is_set()
+                    or not (self.config or {}).get(MANUAL_BURST, False)):
                 return
             burst = _PickupBurst(self)
             try:

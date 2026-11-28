@@ -172,6 +172,35 @@ class TestAutoPickupTask(unittest.TestCase):
 
 
 class TestFirstPickupCapture(unittest.TestCase):
+    def test_region_exception_falls_back_to_full_frame(self):
+        task = _build_task()
+        frame = np.zeros((20, 40, 3), dtype=np.uint8)
+        task.executor._frame = None
+        task._match_pickup_region = mock.Mock(side_effect=RuntimeError('region capture failed'))
+        task.next_frame = mock.Mock(return_value=frame)
+        task.find_one = mock.Mock(return_value=True)
+        with mock.patch.object(pickup.AutoPickupTask, 'needs_frame', new_callable=mock.PropertyMock, return_value=False):
+            self.assertTrue(task._find_first_collect())
+        task.find_one.assert_called_once_with(FeatureList.interact_collect, frame=frame)
+        self.assertFalse(task._full_frame_path)
+
+    def test_manual_hook_only_runs_when_enabled_in_configuration(self):
+        task = _build_task()
+        task._enabled = True
+        task.executor.exit_event.is_set.return_value = False
+        task.config = {pickup.MANUAL_BURST: False}
+        with mock.patch.object(pickup, '_PickupBurst') as burst:
+            task._start_burst_listener()
+            burst.assert_not_called()
+            task.config[pickup.MANUAL_BURST] = True
+            task.should_trigger()
+            burst.assert_called_once_with(task)
+            burst.return_value.start.assert_called_once_with()
+            task.config[pickup.MANUAL_BURST] = False
+            task.should_trigger()
+            burst.return_value.stop.assert_called_once_with()
+            self.assertIsNone(task._burst)
+
     def test_region_match_uses_same_coordinates_and_threshold_as_full_frame(self):
         settings = app_config['template_matching']
         features = FeatureSet(debug=False, coco_json=settings['coco_feature_json'],

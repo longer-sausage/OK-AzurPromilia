@@ -92,13 +92,13 @@ def _get_region(method, region):
     try:
         if method.exit_event.is_set() or not method.start_or_stop() or not supported(method):
             return None
-        with method.lock:
-            generation = method._frame_cancel_generation
-            method._pickup_region = region
-            method.last_frame = None
-            method.frame_event.clear()
-            method.frame_requested.set()
         try:
+            with method.lock:
+                generation = method._frame_cancel_generation
+                method._pickup_region = region
+                method.last_frame = None
+                method.frame_event.clear()
+                method.frame_requested.set()
             method.frame_event.wait(WAIT_SECONDS)
             with method.lock:
                 frame = method.last_frame if generation == method._frame_cancel_generation else None
@@ -117,11 +117,22 @@ def install_pickup_wgc_region():
     cls = WindowsGraphicsCaptureMethod
     if hasattr(cls, 'get_pickup_region'):
         return
-    d3d11.ID3D11DeviceContext.CopySubresourceRegion = ctypes.WINFUNCTYPE(
+    copy_region = ctypes.WINFUNCTYPE(
         None, IUnknown, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint,
         IUnknown, ctypes.c_uint, ctypes.POINTER(_D3D11Box),
     )(46, 'CopySubresourceRegion')
-    convert, close = cls.convert_dx_frame, cls.close
+
+    def copy_subresource_region(context, *args):
+        # ctypes COM callables do not bind the instance when stored on a class.
+        return copy_region(context, *args)
+
+    d3d11.ID3D11DeviceContext.CopySubresourceRegion = copy_subresource_region
+    convert, close, create_device = cls.convert_dx_frame, cls.close, cls.create_device
+
+    def recreate_device(self):
+        with self.lock:
+            _release_staging(self)
+            return create_device(self)
 
     def convert_frame(self, frame):
         region = getattr(self, '_pickup_region', None)
@@ -144,5 +155,6 @@ def install_pickup_wgc_region():
                     _release_staging(self)
 
     cls.convert_dx_frame = convert_frame
+    cls.create_device = recreate_device
     cls.close = close_capture
     cls.get_pickup_region = _get_region
