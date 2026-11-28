@@ -2,11 +2,13 @@ from ok import OK
 from ok.util.GlobalConfig import CREATE_DESKTOP_SHORTCUT, CREATE_START_MENU_SHORTCUT, create_basic_options
 
 from src.config import config
+from src.patches.wgc_compat import install_wgc_compat
 
 
 def main(*, debug=False):
     import pyappify
 
+    install_wgc_compat()
     launch_config = config.copy()
     if debug:
         launch_config['debug'] = True

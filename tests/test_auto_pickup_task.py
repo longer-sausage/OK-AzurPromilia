@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest import mock
 
 import cv2
@@ -13,6 +14,7 @@ from ok.feature.FeatureSet import FeatureSet
 from src.config import config as app_config
 from src.data.feature_list import FeatureList
 from src.icons import Icons
+from src.tasks.trigger import auto_pickup_task as pickup
 from src.tasks.trigger.auto_pickup_task import (
     COLLECT_AFTER_SLEEP,
     COLLECT_KEY,
@@ -38,7 +40,10 @@ def _build_task(frame=None, feature_set=None):
     else:
         executor.method.width = 1920
         executor.method.height = 1080
-    return AutoPickupTask(executor, mock.MagicMock())
+    task = AutoPickupTask(executor, mock.MagicMock())
+    # 流程用例沿用记录器；首键的真实实现单独测试。
+    task._send_first_collect = lambda: task.send_key(COLLECT_KEY, after_sleep=COLLECT_AFTER_SLEEP)
+    return task
 
 
 class TestAutoPickupTask(unittest.TestCase):
@@ -164,6 +169,174 @@ class TestAutoPickupTask(unittest.TestCase):
 
         self.assertTrue(result)
         self.assertEqual(task.send_key.call_count, 2)
+
+
+class TestFirstPickupCapture(unittest.TestCase):
+    def test_region_match_uses_same_coordinates_and_threshold_as_full_frame(self):
+        settings = app_config['template_matching']
+        features = FeatureSet(debug=False, coco_json=settings['coco_feature_json'],
+                              default_horizontal_variance=settings['default_horizontal_variance'],
+                              default_vertical_variance=settings['default_vertical_variance'],
+                              default_threshold=settings['default_threshold'])
+        task = _build_task(feature_set=features)
+        task.executor.can_capture.return_value = True
+        for width, height in ((1920, 1080), (2560, 1440)):
+            with self.subTest(size=(width, height)):
+                frame = np.zeros((height, width, 3), dtype=np.uint8)
+                features.check_size(frame)
+                name = FeatureList.interact_collect
+                features.ensure_feature(name)
+                f = features.feature_dict[name]
+                method = SimpleNamespace(last_size=SimpleNamespace(Width=width, Height=height),
+                                         get_pickup_region=lambda r, image=frame: image[r[1]:r[3], r[0]:r[2]])
+                for hit in (False, True):
+                    if hit:
+                        frame[f.y:f.y + f.height, f.x:f.x + f.width] = f.mat
+                    self.assertEqual(bool(task._match_pickup_region(method)),
+                                     bool(features.find_feature(frame, name, limit=1)))
+
+    def test_reuses_fresh_full_frame_instead_of_waiting_for_region(self):
+        task = _build_task()
+        task.executor.method = SimpleNamespace(last_size=SimpleNamespace(Width=40, Height=20))
+        task.executor._frame = np.zeros((20, 40, 3), dtype=np.uint8)
+        task.executor._last_frame_time = 99.98
+        task.find_one = mock.Mock(return_value=True)
+        task._match_pickup_region = mock.Mock()
+        with mock.patch.object(pickup.AutoPickupTask, 'needs_frame', new_callable=mock.PropertyMock, return_value=False), \
+                mock.patch.object(pickup, 'time', return_value=100):
+            self.assertTrue(task._find_first_collect())
+        task._match_pickup_region.assert_not_called()
+        task.find_one.assert_called_once_with(FeatureList.interact_collect, frame=task.executor._frame)
+
+    def test_stale_full_frame_does_not_override_region_result(self):
+        task = _build_task()
+        task.executor._frame = np.zeros((20, 40, 3), dtype=np.uint8)
+        task.executor._last_frame_time = 98
+        task._match_pickup_region = mock.Mock(return_value=False)
+        task.next_frame = mock.Mock()
+        with mock.patch.object(pickup.AutoPickupTask, 'needs_frame', new_callable=mock.PropertyMock, return_value=False), \
+                mock.patch.object(pickup, 'time', return_value=100):
+            self.assertFalse(task._find_first_collect())
+            task._match_pickup_region.return_value = None
+            task.next_frame.return_value = None
+            self.assertFalse(task._find_first_collect())
+        task.next_frame.assert_called_once()
+        self.assertFalse(task._full_frame_path)
+
+
+class TestFirstPickupInput(unittest.TestCase):
+    def test_foreground_first_key_does_not_activate_and_releases(self):
+        task = _build_task()
+        interaction = task.executor.interaction
+        interaction.hwnd_window.hwnd = 42
+        interaction.send_key_down.return_value = True
+        task.sleep = mock.Mock()
+        with mock.patch.object(pickup.win32gui, "GetForegroundWindow", return_value=42), \
+                mock.patch.object(pickup, "sleep") as hold:
+            self.assertTrue(AutoPickupTask._send_first_collect(task))
+        self.assertEqual(interaction.method_calls, [
+            mock.call.send_key_down("f", activate=False), mock.call.send_key_up("f"),
+        ])
+        hold.assert_called_once_with(0.04)
+        task.sleep.assert_called_once_with(COLLECT_AFTER_SLEEP)
+
+    def test_focus_lost_after_reset_does_not_send_key(self):
+        task = _build_task()
+        interaction = task.executor.interaction
+        interaction.hwnd_window.hwnd = 42
+        with mock.patch.object(pickup.win32gui, "GetForegroundWindow", side_effect=[42, 99]):
+            self.assertFalse(AutoPickupTask._send_first_collect(task))
+        interaction.send_key_down.assert_not_called()
+
+
+class TestManualPickupBurst(unittest.TestCase):
+    def setUp(self):
+        self.task = _build_task()
+        self.handler = self.enterContext(mock.patch.object(pickup, "Handler")).return_value
+        self.listener = self.enterContext(mock.patch.object(pickup.keyboard, "Listener")).return_value
+        self.listener.is_alive.return_value = True
+        self.keyboard = self.enterContext(mock.patch.object(pickup, "Controller")).return_value
+        self.clock = self.enterContext(mock.patch.object(pickup, "monotonic", return_value=1.0))
+        self.window = mock.Mock(return_value=42)
+        self.task._burst_window = self.window
+        self.burst = pickup._PickupBurst(self.task)
+        self.task._burst = self.burst
+        self.addCleanup(self.burst.stop)
+        self.enterContext(mock.patch.object(self.burst._stopped, "wait", return_value=False))
+        self.f = SimpleNamespace(vkCode=pickup.F_VK, flags=0)
+
+    def tap(self):
+        self.assertFalse(self.burst._filter(pickup.win32con.WM_KEYDOWN, self.f))
+        self.assertFalse(self.burst._filter(pickup.win32con.WM_KEYUP, self.f))
+
+    def tick(self, now):
+        self.clock.return_value = now
+        self.handler.post.call_args.args[0]()
+
+    def test_physical_f_starts_timed_burst_without_recognition(self):
+        self.tap()
+        self.assertTrue(self.burst.active())
+        self.assertEqual(self.handler.post.call_args.kwargs["delay"], 0.3)
+        self.assertFalse(self.task.should_trigger())
+        self.task.find_one = mock.Mock()
+        self.task.run()
+        self.task.find_one.assert_not_called()
+        self.tick(1.3)
+        self.keyboard.press.assert_called_once()
+        self.keyboard.release.assert_called_once_with(self.keyboard.press.call_args.args[0])
+        self.tap()  # 不延长已开启的窗口
+        self.tick(11.0)
+        self.assertFalse(self.burst.active())
+        self.keyboard.press.assert_called_once()
+        self.task.find_one.return_value = None
+        self.task.run()
+        self.task.find_one.assert_called_once_with(FeatureList.interact_collect)
+
+    def test_custom_interval_applies_to_first_and_later_presses(self):
+        self.task.config = {pickup.BURST_INTERVAL_KEY: 640}
+        self.tap()
+        self.assertEqual(self.handler.post.call_args.kwargs["delay"], 0.64)
+        self.tick(1.64)
+        self.assertAlmostEqual(self.handler.post.call_args.kwargs["delay"], 0.64)
+        self.task.config[pickup.BURST_INTERVAL_KEY] = 1
+        self.assertEqual(self.task._burst_interval(), 0.2)
+
+    def test_synthetic_f_never_starts_burst(self):
+        self.f.flags = pickup.INJECTED
+        self.tap()
+        self.handler.post.assert_not_called()
+
+    def test_loss_of_game_window_cancels_instead_of_resuming(self):
+        self.tap()
+        self.window.return_value = None
+        self.tick(1.1)
+        self.window.return_value = 42
+        self.assertFalse(self.burst.active())
+        self.keyboard.press.assert_not_called()
+        self.handler.post.assert_called_once()
+
+    def test_held_f_is_not_simulated_until_released(self):
+        self.burst._filter(pickup.win32con.WM_KEYDOWN, self.f)
+        self.tick(1.1)
+        self.keyboard.press.assert_not_called()
+        self.burst._filter(pickup.win32con.WM_KEYUP, self.f)
+        self.tick(1.2)
+        self.keyboard.press.assert_called_once()
+
+    def test_focus_pause_and_settings_gate(self):
+        task = _build_task()
+        task.executor.paused = False
+        task.executor.exit_event.is_set.return_value = False
+        task.executor.exclusive_owner = None
+        task.executor.device_manager.hwnd_window.hwnd = 42
+        task._enabled = True
+        task.config = dict(task.default_config)
+        with mock.patch.object(pickup.win32gui, "GetForegroundWindow", return_value=42):
+            self.assertIsNone(task._burst_window())
+            task.config[pickup.MANUAL_BURST] = True
+            self.assertEqual(task._burst_window(), 42)
+            task.executor.paused = True
+            self.assertIsNone(task._burst_window())
 
 
 class TestAutoPickupRealScreenshots(unittest.TestCase):
