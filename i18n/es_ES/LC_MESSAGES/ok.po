@@ -195,3 +195,13 @@ msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
 msgstr ""
 "Pulsa F repetidamente de forma automática al detectar un aviso de recogida "
 "hasta que desaparezca."
+
+#: src/tasks/trigger/auto_combat_task.py
+msgid "自动战斗"
+msgstr "Combate automático"
+
+#: src/tasks/trigger/auto_combat_task.py
+msgid "战斗中按角色计划释放技能、大招并自动切人。"
+msgstr ""
+"Durante el combate, usa habilidades y definitivas según el plan del "
+"personaje y cambia de personaje automáticamente."

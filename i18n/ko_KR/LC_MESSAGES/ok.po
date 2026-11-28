@@ -175,3 +175,11 @@ msgstr "자동 줍기"
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
 msgstr "수집 안내가 감지되면 사라질 때까지 F 키를 자동으로 연타합니다."
+
+#: src/tasks/trigger/auto_combat_task.py
+msgid "自动战斗"
+msgstr "자동 전투"
+
+#: src/tasks/trigger/auto_combat_task.py
+msgid "战斗中按角色计划释放技能、大招并自动切人。"
+msgstr "전투 중 캐릭터 계획에 따라 스킬과 궁극기를 사용하고 자동으로 캐릭터를 전환합니다."

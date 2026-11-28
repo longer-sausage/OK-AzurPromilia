@@ -116,5 +116,6 @@ config = {
         ["src.tasks.trigger.star_link_assist_task", "StarLinkAssistTask"],
         ["src.tasks.trigger.auto_sprint_task", "AutoSprintTask"],
         ["src.tasks.trigger.auto_pickup_task", "AutoPickupTask"],
+        ["src.tasks.trigger.auto_combat_task", "AutoCombatTask"],
     ],
 }

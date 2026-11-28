@@ -12,24 +12,34 @@
 import unittest
 from unittest import mock
 
-from src.tasks.test.test_screenshot_task import TestScreenshotTask
+from src.tasks.onetime.treasure_unlock_task import TreasureUnlockTask
 from src.tasks.test.test_interaction_task import TestInteractionTask
+from src.tasks.test.test_screenshot_task import TestScreenshotTask
 from src.tasks.test.test_treasure_band_task import TestTreasureBandTask
 from src.tasks.test.test_ui_navigate_task import TestUINavigateTask
+from src.tasks.trigger.auto_combat_task import AutoCombatTask
 from src.tasks.trigger.auto_pickup_task import AutoPickupTask
 from src.tasks.trigger.auto_sprint_task import AutoSprintTask
 from src.tasks.trigger.skip_dialog_task import SkipDialogTask
 from src.tasks.trigger.star_link_assist_task import StarLinkAssistTask
-from src.tasks.onetime.treasure_unlock_task import TreasureUnlockTask
 
 #: 纯调试任务：应满足 visible == debug
 DEBUG_TASKS = [TestScreenshotTask, TestInteractionTask, TestTreasureBandTask, TestUINavigateTask]
 
 #: 正式业务任务：不设 visible，任何模式下都应可见
-BUSINESS_TASKS = [AutoPickupTask, AutoSprintTask, SkipDialogTask, StarLinkAssistTask, TreasureUnlockTask]
+BUSINESS_TASKS = [
+    AutoPickupTask, AutoSprintTask, SkipDialogTask, StarLinkAssistTask, TreasureUnlockTask, AutoCombatTask,
+]
 
 #: 期望在 UI 里出现的配置键（未列出的键必须已用 _ 前缀隐藏）
 EXPECTED_VISIBLE_KEYS = {
+    AutoCombatTask: [
+        "释放大招",
+        "释放技能",
+        "释放E技能",
+        "自动普攻",
+        "已解锁自动战斗时让给游戏",
+    ],
     AutoSprintTask: ["快速奔跑角色数量"],
     TreasureUnlockTask: ["画调试框"],
     StarLinkAssistTask: [
