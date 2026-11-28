@@ -174,3 +174,11 @@ msgstr "自動拾取"
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
 msgstr "偵測到可拾取提示時自動連按 F，直到提示消失。"
+
+#: src/tasks/trigger/auto_combat_task.py
+msgid "自动战斗"
+msgstr "自動戰鬥"
+
+#: src/tasks/trigger/auto_combat_task.py
+msgid "战斗中按角色计划释放技能、大招并自动切人。"
+msgstr "戰鬥中依角色計畫施放技能、大招並自動切換角色。"

@@ -175,3 +175,11 @@ msgstr "自動採取"
 #: src/tasks/trigger/auto_pickup_task.py
 msgid "检测到可拾取提示时自动连按 F，直到提示消失。"
 msgstr "採取アイコンを検出した際、消えるまで自動的に F キーを連打します。"
+
+#: src/tasks/trigger/auto_combat_task.py
+msgid "自动战斗"
+msgstr "自動戦闘"
+
+#: src/tasks/trigger/auto_combat_task.py
+msgid "战斗中按角色计划释放技能、大招并自动切人。"
+msgstr "戦闘中にキャラクターの計画に従ってスキルと必殺技を発動し、自動でキャラクターを切り替えます。"

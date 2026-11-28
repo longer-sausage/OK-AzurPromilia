@@ -80,4 +80,5 @@ nav:
     - 快速上手: dev/quickstart.md
     - 开发指南: dev/development.md
     - Action 生命周期: dev/action_lifecycle.md
+    - 自动战斗框架: dev/combat_framework.md
     - 祖赞卡之梯判定分析: dev/jenga_judgment.md
