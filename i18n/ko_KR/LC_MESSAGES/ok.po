@@ -256,99 +256,99 @@ msgstr "캡처하지 못했습니다. {error}"
 msgid "任务结束后将执行情况写入 {folder}"
 msgstr "작업이 끝나면 실행 결과를 {folder}에 저장합니다."
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "默认"
 msgstr "기본"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "星临者"
 msgstr "성림자"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "阿比"
 msgstr "아비"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "艾妮丝"
 msgstr "애니스"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "姬瑟贝露"
 msgstr "캐스벨"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "法兰塔"
 msgstr "파리다"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "寒悠悠"
 msgstr "한요요"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "卡塔露"
 msgstr "카타루"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "兰香子"
 msgstr "난향자"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "莉莉"
 msgstr "릴리"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "璐璐卡"
 msgstr "루루카"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "枫糖"
 msgstr "메이플"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "米砂"
 msgstr "멧사"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "源千代"
 msgstr "미나모토 치요"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "米蒂"
 msgstr "미티"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "末音"
 msgstr "모르윈"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "诺诺"
 msgstr "노노"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "佩佩"
 msgstr "페페"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "芃芃"
 msgstr "펭펭"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "红宝石"
 msgstr "루비"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "夏儿"
 msgstr "샬레"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "西芙莉雅"
 msgstr "심포리아"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "忒拉拉"
 msgstr "테라라"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "涂山小玉"
 msgstr "도산소옥"
 

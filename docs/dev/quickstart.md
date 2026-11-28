@@ -38,7 +38,7 @@ uv run python main_debug.py
 
 ## 5. 模板匹配
 
-队伍头像在「角色管理」页截图、绑定，存入本机 `user_data/chara/`。备份时一起复制 PNG 与 `bindings.json`。
+队伍头像在「角色管理」页截图、绑定，存入本机 `user_data/char/`。备份时一起复制 PNG 与 `bindings.json`。
 
 项目内置的界面识别模板随代码发布。普通 `git clone` 会一并取得 `ok_templates/` 下的原始截图和 `coco_annotations.json`。内置模板的改动直接提交到本仓库。
 

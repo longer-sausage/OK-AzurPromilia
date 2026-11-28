@@ -255,99 +255,99 @@ msgstr "截图失败。{error}"
 msgid "任务结束后将执行情况写入 {folder}"
 msgstr "任务结束后将执行情况写入 {folder}"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "默认"
 msgstr "默认"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "星临者"
 msgstr "星临者"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "阿比"
 msgstr "阿比"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "艾妮丝"
 msgstr "艾妮丝"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "姬瑟贝露"
 msgstr "姬瑟贝露"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "法兰塔"
 msgstr "法兰塔"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "寒悠悠"
 msgstr "寒悠悠"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "卡塔露"
 msgstr "卡塔露"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "兰香子"
 msgstr "兰香子"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "莉莉"
 msgstr "莉莉"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "璐璐卡"
 msgstr "璐璐卡"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "枫糖"
 msgstr "枫糖"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "米砂"
 msgstr "米砂"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "源千代"
 msgstr "源千代"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "米蒂"
 msgstr "米蒂"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "末音"
 msgstr "末音"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "诺诺"
 msgstr "诺诺"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "佩佩"
 msgstr "佩佩"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "芃芃"
 msgstr "芃芃"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "红宝石"
 msgstr "红宝石"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "夏儿"
 msgstr "夏儿"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "西芙莉雅"
 msgstr "西芙莉雅"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "忒拉拉"
 msgstr "忒拉拉"
 
-#: src/combat/chara_factory.py
+#: src/combat/char_factory.py
 msgid "涂山小玉"
 msgstr "涂山小玉"
 

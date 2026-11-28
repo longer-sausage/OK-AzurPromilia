@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from src.chara import BASE_CHARA_NAME
+from src.char import BASE_CHAR_NAME
 from src.combat.team_manager import TeamManager, TeamSlot, team_manager
 from src.core.game_window import ManualCaptureError, capture_manual_frame
 from src.image.team_portraits import SLOT_COUNT
@@ -91,7 +91,7 @@ class SlotCard(Card):
                 self.set_editing(False)
             return
         self.selector.clear()
-        self.selector.addItem(self.page.display_name(BASE_CHARA_NAME), BASE_CHARA_NAME)
+        self.selector.addItem(self.page.display_name(BASE_CHAR_NAME), BASE_CHAR_NAME)
         for spec in self.page.manager.factory.characters:
             self.selector.addItem(self.page.tr(spec.display_msgid), spec.canonical_name)
         self.selector.setCurrentIndex(max(0, self.selector.findData(self.slot.char_name)))

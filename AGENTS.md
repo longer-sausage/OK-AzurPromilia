@@ -19,10 +19,10 @@
 
 - 只有本项目功能自行持久化的用户数据放在安装目录的 `./user_data/`，路径常量在 `src/core/user_data.py`。
   账号覆盖保存在 `user_data/configs/account_scoped_overrides.json`，用户生成的日常汇总保存在 `user_data/reports/`。
-- 角色模板使用 `user_data/chara/<uuid>.png`，同目录 `bindings.json` 将 UUID 映射到稳定 Chara 名。
+- 角色模板使用 `user_data/char/<uuid>.png`，同目录 `bindings.json` 将 UUID 映射到稳定 Char 名。
   各语言的角色显示名走 gettext。实机三槽位由 `TeamManager` 直接匹配用户头像，不经过 `FeatureList`。
-- 角色管理只列出 `src/chara/` 中定义的专属 `BaseChara` 子类以及「默认」。类名是跨语言的稳定标识，例如 `Starborn`。
-  未识别的头像和手动选择的「默认」都绑定到 `BaseChara`，战斗时使用基类实例，角色识别置信度为 0。
+- 角色管理只列出 `src/char/` 中定义的专属 `BaseChar` 子类以及「默认」。类名是跨语言的稳定标识，例如 `Starborn`。
+  未识别的头像和手动选择的「默认」都绑定到 `BaseChar`，战斗时使用基类实例，角色识别置信度为 0。
 - ok-script 自带的数据使用框架原有路径。任务参数和界面设置由框架写入根目录的 `configs/`，日志、诊断截图、脚本和插件分别使用
   `logs/`、`screenshots/`、`ok_tasks/` 和 `ok_import/`。可再生成的图标缓存使用 `cache/icons/`。项目用户数据排除在 Git 和发布包之外。
 

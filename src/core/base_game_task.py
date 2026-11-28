@@ -1,4 +1,6 @@
 import time
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 
 import cv2
 
@@ -62,6 +64,7 @@ class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
         self._active_time_paused_total = 0.0
         self._seen_executor_pause_start = getattr(self.executor, "pause_start", None)
         self._logged_in = False
+        self._sleep_checks: tuple[Callable[[], None], ...] = ()
 
     @property
     def safe_box(self):
@@ -100,6 +103,28 @@ class BaseGameTask(RuntimeMixin, UIMixin, FrameworkOverrideMixin, BaseTask):
             if remaining <= 0:
                 return True
             super().sleep(min(remaining, 0.1))
+
+    @contextmanager
+    def use_sleep_check(self, check: Callable[[], None], interval: float) -> Iterator[None]:
+        """在一段任务流程内接入框架的睡眠检查，退出时恢复宿主原有检查。"""
+        if interval < 0:
+            yield
+            return
+        previous_checks = self._sleep_checks
+        previous_interval = self.sleep_check_interval
+        if check not in previous_checks:
+            self._sleep_checks = (*previous_checks, check)
+        self.sleep_check_interval = min(previous_interval, interval) if previous_interval >= 0 else interval
+        try:
+            yield
+        finally:
+            self._sleep_checks = previous_checks
+            self.sleep_check_interval = previous_interval
+
+    def sleep_check(self):
+        super().sleep_check()
+        for check in self._sleep_checks:
+            check()
 
     def pause(self):
         if not isinstance(self, TriggerTask) and self._task_pause_started_at is None:

@@ -3,6 +3,7 @@
 from pathlib import Path
 
 USER_DATA = Path("user_data")
-CHARA_DIR = USER_DATA / "chara"
+CHAR_DIR = USER_DATA / "char"
+LEGACY_CHAR_DIR = USER_DATA / "chara"
 ACCOUNT_OVERRIDES_FILE = USER_DATA / "configs" / "account_scoped_overrides.json"
 REPORTS_DIR = USER_DATA / "reports"

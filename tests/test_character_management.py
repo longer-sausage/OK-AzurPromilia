@@ -15,14 +15,15 @@ from ok import og
 from PySide6.QtCore import QEventLoop, QTimer
 from PySide6.QtWidgets import QApplication
 
-from src import chara
-from src.chara.base_chara import BaseChara
-from src.chara.starborn import Starborn
-from src.combat.base_combat_task import BaseCombatTask
-from src.combat.chara_factory import CHARA_DISPLAY_NAMES
+from src import char
+from src.char.base_char import BaseChar
+from src.char.starborn import Starborn
+from src.combat.char_factory import CHAR_DISPLAY_NAMES
+from src.combat.combat import Combat
 from src.combat.team_manager import TeamManager
 from src.config import config
-from src.data.chara_templates import CharaTemplateStore
+from src.core.base_game_task import BaseGameTask
+from src.data.char_templates import CharTemplateStore
 from src.gui.character_tab import CharacterTab
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,43 +43,43 @@ class TestCharacterManagement(unittest.TestCase):
         tmp = TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
         self.folder = Path(tmp.name) / "角色模板"
-        self.store = CharaTemplateStore(self.folder)
+        self.store = CharTemplateStore(self.folder)
         self.manager = TeamManager(self.store)
 
     def test_three_slots_restart_resize_swap_and_real_combat_entry(self):
-        modules = self.folder.parent / "chara_modules"
+        modules = self.folder.parent / "char_modules"
         modules.mkdir()
         (modules / "portrait_fixture.py").write_text(dedent("""\
             from abc import ABC, abstractmethod
-            from src.chara.base_chara import BaseChara
-            from src.chara.starborn import Starborn
+            from src.char.base_char import BaseChar
+            from src.char.starborn import Starborn
 
-            class PortraitFixture(BaseChara):
+            class PortraitFixture(BaseChar):
                 def __init__(self, *args, tag=None, **kwargs):
                     super().__init__(*args, **kwargs)
                     self.tag = tag
 
-            class AbstractFixture(BaseChara, ABC):
+            class AbstractFixture(BaseChar, ABC):
                 @abstractmethod
                 def do_perform(self): ...
 
-            class _PrivateFixture(BaseChara):
+            class _PrivateFixture(BaseChar):
                 pass
 
             Alias = PortraitFixture
             """), encoding="utf-8")
-        self.enterContext(patch.object(chara, "__path__", [*chara.__path__, str(modules)]))
-        self.enterContext(patch.object(chara, "portrait_fixture", create=True))
-        self.addCleanup(sys.modules.pop, "src.chara.portrait_fixture", None)
+        self.enterContext(patch.object(char, "__path__", [*char.__path__, str(modules)]))
+        self.enterContext(patch.object(char, "portrait_fixture", create=True))
+        self.addCleanup(sys.modules.pop, "src.char.portrait_fixture", None)
         self.manager = TeamManager(self.store)
-        for name in ("AbstractFixture", "_PrivateFixture", "Alias", "BaseChara"):
+        for name in ("AbstractFixture", "_PrivateFixture", "Alias", "BaseChar"):
             self.assertIsNone(self.manager.factory.get_spec(name))
 
         old_frame = game_frame("20260918_224930")
         old_slots = self.manager.observe(old_frame, capture=True)
-        self.assertEqual([slot.char_name for slot in old_slots], ["BaseChara"] * 3)
+        self.assertEqual([slot.char_name for slot in old_slots], ["BaseChar"] * 3)
         self.assertEqual([slot.confidence for slot in old_slots], [0.0] * 3)
-        self.assertEqual(json.loads(self.store.index.read_bytes()), {slot.template_id: "BaseChara" for slot in old_slots})
+        self.assertEqual(json.loads(self.store.index.read_bytes()), {slot.template_id: "BaseChar" for slot in old_slots})
         for slot, name in zip(old_slots, ("Starborn", "PortraitFixture", "PortraitFixture"), strict=True):
             self.manager.bind(slot.template_id, name)
             self.assertEqual(UUID(slot.template_id).version, 4)
@@ -86,81 +87,82 @@ class TestCharacterManagement(unittest.TestCase):
         self.assertEqual(json.loads(self.store.index.read_text(encoding="utf-8")),
                          {slot.template_id: slot.char_name for slot in self.manager.current_team})
 
-        manager = TeamManager(CharaTemplateStore(self.folder))
+        manager = TeamManager(CharTemplateStore(self.folder))
         fixture_cls = manager.factory.get_spec("PortraitFixture").cls
         manager.factory.register("PortraitFixture", fixture_cls, tag="test")
-        task = BaseCombatTask(SimpleNamespace(frame=self.frame, scene=None, debug=False), SimpleNamespace(tr=str))
-        task.team_manager = manager
-        task.combat_time = lambda: 1.0
+        task = BaseGameTask(SimpleNamespace(frame=self.frame, scene=None, debug=False), SimpleNamespace(tr=str))
+        combat = Combat(task)
+        combat.team_manager = manager
         task.find_best_match_in_box = task.find_one = Mock(side_effect=AssertionError("FeatureSet used"))
         task.info_set = Mock()
         # The same blue-haired portrait has moved from slot 1 in the CN screenshot to slot 2 in JP.
         for size in ((1920, 1080), (2560, 1440), (1280, 720)):
             with self.subTest(size=size):
                 task.executor.frame = cv2.resize(self.frame, size)
-                self.assertTrue(task.load_chars())
-                self.assertEqual([c.char_name for c in task.chars], ["BaseChara", "Starborn", "BaseChara"])
-                self.assertIsInstance(task.chars[1], Starborn)
-                self.assertIs(task.has_char("Starborn"), task.chars[1])
-                self.assertTrue(task.chars[0].is_current_char)
-                self.assertGreater(task.chars[1].confidence, 0.82)
+                self.assertTrue(combat.load_chars())
+                self.assertEqual([c.char_name for c in combat.chars], ["BaseChar", "Starborn", "BaseChar"])
+                self.assertIsInstance(combat.chars[1], Starborn)
+                self.assertIs(combat.has_char("Starborn"), combat.chars[1])
+                self.assertTrue(combat.chars[0].is_current_char)
+                self.assertGreater(combat.chars[1].confidence, 0.82)
         self.assertEqual(len(self.store.templates()), 3)
         # A correction on the JP appearance changes that new UUID only.
         new_slot = self.manager.observe(self.frame, capture=True)[1]
         self.assertNotEqual(new_slot.template_id, old_slots[0].template_id)
         self.assertEqual(new_slot.char_name, "Starborn")
         self.manager.bind(new_slot.template_id, "PortraitFixture")
-        self.assertTrue(task.load_chars())
-        self.assertIsInstance(task.chars[1], fixture_cls)
-        self.assertEqual(task.chars[1].tag, "test")
+        self.assertTrue(combat.load_chars())
+        self.assertIsInstance(combat.chars[1], fixture_cls)
+        self.assertEqual(combat.chars[1].tag, "test")
         self.assertEqual(self.manager.observe(old_frame)[0].char_name, "Starborn")
         # An explicit base binding on this appearance wins over a less similar named portrait.
-        self.manager.bind(new_slot.template_id, "BaseChara")
-        self.assertTrue(task.load_chars())
-        self.assertIs(type(task.chars[1]), BaseChara)
-        self.assertEqual(task.chars[1].confidence, 0)
+        self.manager.bind(new_slot.template_id, "BaseChar")
+        self.assertTrue(combat.load_chars())
+        self.assertIs(type(combat.chars[1]), BaseChar)
+        self.assertEqual(combat.chars[1].confidence, 0)
         self.assertEqual(self.manager.observe(old_frame)[0].char_name, "Starborn")
         for key in (new_slot.template_id, old_slots[0].template_id):
             self.manager.delete(key)
-        self.assertTrue(task.load_chars())
-        self.assertEqual(task.chars[1].char_name, "BaseChara")
-        self.assertEqual(task.chars[1].confidence, 0)
+        self.assertTrue(combat.load_chars())
+        self.assertEqual(combat.chars[1].char_name, "BaseChar")
+        self.assertEqual(combat.chars[1].confidence, 0)
 
     def test_unimplemented_legacy_binding_survives_recapture_and_can_be_rebound(self):
         key = self.manager.observe(self.frame, capture=True)[0].template_id
-        self.store.bind(key, "RetiredChara")
+        self.store.bind(key, "RetiredChar")
         index = self.store.index.read_bytes()
         image_file = self.folder / f"{key}.png"
         image = image_file.read_bytes()
-        manager = TeamManager(CharaTemplateStore(self.folder))
+        manager = TeamManager(CharTemplateStore(self.folder))
         with self.assertRaises(ValueError):
-            manager.bind(key, "RetiredChara")
-        current = manager.instantiate(SimpleNamespace(), self.frame, 3, [])[0]
-        self.assertIs(type(current), BaseChara)
-        self.assertEqual((current.char_name, current.confidence), ("BaseChara", 0))
+            manager.bind(key, "RetiredChar")
+        combat = Combat(BaseGameTask(SimpleNamespace(frame=self.frame, scene=None), SimpleNamespace(tr=str)))
+        current = manager.instantiate(combat, self.frame, 3, [])[0]
+        self.assertIs(type(current), BaseChar)
+        self.assertEqual((current.char_name, current.confidence), ("BaseChar", 0))
         slot = manager.observe(self.frame, capture=True)[0]
-        self.assertEqual((slot.template_id, slot.char_name, slot.confidence), (key, "BaseChara", 0))
+        self.assertEqual((slot.template_id, slot.char_name, slot.confidence), (key, "BaseChar", 0))
         self.assertEqual(self.store.index.read_bytes(), index)
         self.assertEqual(image_file.read_bytes(), image)
 
         manager.bind(key, "Starborn")
-        current = manager.instantiate(SimpleNamespace(), self.frame, 3, [])[0]
+        current = manager.instantiate(combat, self.frame, 3, [])[0]
         self.assertIsInstance(current, Starborn)
         self.assertEqual(self.store.templates()[0].char_name, "Starborn")
 
     def test_legacy_unknown_bindings_resolve_to_base_and_normalize_on_save(self):
         keys = [slot.template_id for slot in self.manager.observe(self.frame, capture=True)]
-        old_bindings = dict(zip(keys, (None, "unknown", "BaseChar"), strict=True))
+        old_bindings = dict(zip(keys, (None, "unknown", "BaseChara"), strict=True))
         self.store.index.write_text(json.dumps(old_bindings), encoding="utf-8")
-        manager = TeamManager(CharaTemplateStore(self.folder))
+        manager = TeamManager(CharTemplateStore(self.folder))
         self.assertEqual([(t.uuid, t.char_name) for t in manager.store.templates()],
-                         [(key, "BaseChara") for key in keys])
+                         [(key, "BaseChar") for key in keys])
         team = manager.observe(self.frame, capture=True)
         self.assertEqual([(slot.template_id, slot.char_name, slot.confidence) for slot in team],
-                         [(key, "BaseChara", 0) for key in keys])
+                         [(key, "BaseChar", 0) for key in keys])
         self.assertEqual(json.loads(self.store.index.read_bytes()), old_bindings)
         manager.bind(keys[0], None)
-        self.assertEqual(json.loads(self.store.index.read_bytes()), dict.fromkeys(keys, "BaseChara"))
+        self.assertEqual(json.loads(self.store.index.read_bytes()), dict.fromkeys(keys, "BaseChar"))
 
     def test_recapture_missing_images_multiple_appearances_and_partial_party(self):
         slots = self.manager.observe(self.frame, capture=True)
@@ -170,7 +172,7 @@ class TestCharacterManagement(unittest.TestCase):
             self.manager.bind(slot.template_id, "Starborn")
         (self.folder / f"{slots[0].template_id}.png").unlink()
         team = self.manager.observe(self.frame)
-        self.assertEqual([s.char_name for s in team], ["BaseChara", "Starborn", "BaseChara"])
+        self.assertEqual([s.char_name for s in team], ["BaseChar", "Starborn", "BaseChar"])
         # One slot remains in the HUD. Capturing the background must not create new templates.
         cropped = self.frame.copy()
         cropped[285:460, 1660:] = 0
@@ -192,7 +194,7 @@ class TestCharacterManagement(unittest.TestCase):
 
     def test_tab_capture_edit_save_locale_restart_and_scrollable_delete(self):
         self.assertIn(["src.gui.character_tab", "CharacterTab"], config["custom_tabs"])
-        self.enterContext(patch.dict(CHARA_DISPLAY_NAMES, {"RetiredChara": "阿比"}))
+        self.enterContext(patch.dict(CHAR_DISPLAY_NAMES, {"RetiredChar": "阿比"}))
         app = QApplication.instance() or QApplication(["test", "-platform", "offscreen"])
         translations = gettext.translation("ok", ROOT / "i18n", languages=["ja_JP"])
         with patch.object(og, "app", SimpleNamespace(tr=translations.gettext)):
@@ -227,16 +229,16 @@ class TestCharacterManagement(unittest.TestCase):
             self.assertEqual(tab.table.rowCount(), 3)
             capture.get_frame.assert_called_once()
             card = tab.cards[0]
-            self.store.bind(card.slot.template_id, "RetiredChara")
+            self.store.bind(card.slot.template_id, "RetiredChar")
             tab.refresh_library()
             self.assertEqual(tab.table.item(0, 1).text(), translations.gettext("阿比"))
             self.assertEqual(card.name_label.text(), "デフォルト")
             card.edit_button.click()
             self.assertTrue(card.selector.isVisible())
             self.assertEqual(card.edit_button.text(), "保存")
-            self.assertEqual(card.selector.currentData(), "BaseChara")
+            self.assertEqual(card.selector.currentData(), "BaseChar")
             self.assertEqual(card.selector.currentText(), "デフォルト")
-            self.assertEqual(card.selector.findData("RetiredChara"), -1)
+            self.assertEqual(card.selector.findData("RetiredChar"), -1)
             self.assertEqual(card.selector.count(), len(self.manager.factory.characters) + 1)
             card.selector.setCurrentIndex(card.selector.findData("Starborn"))
             self.assertEqual(card.selector.currentText(), "星臨者")
@@ -256,7 +258,7 @@ class TestCharacterManagement(unittest.TestCase):
 
         translations = gettext.translation("ok", ROOT / "i18n", languages=["en_US"])
         with patch.object(og, "app", SimpleNamespace(tr=translations.gettext)):
-            manager = TeamManager(CharaTemplateStore(self.folder))
+            manager = TeamManager(CharTemplateStore(self.folder))
             manager.observe(self.frame)
             reopened = CharacterTab(manager)
             reopened.show()
@@ -265,12 +267,12 @@ class TestCharacterManagement(unittest.TestCase):
             key = self.store.templates()[0].uuid
             card = reopened.cards[0]
             card.edit_button.click()
-            card.selector.setCurrentIndex(card.selector.findData("BaseChara"))
+            card.selector.setCurrentIndex(card.selector.findData("BaseChar"))
             card.edit_button.click()
             self.assertEqual(card.name_label.text(), "Default")
             self.assertEqual(reopened.table.item(0, 1).text(), "Default")
             self.assertEqual(card.slot.confidence, 0)
-            self.assertEqual(json.loads(self.store.index.read_bytes())[key], "BaseChara")
+            self.assertEqual(json.loads(self.store.index.read_bytes())[key], "BaseChar")
             reopened.table.cellWidget(0, 3).click()
             self.assertFalse((self.folder / f"{key}.png").exists())
             self.assertNotIn(key, json.loads(self.store.index.read_text(encoding="utf-8")))

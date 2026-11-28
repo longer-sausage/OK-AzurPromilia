@@ -6,37 +6,37 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from src.chara import BASE_CHARA_NAME, normalize_binding_name
-from src.chara.base_chara import BaseChara
-from src.combat.chara_factory import CharaFactory
-from src.data.chara_templates import CharaTemplate, CharaTemplateStore
+from src.char import BASE_CHAR_NAME, normalize_binding_name
+from src.char.base_char import BaseChar
+from src.combat.char_factory import CharFactory
+from src.data.char_templates import CharTemplate, CharTemplateStore
 from src.image.team_portraits import SLOT_COUNT, portrait_score, read_team_hud, slot_portrait, valid_frame
 
 if TYPE_CHECKING:
-    from src.combat.base_combat_task import BaseCombatTask
+    from src.combat.combat import Combat
 
 
 @dataclass(frozen=True, eq=False)
 class TeamSlot:
     portrait: np.ndarray | None = None
     template_id: str | None = None
-    char_name: str = BASE_CHARA_NAME
+    char_name: str = BASE_CHAR_NAME
     similarity: float = 0.0
 
     @property
     def confidence(self) -> float:
-        return self.similarity if self.char_name != BASE_CHARA_NAME else 0.0
+        return self.similarity if self.char_name != BASE_CHAR_NAME else 0.0
 
 
 class TeamManager:
-    """读取当前设备的一帧，独立匹配三个槽位。战斗实例由各自的任务持有。"""
+    """读取当前设备的一帧，独立匹配三个槽位。角色实例由各自的 Combat 持有。"""
 
     MATCH_THRESHOLD = 0.82
     REUSE_THRESHOLD = 0.98
 
-    def __init__(self, store: CharaTemplateStore | None = None, factory: CharaFactory | None = None):
-        self.store = store or CharaTemplateStore()
-        self.factory = factory or CharaFactory()
+    def __init__(self, store: CharTemplateStore | None = None, factory: CharFactory | None = None):
+        self.store = store or CharTemplateStore()
+        self.factory = factory or CharFactory()
         self.current_team = (TeamSlot(),) * SLOT_COUNT
         self._lock = RLock()
 
@@ -49,13 +49,13 @@ class TeamManager:
         current = min(range(count), key=contrasts.__getitem__)
         return True, current, count
 
-    def _match(self, portrait: np.ndarray, templates: tuple[CharaTemplate, ...], capture: bool) -> TeamSlot:
+    def _match(self, portrait: np.ndarray, templates: tuple[CharTemplate, ...], capture: bool) -> TeamSlot:
         best = TeamSlot(portrait)
         for template in templates:
             if template.image is None:
                 continue
             name = self.factory.resolve_name(template.char_name)
-            threshold = self.REUSE_THRESHOLD if name == BASE_CHARA_NAME else self.MATCH_THRESHOLD
+            threshold = self.REUSE_THRESHOLD if name == BASE_CHAR_NAME else self.MATCH_THRESHOLD
             score = portrait_score(portrait, template.image)
             if score >= threshold and score > best.similarity:
                 # 截图中的新外观有独立 UUID，用户改绑时只影响该头像。
@@ -85,8 +85,8 @@ class TeamManager:
 
     def bind(self, key: str, name: str | None) -> None:
         name = normalize_binding_name(name)
-        if name != BASE_CHARA_NAME and self.factory.get_spec(name) is None:
-            raise ValueError(f"Unknown Chara: {name}")
+        if name != BASE_CHAR_NAME and self.factory.get_spec(name) is None:
+            raise ValueError(f"Unknown Char: {name}")
         with self._lock:
             self.store.bind(key, name)
             self.current_team = tuple(
@@ -100,11 +100,11 @@ class TeamManager:
             self.current_team = tuple(TeamSlot(slot.portrait) if slot.template_id == key else slot
                                       for slot in self.current_team)
 
-    def instantiate(self, task: BaseCombatTask, frame: np.ndarray | None, count: int,
-                    previous: list[BaseChara | None]) -> list[BaseChara]:
+    def instantiate(self, combat: Combat, frame: np.ndarray | None, count: int,
+                    previous: list[BaseChar]) -> list[BaseChar]:
         slots = self.observe(frame)
         return [
-            self.factory.create(task, i, slot.char_name, slot.confidence, previous[i] if i < len(previous) else None)
+            self.factory.create(combat, i, slot.char_name, slot.confidence, previous[i] if i < len(previous) else None)
             for i, slot in enumerate(slots[:count])
         ]
 

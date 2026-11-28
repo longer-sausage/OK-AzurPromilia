@@ -27,7 +27,7 @@
 多个外观可以绑定同一角色，切换界面语言后绑定依然有效。
 下方「全部模板」可独立滚动，按 UUID 文件名查看或删除单张头像。
 
-备份角色模板时复制整个 `user_data/chara/`，其中的 PNG 和 `bindings.json` 共同保存头像与角色的对应关系。
+备份角色模板时复制整个 `user_data/char/`，其中的 PNG 和 `bindings.json` 共同保存头像与角色的对应关系。
 `./user_data/` 还保存本项目的账号覆盖和日常汇总。框架任务参数和界面设置在 `./configs/`，日志在 `./logs/`，诊断截图在 `./screenshots/`。
 
 ## 快速导航
@@ -58,7 +58,7 @@
 │   │   ├── test/               调试与测试任务（Screenshot、Interaction、TreasureBand、UINavigate）
 │   │   ├── daily/              多步骤任务编排与汇总（DailyFeature、步骤统计）
 │   │   └── account/            账号作用域配置存储
-│   ├── chara/                  角色基类和各角色的专属实现
+│   ├── char/                   角色基类和各角色的专属实现
 │   ├── combat/                 配队识别、角色实例化与战斗调度
 │   ├── gui/                    账号配置与角色管理
 │   ├── interaction/            游戏交互（GameInteraction 模拟键鼠、ScreenPosition）
